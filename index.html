@@ -204,15 +204,6 @@
             </form>
             
             <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Access Denied</p>
-            
-            <div style="margin-top: 25px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; font-size: 0.85rem; color: #888; text-align: left;">
-                <div style="display:flex; justify-content: space-between;">
-                    <span>🎓 <b>dheeraj</b></span><span>pass: <b>study123</b></span>
-                </div>
-                <div style="display:flex; justify-content: space-between; margin-top: 5px;">
-                    <span>👨‍🏫 <b>dadmin</b></span><span>pass: <b>dheeraj123</b></span>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -328,7 +319,7 @@
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
                 particlesArray[i].draw();
-                // Draw connections (Constellations)
+                // Draw connections
                 for (let j = i; j < particlesArray.length; j++) {
                     const dx = particlesArray[i].x - particlesArray[j].x;
                     const dy = particlesArray[i].y - particlesArray[j].y;
@@ -541,7 +532,9 @@
             }
         }
 
+        // FIXED: Logout function
         function logout() {
+            localStorage.removeItem('physics_user_v3');
             location.reload();
         }
 
