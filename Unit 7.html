@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit 7: Dual Nature (Premium)</title>
+    <style>
+        :root {
+            /* Light Mode - Green/Teal for Dual Nature */
+            --bg-gradient: radial-gradient(circle at 0% 0%, #d4fc79 0%, #96e6a1 100%);
+            --text-main: #1e293b;
+            --text-sec: #475569;
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --btn-bg: rgba(255, 255, 255, 0.3);
+            --btn-hover: rgba(255, 255, 255, 0.5);
+            --accent: #059669; /* Emerald-600 */
+        }
+
+        [data-theme="dark"] {
+            /* True Black Mode */
+            --bg-gradient: radial-gradient(circle at 50% 50%, #000000, #064e3b);
+            --text-main: #f0fdf4;
+            --text-sec: #bbf7d0;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --card-border: rgba(16, 185, 129, 0.2);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --accent: #34d399; /* Emerald-400 */
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
+
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
+
+        /* --- CONTROLS --- */
+        .controls-area { padding: 20px; z-index: 40; }
+
+        #search {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--btn-bg);
+            color: var(--text-sec);
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent);
+            border-color: transparent;
+        }
+
+        /* --- GRID --- */
+        #question-list {
+            flex: 1;
+            padding: 10px 20px 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* --- GLASS CARD --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 200px;
+            opacity: 0;
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+        }
+        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
+
+        /* ANSWER SECTION */
+        .answer {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
+            margin-top: 0;
+        }
+        
+        .answer-inner {
+            overflow: hidden;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+        }
+        
+        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
+
+        .answer.open {
+            grid-template-rows: 1fr;
+            margin-top: 15px;
+        }
+        
+        .answer.open .answer-inner {
+            padding: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
+
+        /* --- FORMULA MODAL --- */
+        #formula-btn {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer; z-index: 100; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
+
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 200; display: none; flex-direction: column;
+            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
+        
+        .formula-box {
+            background: rgba(255,255,255,0.05); border-radius: 18px;
+            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
+        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>UNIT 7: DUAL NATURE</h1>
+        <div class="controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" onclick="toggleFS()">⛶</button>
+        </div>
+    </header>
+
+    <div class="controls-area">
+        <input type="text" id="search" placeholder="Search 20 Questions..." onkeyup="filterData()">
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
+            <button class="filter-btn" onclick="setFilter('CONCEPT')">Conceptual</button>
+            <button class="filter-btn" onclick="setFilter('DERIVATION')">Derivations</button>
+            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
+        </div>
+    </div>
+
+    <div id="question-list">
+        </div>
+
+    <button id="formula-btn" onclick="openSheet()">
+        <span>📄</span> Formulas
+    </button>
+
+    <div id="modal">
+        <div class="modal-header">
+            <h2 style="color:white; margin:0">Unit 7 Formulas</h2>
+            <button class="icon-btn" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="formula-box">
+                <h3>Photoelectric Effect</h3>
+                <div class="f-row"><span>E = hν = hc/λ</span> <span class="f-desc">Photon Energy</span></div>
+                <div class="f-row"><span>Kmax = hν - Φ₀</span> <span class="f-desc">Einstein Eq</span></div>
+                <div class="f-row"><span>Kmax = eV₀</span> <span class="f-desc">Stopping Pot.</span></div>
+                <div class="f-row"><span>Φ₀ = hν₀</span> <span class="f-desc">Work Function</span></div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Matter Waves</h3>
+                <div class="f-row"><span>λ = h/p = h/mv</span> <span class="f-desc">De Broglie</span></div>
+                <div class="f-row"><span>λ = h / √(2mK)</span> <span class="f-desc">Kinetic Energy</span></div>
+                <div class="f-row"><span>λ = h / √(2meV)</span> <span class="f-desc">Accelerated V</span></div>
+                <div class="f-row"><span>λ = 12.27/√V Å</span> <span class="f-desc">For Electron</span></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* THE 20 QUESTIONS FOR UNIT 7 */
+const db = [
+    // 1. Definition
+    {c:"CONCEPT", q:"What is Photoelectric Effect?", a:"The phenomenon of emission of electrons from the surface of a metal when light (radiation) of suitable frequency falls on it."},
+    
+    // 2. Definition
+    {c:"CONCEPT", q:"Define Work Function and Threshold Frequency.", a:"1. Work Function (Φ₀): Minimum energy required by an electron to escape from the metal surface.\n2. Threshold Frequency (ν₀): Minimum frequency of incident radiation required to start photoelectric emission."},
+    
+    // 3. Definition
+    {c:"CONCEPT", q:"What is Stopping Potential (Cut-off Potential)?", a:"The minimum negative (retarding) potential applied to the anode at which the photoelectric current becomes zero. (At this potential, Kmax = eV₀)."},
+    
+    // 4. Derivation
+    {c:"DERIVATION", q:"Establish Einstein's Photoelectric Equation.", a:"According to energy conservation:\nEnergy of incident photon = Work Function + Max Kinetic Energy\nE = Φ₀ + Kmax\nhν = hν₀ + Kmax\nKmax = hν - hν₀ = h(ν - ν₀)."},
+    
+    // 5. Concept
+    {c:"CONCEPT", q:"State Laws of Photoelectric Emission.", a:"1. Emission is instantaneous.\n2. No emission below Threshold Frequency.\n3. Rate of emission (Current) ∝ Intensity of light.\n4. Max Kinetic Energy ∝ Frequency of light (independent of intensity)."},
+    
+    // 6. Concept
+    {c:"CONCEPT", q:"Define Matter Waves (De Broglie Waves).", a:"Waves associated with moving particles (like electrons, protons) are called matter waves. "},
+    
+    // 7. Formula
+    {c:"CONCEPT", q:"Write De-Broglie wave equation.", a:"λ = h / p = h / mv\nWhere λ = wavelength, h = Planck's constant, p = momentum."},
+    
+    // 8. Numerical
+    {c:"NUMERICAL", q:"Calculate energy of a photon of frequency 6 × 10¹⁴ Hz.", a:"E = hν\nE = 6.63 × 10⁻³⁴ × 6 × 10¹⁴\nE = 3.978 × 10⁻¹⁹ Joules.\n(To convert to eV, divide by 1.6×10⁻¹⁹)."},
+    
+    // 9. Numerical
+    {c:"NUMERICAL", q:"Work function is 2.14 eV. Find Threshold Frequency.", a:"Φ₀ = 2.14 eV = 2.14 × 1.6 × 10⁻¹⁹ J.\nΦ₀ = hν₀ ⇒ ν₀ = Φ₀ / h\nν₀ = (3.424 × 10⁻¹⁹) / (6.63 × 10⁻³⁴)\nν₀ ≈ 5.16 × 10¹⁴ Hz."},
+    
+    // 10. Numerical
+    {c:"NUMERICAL", q:"Calculate De Broglie wavelength of electron accelerated by 100V.", a:"Formula: λ = 12.27 / √V Å\nλ = 12.27 / √100\nλ = 12.27 / 10\nλ = 1.227 Å."},
+    
+    // 11. Concept
+    {c:"CONCEPT", q:"Show that the rest mass of a photon is zero.", a:"m = E/c² and E = hν. Moving mass m = hν/c².\nRelativistic mass m = m₀ / √(1 - v²/c²).\nFor photon, v = c, so denominator is 0.\nFor m to be finite, m₀ must be 0."},
+    
+    // 12. Comparison
+    {c:"CONCEPT", q:"Difference between Matter Waves and Electromagnetic Waves.", a:"1. Matter waves are associated with particles; EM waves are fields.\n2. Matter waves need mass; EM waves do not.\n3. Matter waves velocity < c; EM waves velocity = c."},
+    
+    // 13. Concept
+    {c:"CONCEPT", q:"Which experiment confirmed the wave nature of electrons?", a:"Davisson and Germer Experiment. (They observed diffraction of electrons)."},
+    
+    // 14. Numerical
+    {c:"NUMERICAL", q:"Find momentum of photon with frequency 1.5 × 10¹³ Hz.", a:"p = E/c = hν/c\np = (6.63×10⁻³⁴ × 1.5×10¹³) / (3×10⁸)\np = 3.315 × 10⁻²⁹ kg m/s."},
+    
+    // 15. Concept
+    {c:"CONCEPT", q:"Why do alkali metals show photoelectric effect with visible light?", a:"Because they have very low work functions. Even low-energy visible light photons provide enough energy to eject electrons."},
+    
+    // 16. Concept
+    {c:"CONCEPT", q:"Effect of doubling the intensity of light on (a) Photocurrent (b) Stopping Potential.", a:"(a) Photocurrent doubles (Directly proportional).\n(b) Stopping Potential remains unchanged (Depends on Frequency, not Intensity)."},
+    
+    // 17. Concept
+    {c:"CONCEPT", q:"Effect of doubling the frequency of light on (a) Photocurrent (b) Stopping Potential.", a:"(a) Photocurrent remains same (Depends on Intensity).\n(b) Stopping Potential increases (becomes more negative) as KE increases."},
+    
+    // 18. Concept
+    {c:"CONCEPT", q:"What is a Photocell? Mention one use.", a:"A device that converts light energy into electrical energy based on photoelectric effect.\nUse: In automatic street lights, burglar alarms."},
+    
+    // 19. Concept
+    {c:"CONCEPT", q:"Does De Broglie wavelength depend on the charge of the particle?", a:"No directly. λ = h/mv depends on mass and velocity. However, if accelerated by potential V, λ = h/√(2mqV), so it depends on q indirectly in that specific case."},
+    
+    // 20. Numerical
+    {c:"NUMERICAL", q:"Proton and Alpha particle accelerated by same V. Ratio of wavelengths?", a:"λ ∝ 1/√(mq).\nm_α = 4m_p, q_α = 2q_p.\nRatio λp/λα = √[(m_α q_α) / (m_p q_p)]\n= √(4×2) = √8 = 2√2 : 1."}
+];
+
+const list = document.getElementById('question-list');
+const modal = document.getElementById('modal');
+let activeFilter = 'All';
+
+function init() {
+    render(db);
+    // Auto detect dark mode
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+}
+
+function render(data) {
+    list.innerHTML = data.map((item, index) => `
+        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
+            <div class="shimmer"></div>
+            <div class="q-header">
+                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
+                <div class="q-text">${item.q}</div>
+            </div>
+            <div class="answer">
+                <div class="answer-inner">${item.a}</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+        </div>
+    `).join('');
+}
+
+function getColor(type) {
+    if(type === 'NUMERICAL') return '#f6e05e'; // Yellow
+    if(type === 'DERIVATION') return '#f472b6'; // Pink
+    return 'var(--accent)';
+}
+
+function toggleAns(btn) {
+    const ans = btn.previousElementSibling;
+    
+    if (ans.classList.contains('open')) {
+        ans.classList.remove('open');
+        btn.innerText = "Show Answer";
+        btn.style.background = "";
+        btn.style.borderColor = "var(--card-border)";
+    } else {
+        ans.classList.add('open');
+        btn.innerText = "Hide Answer";
+        btn.style.background = "rgba(255,255,255,0.2)";
+        btn.style.borderColor = "var(--accent)";
+    }
+}
+
+function setFilter(type) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
+    render(filtered);
+}
+
+function filterData() {
+    const term = document.getElementById('search').value.toLowerCase();
+    render(db.filter(i => i.q.toLowerCase().includes(term)));
+}
+
+function openSheet() { modal.style.display = 'flex'; }
+function closeSheet() { modal.style.display = 'none'; }
+
+function toggleTheme() {
+    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function toggleFS() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
+
+init();
+</script>
+</body>
+</html>
