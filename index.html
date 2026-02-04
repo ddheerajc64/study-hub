@@ -2,64 +2,81 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Study Hub</title>
 
 <style>
-/* RESET */
+:root{
+    --bg:#0b0b0b;
+    --card:#151515;
+    --accent:#ff3c00;
+    --text:#ffffff;
+}
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
 }
 
-/* BODY */
 body{
-    background:linear-gradient(135deg,#0f0f0f,#141414);
-    color:white;
-    font-family:Segoe UI, Arial, sans-serif;
+    background:radial-gradient(circle at top,#111,#000);
+    color:var(--text);
+    font-family:Segoe UI, system-ui, sans-serif;
     min-height:100vh;
 }
 
 /* HEADER */
 header{
     text-align:center;
-    padding:25px;
-    font-size:28px;
+    padding:24px 10px;
+    font-size:clamp(22px,4vw,30px);
     font-weight:600;
-    letter-spacing:1px;
-    animation:fadeDown 1s ease;
+    animation:slideDown 1s ease;
 }
 
 /* GRID */
 .container{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:25px;
-    padding:30px;
-    animation:fadeUp 1.2s ease;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:18px;
+    padding:20px;
 }
 
 /* CARD */
 .card{
-    background:#1b1b1b;
+    background:linear-gradient(145deg,#1a1a1a,#101010);
     border-radius:18px;
-    padding:35px 20px;
+    padding:30px 15px;
     text-align:center;
-    cursor:pointer;
     position:relative;
     overflow:hidden;
-    transition:0.4s ease;
+    animation:fadeUp .8s ease both;
+    transition:.4s;
 }
 
-/* GLOW EFFECT */
+/* STAGGER EFFECT */
+.card:nth-child(1){animation-delay:.05s}
+.card:nth-child(2){animation-delay:.1s}
+.card:nth-child(3){animation-delay:.15s}
+.card:nth-child(4){animation-delay:.2s}
+.card:nth-child(5){animation-delay:.25s}
+.card:nth-child(6){animation-delay:.3s}
+.card:nth-child(7){animation-delay:.35s}
+.card:nth-child(8){animation-delay:.4s}
+.card:nth-child(9){animation-delay:.45s}
+
+/* SHINE */
 .card::before{
     content:"";
     position:absolute;
-    inset:0;
-    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.08),transparent);
+    inset:-50%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.15),transparent);
     transform:translateX(-100%);
-    transition:0.5s;
+    transition:.6s;
 }
+
 .card:hover::before{
     transform:translateX(100%);
 }
@@ -67,37 +84,40 @@ header{
 /* HOVER */
 .card:hover{
     transform:translateY(-10px) scale(1.05);
-    box-shadow:0 15px 40px rgba(0,0,0,0.6);
+    box-shadow:0 20px 45px rgba(0,0,0,.8);
 }
 
-/* TEXT */
 .card h3{
-    font-size:22px;
-    margin-top:10px;
+    font-size:clamp(16px,3vw,20px);
+    font-weight:500;
 }
 
-/* LINK */
 a{
     text-decoration:none;
-    color:white;
-}
-
-/* ANIMATIONS */
-@keyframes fadeUp{
-    from{opacity:0; transform:translateY(40px);}
-    to{opacity:1; transform:translateY(0);}
-}
-@keyframes fadeDown{
-    from{opacity:0; transform:translateY(-40px);}
-    to{opacity:1; transform:translateY(0);}
+    color:inherit;
 }
 
 /* FOOTER */
 footer{
     text-align:center;
-    opacity:0.6;
-    padding:15px;
-    font-size:14px;
+    opacity:.6;
+    padding:14px;
+    font-size:13px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(40px)}
+    to{opacity:1;transform:none}
+}
+@keyframes slideDown{
+    from{opacity:0;transform:translateY(-40px)}
+    to{opacity:1;transform:none}
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .card{padding:26px 10px;}
 }
 </style>
 </head>
@@ -108,35 +128,15 @@ footer{
 
 <div class="container">
 
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%201.html">
-<div class="card"><h3>Unit 1</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%202.html">
-<div class="card"><h3>Unit 2</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%203.html">
-<div class="card"><h3>Unit 3</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%204.html">
-<div class="card"><h3>Unit 4</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%205.html">
-<div class="card"><h3>Unit 5</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%206.html">
-<div class="card"><h3>Unit 6</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%207.html">
-<div class="card"><h3>Unit 7</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%208.html">
-<div class="card"><h3>Unit 8</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/Unit%209.html">
-<div class="card"><h3>Unit 9</h3></div></a>
-
-<a href="file:///C:/Users/dheer/Downloads/STUDY/Questions/500%20Mcqs.html">
-<div class="card"><h3>500 MCQs</h3></div></a>
+<a href="Unit 1.html"><div class="card"><h3>Unit 1</h3></div></a>
+<a href="Unit 2.html"><div class="card"><h3>Unit 2</h3></div></a>
+<a href="Unit 3.html"><div class="card"><h3>Unit 3</h3></div></a>
+<a href="Unit 4.html"><div class="card"><h3>Unit 4</h3></div></a>
+<a href="Unit 5.html"><div class="card"><h3>Unit 5</h3></div></a>
+<a href="Unit 6.html"><div class="card"><h3>Unit 6</h3></div></a>
+<a href="Unit 7.html"><div class="card"><h3>Unit 7</h3></div></a>
+<a href="Unit 8.html"><div class="card"><h3>Unit 8</h3></div></a>
+<a href="Unit 9.html"><div class="card"><h3>Unit 9</h3></div></a>
 
 </div>
 
