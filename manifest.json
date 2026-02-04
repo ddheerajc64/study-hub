@@ -1,6 +1,6 @@
 {
-  "name": "StudyHub Pro",
-  "short_name": "StudyHub",
+  "name": "Physics StudyHub MP",
+  "short_name": "PhysicsHub",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0c29",
@@ -8,12 +8,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/3069/3069172.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/3069/3069172.png",
       "sizes": "512x512",
       "type": "image/png"
     }
