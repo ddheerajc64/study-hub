@@ -1,4 +1,4 @@
-const CACHE_NAME = 'studyhub-v2';
+const CACHE_NAME = 'physics-hub-v1';
 const ASSETS = [
     './',
     './index.html',
