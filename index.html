@@ -1,214 +1,457 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Study Hub</title>
-<link rel="manifest" href="manifest.json">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHub Pro</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0c29">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #00d2ff;
+            --accent-glow: 0 0 10px rgba(0, 210, 255, 0.5);
+            --danger: #ff4b4b;
+            --success: #00ff88;
+        }
 
-<style>
-:root{
-  --bg:#050505;
-  --glass:rgba(255,255,255,.08);
-  --border:rgba(255,255,255,.14);
-  --accent:#00ffd5;
-  --done:#2ecc71;
-  --text:#fff;
-  --muted:#aaa;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:system-ui;
-  display:flex;
-  min-height:100vh;
-}
-aside{
-  width:240px;
-  background:#0a0a0a;
-  padding:18px;
-}
-aside h2{font-size:18px}
-aside p{font-size:12px;color:var(--muted)}
-.progress{
-  height:8px;
-  background:#222;
-  border-radius:10px;
-  overflow:hidden;
-  margin:8px 0;
-}
-.progress div{
-  height:100%;
-  background:var(--accent);
-  width:0%;
-  transition:.4s;
-}
-main{
-  flex:1;
-  padding:20px;
-}
-input,button{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  background:var(--glass);
-  border:1px solid var(--border);
-  color:white;
-  margin-bottom:10px;
-}
-button{cursor:pointer}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:14px;
-}
-.card{
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:18px;
-  position:relative;
-  transition:.3s;
-}
-.card:hover{
-  transform:translateY(-6px);
-  border-color:var(--accent);
-}
-.card.done{border-color:var(--done)}
-.card.done h3::after{content:" ✔";color:var(--done)}
-.mark{
-  position:absolute;
-  top:10px;
-  right:12px;
-  font-size:12px;
-  cursor:pointer;
-}
-.hidden{display:none}
-a{text-decoration:none;color:inherit}
-@media(max-width:700px){
-  aside{display:none}
-}
-</style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Utility: Glassmorphism */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- LOGIN SECTION --- */
+        #login-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background: var(--bg-gradient);
+            transition: opacity 0.5s ease;
+        }
+
+        .login-card {
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 { margin-bottom: 2rem; font-weight: 300; letter-spacing: 2px; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 1rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--accent); box-shadow: var(--accent-glow); }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--accent-glow); }
+
+        /* --- DASHBOARD --- */
+        #dashboard { display: none; min-height: 100vh; }
+        
+        /* Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            border-right: 1px solid var(--glass-border);
+        }
+
+        .user-profile { text-align: center; padding-bottom: 1rem; border-bottom: 1px solid var(--glass-border); }
+        .user-avatar { width: 60px; height: 60px; background: var(--accent); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #000; }
+        
+        .stats-container h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+        .countdown-timer { font-size: 1.5rem; font-weight: bold; color: var(--accent); margin-bottom: 5px; }
+        
+        .progress-circle { margin-top: 10px; }
+        .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: width 0.5s ease; }
+
+        /* Main Content */
+        .main-content { padding: 2rem; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .search-bar { position: relative; width: 300px; }
+        .search-bar input { padding-left: 40px; margin: 0; background: rgba(255,255,255,0.05); }
+        .search-icon { position: absolute; left: 12px; top: 12px; opacity: 0.5; }
+
+        .logout-btn { background: transparent; border: 1px solid var(--danger); color: var(--danger); width: auto; padding: 8px 20px; }
+        .logout-btn:hover { background: var(--danger); color: white; }
+
+        /* Grid System */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Unit Cards */
+        .unit-card {
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+        }
+
+        .unit-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .unit-number { font-size: 0.8rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; }
+        .unit-title { font-size: 1.4rem; font-weight: 600; line-height: 1.3; }
+        
+        .card-actions { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Custom Checkbox */
+        .check-container { cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); z-index: 2; }
+        .check-container input { display: none; }
+        .checkmark {
+            width: 20px; height: 20px; border: 2px solid var(--text-muted); border-radius: 50%; display: inline-block; position: relative;
+            transition: 0.3s;
+        }
+        .check-container input:checked ~ .checkmark { background: var(--success); border-color: var(--success); }
+        .check-container input:checked ~ .checkmark::after {
+            content: '✓'; position: absolute; color: black; font-weight: bold; font-size: 12px; left: 4px; top: 0px;
+        }
+
+        .open-link { padding: 6px 12px; background: rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.8rem; text-decoration: none; color: white; transition: 0.2s; }
+        .open-link:hover { background: var(--accent); color: black; }
+
+        /* Special MCQ Card */
+        .mcq-card { border: 1px solid var(--accent); }
+        .mcq-card .unit-number { color: var(--success); }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .app-container { grid-template-columns: 1fr; }
+            .sidebar { display: none; } /* Simplified for mobile, ideally toggleable */
+            .sidebar.mobile-active { display: flex; position: fixed; top: 0; left: 0; width: 80%; height: 100%; background: #0f0c29; z-index: 100; border-right: 1px solid var(--accent); }
+            .header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+            .search-bar { width: 100%; }
+            
+            /* Mobile Nav Toggle */
+            .mobile-nav { display: block; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a2e; padding: 15px; display: flex; justify-content: space-around; z-index: 99; border-top: 1px solid var(--glass-border); }
+            .mobile-stat { text-align: center; font-size: 0.8rem; }
+        }
+        
+        @media (min-width: 769px) { .mobile-nav { display: none; } }
+        
+        .toast {
+            position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: #000; padding: 12px 24px; border-radius: 8px;
+            transform: translateY(100px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+        }
+        .toast.show { transform: translateY(0); }
+    </style>
 </head>
-
 <body>
 
-<aside>
-  <h2>📘 Study Hub</h2>
-  <p id="status">Not logged in</p>
-  <div class="progress"><div id="bar"></div></div>
-  <p id="percent">0% Completed</p>
-  <p id="analytics"></p>
-  <p id="countdown"></p>
-  <button onclick="logout()">Logout</button>
-</aside>
+    <div id="login-section">
+        <div class="glass login-card">
+            <h1>STUDY HUB</h1>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required autocomplete="off">
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="btn">Access Dashboard</button>
+            </form>
+            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials</p>
+        </div>
+    </div>
 
-<main>
+    <div id="dashboard">
+        <div class="app-container">
+            
+            <aside class="sidebar glass">
+                <div class="user-profile">
+                    <div class="user-avatar">Admin</div>
+                    <h3>Senior Dev</h3>
+                </div>
+                
+                <div class="stats-container">
+                    <h3>Exam Countdown</h3>
+                    <div id="countdown" class="countdown-timer">--:--:--</div>
+                    <small style="color: var(--text-muted)">Target: Feb 15, 2026</small>
+                </div>
 
-<!-- LOGIN -->
-<div id="loginBox">
-  <input id="username" placeholder="Username">
-  <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <p id="error" style="color:#ff6b6b;font-size:12px;"></p>
-</div>
+                <div class="stats-container">
+                    <h3>Progress</h3>
+                    <div class="progress-bar-bg">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                        <small id="progress-text">0% Complete</small>
+                        <small id="units-count">0/10</small>
+                    </div>
+                </div>
 
-<!-- APP -->
-<div id="app" class="hidden">
-  <input id="search" placeholder="Search unit or MCQs">
+                <button onclick="logout()" class="btn logout-btn" style="margin-top: auto;">Log Out</button>
+            </aside>
 
-  <div class="grid" id="list">
-    <a href="Unit 1.html"><div class="card" data-key="unit 1"><div class="mark">mark</div><h3>Unit 1</h3></div></a>
-    <a href="Unit 2.html"><div class="card" data-key="unit 2"><div class="mark">mark</div><h3>Unit 2</h3></div></a>
-    <a href="Unit 3.html"><div class="card" data-key="unit 3"><div class="mark">mark</div><h3>Unit 3</h3></div></a>
-    <a href="Unit 4.html"><div class="card" data-key="unit 4"><div class="mark">mark</div><h3>Unit 4</h3></div></a>
-    <a href="Unit 5.html"><div class="card" data-key="unit 5"><div class="mark">mark</div><h3>Unit 5</h3></div></a>
-    <a href="Unit 6.html"><div class="card" data-key="unit 6"><div class="mark">mark</div><h3>Unit 6</h3></div></a>
-    <a href="Unit 7.html"><div class="card" data-key="unit 7"><div class="mark">mark</div><h3>Unit 7</h3></div></a>
-    <a href="Unit 8.html"><div class="card" data-key="unit 8"><div class="mark">mark</div><h3>Unit 8</h3></div></a>
-    <a href="Unit 9.html"><div class="card" data-key="unit 9"><div class="mark">mark</div><h3>Unit 9</h3></div></a>
-    <a href="500.html"><div class="card" data-key="500 mcqs"><div class="mark">mark</div><h3>500 MCQs</h3></div></a>
-  </div>
-</div>
+            <main class="main-content">
+                <div class="header">
+                    <div>
+                        <h2 style="font-weight: 300;">Welcome back, <span style="font-weight: 700;">Admin</span></h2>
+                        <p style="color: var(--text-muted);">Let's crush those learning goals today.</p>
+                    </div>
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Search units, topics...">
+                    </div>
+                </div>
 
-</main>
+                <div class="grid-container" id="units-grid">
+                    </div>
+            </main>
+        </div>
 
-<script>
-/* LOGIN */
-const USER="admin";
-const PASS="study123";
+        <div class="mobile-nav">
+            <div class="mobile-stat">
+                <div id="mobile-days" style="color: var(--accent); font-weight: bold;">0</div>
+                Days Left
+            </div>
+            <div class="mobile-stat">
+                <div id="mobile-percent" style="color: var(--success); font-weight: bold;">0%</div>
+                Done
+            </div>
+            <div class="mobile-stat" onclick="logout()">
+                <div style="color: var(--danger);">✖</div>
+                Logout
+            </div>
+        </div>
+    </div>
 
-if(localStorage.getItem("auth")==="true") start();
+    <div id="toast" class="toast">Progress Saved!</div>
 
-function login(){
-  if(username.value===USER && password.value===PASS){
-    localStorage.setItem("auth","true");
-    start();
-  }else{
-    error.innerText="Invalid username or password";
-  }
-}
+    <script>
+        // --- CONFIGURATION ---
+        const CREDENTIALS = { user: 'admin', pass: 'study123' };
+        const EXAM_DATE = new Date('February 15, 2026 09:00:00').getTime();
+        
+        // --- DATA ---
+        const units = [
+            { id: 1, title: "Introduction to Frontend", link: "unit1.html" },
+            { id: 2, title: "HTML5 Mastery", link: "unit2.html" },
+            { id: 3, title: "CSS3 & Flexbox", link: "unit3.html" },
+            { id: 4, title: "JavaScript Basics", link: "unit4.html" },
+            { id: 5, title: "DOM Manipulation", link: "unit5.html" },
+            { id: 6, title: "Async Programming", link: "unit6.html" },
+            { id: 7, title: "APIs & Fetch", link: "unit7.html" },
+            { id: 8, title: "Modern UI Principles", link: "unit8.html" },
+            { id: 9, title: "Performance Optimization", link: "unit9.html" },
+            { id: 10, title: "500 MCQ Mega Test", link: "500.html", isSpecial: true }
+        ];
 
-function logout(){
-  localStorage.clear();
-  location.reload();
-}
+        // --- DOM ELEMENTS ---
+        const loginSection = document.getElementById('login-section');
+        const dashboard = document.getElementById('dashboard');
+        const unitsGrid = document.getElementById('units-grid');
+        const searchInput = document.getElementById('search-input');
+        
+        // --- APP INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+            renderUnits();
+            updateProgress();
+            startTimer();
+            registerSW();
+        });
 
-function start(){
-  loginBox.classList.add("hidden");
-  app.classList.remove("hidden");
-  status.innerText="Logged in as admin";
-}
+        // --- AUTHENTICATION ---
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
 
-/* SEARCH */
-const cards=[...document.querySelectorAll(".card")];
-search.oninput=e=>{
-  const q=e.target.value.toLowerCase();
-  cards.forEach(c=>{
-    c.parentElement.style.display=c.dataset.key.includes(q)?"block":"none";
-  });
-};
+            if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
+                localStorage.setItem('study_auth', 'true');
+                checkSession();
+            } else {
+                const err = document.getElementById('error-msg');
+                err.style.display = 'block';
+                err.classList.add('shake');
+            }
+        });
 
-/* PROGRESS */
-const bar=document.getElementById("bar");
-const percent=document.getElementById("percent");
-const analytics=document.getElementById("analytics");
+        function checkSession() {
+            const isAuth = localStorage.getItem('study_auth');
+            if (isAuth) {
+                loginSection.style.opacity = '0';
+                setTimeout(() => {
+                    loginSection.style.display = 'none';
+                    dashboard.style.display = 'block';
+                }, 500);
+            }
+        }
 
-function update(){
-  let done=cards.filter(c=>c.classList.contains("done")).length;
-  let p=Math.round(done/cards.length*100);
-  bar.style.width=p+"%";
-  percent.innerText=p+"% Completed";
-  analytics.innerText=`Done: ${done} | Pending: ${cards.length-done}`;
-}
-cards.forEach((c,i)=>{
-  if(localStorage.getItem("done"+i)) c.classList.add("done");
-  c.querySelector(".mark").onclick=e=>{
-    e.preventDefault();
-    c.classList.toggle("done");
-    c.classList.contains("done")
-      ?localStorage.setItem("done"+i,1)
-      :localStorage.removeItem("done"+i);
-    update();
-  };
-});
-update();
+        function logout() {
+            localStorage.removeItem('study_auth');
+            window.location.reload();
+        }
 
-/* EXAM COUNTDOWN */
-const examDate=new Date("2026-02-15");
-setInterval(()=>{
-  const d=examDate-new Date();
-  if(d>0){
-    countdown.innerText="Exam in "+Math.floor(d/86400000)+" days";
-  }
-},1000);
+        // --- RENDERING & LOGIC ---
+        function renderUnits() {
+            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            unitsGrid.innerHTML = '';
 
-/* PWA */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
+            units.forEach(unit => {
+                const isChecked = progress[unit.id] ? 'checked' : '';
+                const cardClass = unit.isSpecial ? 'glass unit-card mcq-card' : 'glass unit-card';
+                const subTitle = unit.isSpecial ? 'FINAL EXAM PREP' : `UNIT ${unit.id}`;
+                
+                const html = `
+                    <div class="${cardClass}" data-search="${unit.title.toLowerCase()}">
+                        <div>
+                            <div class="card-header">
+                                <span class="unit-number">${subTitle}</span>
+                                ${unit.isSpecial ? '🔥' : '📚'}
+                            </div>
+                            <h3 class="unit-title">${unit.title}</h3>
+                        </div>
+                        <div class="card-actions">
+                            <label class="check-container">
+                                <input type="checkbox" ${isChecked} onchange="toggleComplete(${unit.id}, this)">
+                                <span class="checkmark"></span>
+                                Mark Done
+                            </label>
+                            <a href="${unit.link}" class="open-link">Open ➔</a>
+                        </div>
+                    </div>
+                `;
+                unitsGrid.innerHTML += html;
+            });
+        }
 
+        function toggleComplete(id, checkbox) {
+            let progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            if (checkbox.checked) {
+                progress[id] = true;
+            } else {
+                delete progress[id];
+            }
+            localStorage.setItem('study_progress', JSON.stringify(progress));
+            updateProgress();
+            showToast();
+        }
+
+        function updateProgress() {
+            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            const total = units.length;
+            const done = Object.keys(progress).length;
+            const percent = Math.round((done / total) * 100);
+
+            // Desktop
+            document.getElementById('progress-fill').style.width = `${percent}%`;
+            document.getElementById('progress-text').innerText = `${percent}% Complete`;
+            document.getElementById('units-count').innerText = `${done}/${total}`;
+            
+            // Mobile
+            document.getElementById('mobile-percent').innerText = `${percent}%`;
+        }
+
+        // --- SEARCH ---
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.unit-card');
+            
+            cards.forEach(card => {
+                const match = card.getAttribute('data-search').includes(term);
+                card.style.display = match ? 'flex' : 'none';
+            });
+        });
+
+        // --- COUNTDOWN TIMER ---
+        function startTimer() {
+            const timerEl = document.getElementById('countdown');
+            const mobileDays = document.getElementById('mobile-days');
+            
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = EXAM_DATE - now;
+
+                if (distance < 0) {
+                    timerEl.innerText = "EXAM DAY!";
+                    return;
+                }
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                timerEl.innerText = `${days}d ${hours}h`;
+                mobileDays.innerText = days;
+            }, 1000);
+        }
+
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        // --- SERVICE WORKER ---
+        function registerSW() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(() => console.log('SW Registered'))
+                    .catch(err => console.log('SW Fail', err));
+            }
+        }
+    </script>
 </body>
 </html>
