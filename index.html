@@ -3,131 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physics Hub | MP Board</title>
+    <title>Physics Hub | Ultra Animated</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f0c29">
     <style>
         :root {
-            --bg-gradient: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg-dark: #0f0c29;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #ffffff;
             --text-muted: #a0a0a0;
-            --accent: #00d2ff; /* Student Color */
-            --admin-accent: #ff9d00; /* Admin Color */
-            --danger: #ff4b4b;
+            --accent: #00d2ff;       /* Cyan */
+            --accent-2: #ff00ff;     /* Magenta */
+            --admin-accent: #ff9d00; /* Orange */
             --success: #00ff88;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
         
         body {
-            background: var(--bg-gradient);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- BACKGROUND PARTICLES --- */
+        #canvas-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.6;
         }
 
-        /* Utility Classes */
+        /* --- ANIMATION KEYFRAMES --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 5px var(--accent); } 50% { box-shadow: 0 0 20px var(--accent), 0 0 10px var(--accent-2); } 100% { box-shadow: 0 0 5px var(--accent); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+
+        /* --- GLASS UI --- */
         .glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(16px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: all 0.3s ease;
         }
 
         .hide { display: none !important; }
-        
-        /* LOGIN SCREEN */
+
+        /* --- LOGIN SCREEN --- */
         #login-section {
             display: flex; justify-content: center; align-items: center; height: 100vh;
-            position: fixed; width: 100%; z-index: 1000; background: rgba(15, 12, 41, 0.98);
-            transition: opacity 0.5s ease;
+            position: fixed; width: 100%; z-index: 1000;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0c29 100%);
+            transition: opacity 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-        .login-card { padding: 3rem; width: 100%; max-width: 400px; text-align: center; }
-        
-        input, textarea {
-            width: 100%; padding: 14px; margin-bottom: 1rem;
-            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border);
-            border-radius: 8px; color: white; outline: none; transition: 0.3s;
-        }
-        input:focus { border-color: var(--accent); }
 
+        .login-card {
+            padding: 3rem; width: 100%; max-width: 400px; text-align: center;
+            animation: slideUp 0.8s ease forwards;
+            position: relative; overflow: hidden;
+        }
+
+        /* Neon Title */
+        .neon-text {
+            font-size: 2.5rem; margin-bottom: 2rem;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--accent), 0 0 40px var(--accent), 0 0 80px var(--accent);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%; padding: 15px; margin-bottom: 1.2rem;
+            background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
+            border-radius: 50px; color: white; outline: none; text-align: center;
+            transition: 0.4s;
+        }
+        input:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); 
+            transform: scale(1.05);
+        }
+
+        /* Ripple Button */
         .btn {
-            width: 100%; padding: 14px; background: var(--accent); border: none;
-            border-radius: 8px; color: #000; font-weight: 800; cursor: pointer;
-            text-transform: uppercase; transition: 0.3s;
+            position: relative; overflow: hidden;
+            width: 100%; padding: 15px; background: linear-gradient(90deg, var(--accent), #0072ff);
+            border: none; border-radius: 50px; color: #fff; font-weight: bold; letter-spacing: 1px;
+            cursor: pointer; text-transform: uppercase; transition: 0.4s; z-index: 1;
         }
-        .btn:hover { transform: translateY(-3px); }
+        .btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.4); 
+        }
+        .btn .ripple {
+            position: absolute; border-radius: 50%; transform: scale(0);
+            animation: ripple 0.6s linear; background-color: rgba(255, 255, 255, 0.5);
+        }
+        @keyframes ripple { to { transform: scale(4); opacity: 0; } }
 
-        /* DASHBOARD LAYOUT */
-        .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
-        .sidebar { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; border-right: 1px solid var(--glass-border); }
-        .main-content { padding: 2rem; }
-
-        /* AVATARS */
+        /* --- DASHBOARD --- */
+        .app-container { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
+            border-right: 1px solid var(--glass-border);
+            background: rgba(15, 12, 41, 0.8);
+            animation: slideInLeft 0.8s ease forwards;
+            z-index: 10;
+        }
+        
         .user-avatar { 
-            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px; 
-            display: flex; align-items: center; justify-content: center; font-size: 2.5rem; 
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center; font-size: 3rem;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.3);
+            border: 2px solid rgba(255,255,255,0.1);
+            animation: pulseGlow 3s infinite;
         }
-        .student-theme .user-avatar { background: linear-gradient(135deg, var(--accent), #0072ff); }
-        .admin-theme .user-avatar { background: linear-gradient(135deg, var(--admin-accent), #ff4b4b); }
 
-        /* HEADER */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .main-content { padding: 2rem; position: relative; z-index: 5; }
 
-        /* CARDS GRID */
+        /* Header */
+        .header { 
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; 
+            animation: fadeIn 1s ease forwards;
+        }
+        .typing-effect {
+            border-right: 2px solid var(--accent);
+            white-space: nowrap; overflow: hidden;
+            animation: blink 0.75s step-end infinite;
+        }
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        /* Grid */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 
-        /* UNIT CARDS (Student) */
-        .unit-card { padding: 1.5rem; position: relative; display: flex; flex-direction: column; min-height: 180px; transition: 0.3s; text-decoration: none; color: white; }
-        .unit-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.08); }
+        /* --- 3D CARDS --- */
+        .unit-card {
+            padding: 1.5rem; position: relative; display: flex; flex-direction: column; min-height: 200px;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            opacity: 0; /* Hidden initially for stagger */
+            animation: slideUp 0.6s ease forwards;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+        }
+
+        .unit-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px; padding: 2px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0.5; transition: 0.5s; pointer-events: none;
+        }
+
+        .unit-card:hover { transform: translateY(-10px); }
+        .unit-card:hover::before { opacity: 1; }
         
-        /* ADMIN PANELS */
-        .admin-panel { border: 1px solid var(--admin-accent); }
-        .admin-stats { display: flex; gap: 1rem; margin-bottom: 2rem; }
-        .stat-box { flex: 1; padding: 1.5rem; text-align: center; }
-        .stat-number { font-size: 2.5rem; font-weight: bold; color: var(--admin-accent); }
+        .card-content { transform: translateZ(20px); } /* Parallax inside card */
+        .card-icon { font-size: 2rem; margin-bottom: 10px; display: inline-block; transition: 0.3s; }
+        .unit-card:hover .card-icon { transform: scale(1.2) rotate(10deg); }
 
-        /* NOTICE BOARD */
-        .notice-board { padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--accent); }
-        .notice-item { background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; }
-        .delete-btn { color: var(--danger); cursor: pointer; font-weight: bold; }
+        .progress-bar-container {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 10px;
+        }
+        .progress-bar-fill {
+            height: 100%; background: var(--success); width: 0%;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--success);
+        }
 
-        /* MOBILE */
+        /* Mobile */
         @media (max-width: 768px) {
             .app-container { grid-template-columns: 1fr; }
             .sidebar { display: none; }
         }
+
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
 <body>
 
+    <canvas id="canvas-bg"></canvas>
+
     <div id="login-section">
         <div class="glass login-card">
-            <h1>PHYSICS HUB</h1>
-            <p style="color: var(--text-muted); margin-bottom: 2rem;">MP Board Class 12</p>
+            <h1 class="neon-text">PHYSICS HUB</h1>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Unlock the Universe</p>
             
             <form id="login-form">
-                <input type="text" id="username" placeholder="Username" required autocomplete="off">
+                <input type="text" id="username" placeholder="ID" required autocomplete="off">
                 <input type="password" id="password" placeholder="Password" required>
-                <button type="submit" class="btn">Login</button>
+                <button type="submit" class="btn">ENTER SYSTEM</button>
             </form>
-            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials. Check spelling.</p>
             
-            <div style="margin-top: 20px; font-family: monospace; color: #aaa; font-size: 0.9rem; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px;">
-                <strong>Student:</strong> dheeraj / study123<br>
-                <strong>Admin:</strong> dadmin / dheeraj123
+            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Access Denied</p>
+            
+            <div style="margin-top: 25px; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; font-size: 0.85rem; color: #888; text-align: left;">
+                <div style="display:flex; justify-content: space-between;">
+                    <span>🎓 <b>dheeraj</b></span><span>pass: <b>study123</b></span>
+                </div>
+                <div style="display:flex; justify-content: space-between; margin-top: 5px;">
+                    <span>👨‍🏫 <b>dadmin</b></span><span>pass: <b>dheeraj123</b></span>
+                </div>
             </div>
         </div>
     </div>
@@ -135,87 +219,62 @@
     <div id="dashboard" class="hide">
         <div class="app-container">
             
-            <aside class="sidebar glass" id="sidebar">
+            <aside class="sidebar glass">
                 <div style="text-align: center;">
-                    <div class="user-avatar" id="avatar-icon">👤</div>
-                    <h3 id="user-role-label">User</h3>
+                    <div class="user-avatar" id="avatar-icon">⚛️</div>
+                    <h2 id="user-role-label" style="margin-bottom: 5px;">User</h2>
+                    <small style="color: var(--accent);">Online ●</small>
                 </div>
 
-                <div id="student-sidebar-stats" class="hide">
-                    <div style="margin-bottom: 20px;">
-                        <small style="color:var(--text-muted)">Exam Date</small>
-                        <div style="font-size: 1.5rem; font-weight:bold;">Feb 10</div>
+                <div id="student-sidebar-stats" class="hide" style="margin-top: 20px;">
+                    <div class="glass" style="padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.03);">
+                        <small style="text-transform:uppercase; color:#888; font-size:0.7rem; letter-spacing:1px;">Target Date</small>
+                        <div style="font-size: 1.4rem; font-weight: bold; color: #fff;">FEB 10</div>
+                        <div style="font-size: 0.8rem; color: var(--accent);">2026</div>
                     </div>
-                    <div>
-                        <small style="color:var(--text-muted)">Your Progress</small>
-                        <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top:5px;">
-                            <div id="sidebar-progress" style="width: 0%; height: 100%; background: var(--success);"></div>
+                    
+                    <div class="glass" style="padding: 15px; background: rgba(255,255,255,0.03);">
+                        <small style="text-transform:uppercase; color:#888; font-size:0.7rem; letter-spacing:1px;">Completion</small>
+                        <div class="progress-bar-container">
+                            <div id="sidebar-progress" class="progress-bar-fill"></div>
                         </div>
+                        <div style="text-align: right; font-size: 0.8rem; margin-top: 5px;" id="progress-text">0%</div>
                     </div>
                 </div>
 
-                <div id="admin-sidebar-menu" class="hide">
-                    <button class="btn" onclick="clearAllData()" style="background: var(--danger); font-size: 0.8rem;">⚠ Factory Reset</button>
-                    <p style="font-size: 0.8rem; color: #666; margin-top: 10px; text-align: center;">System v2.0</p>
+                <div id="admin-sidebar-menu" class="hide" style="margin-top: 20px;">
+                    <button class="btn" onclick="resetSystem()" style="background: linear-gradient(90deg, #ff4b4b, #ff9d00); font-size: 0.8rem;">⚠ RESET DATABASE</button>
                 </div>
 
-                <button onclick="logout()" class="btn" style="background: transparent; border: 1px solid #666; margin-top: auto;">Log Out</button>
+                <button onclick="logout()" class="btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); margin-top: auto;">LOGOUT</button>
             </aside>
 
             <main class="main-content">
-                
                 <div class="header">
-                    <h2 id="welcome-msg">Welcome</h2>
-                    <div id="student-search" class="hide">
-                        <input type="text" id="search-input" placeholder="Search topics..." style="margin:0; width: 250px;">
+                    <div>
+                        <h1 id="welcome-type" class="typing-effect" style="font-weight: 300;">Loading...</h1>
+                        <p style="color: var(--text-muted);">MP Board Class 12 Syllabus</p>
                     </div>
                 </div>
 
                 <div id="student-view" class="hide">
-                    <div id="student-notices" class="glass notice-board hide">
-                        <h4 style="margin-bottom: 10px; color: var(--accent);">📢 Class Notices</h4>
-                        <div id="notice-list-display">No new notices.</div>
+                    <div id="notices-area" class="glass hide" style="padding: 15px; border-left: 4px solid var(--accent); margin-bottom: 20px; animation: slideInLeft 0.5s ease;">
+                        <h4 style="color: var(--accent); margin-bottom: 5px;">📡 Live Notice</h4>
+                        <div id="notice-text"></div>
                     </div>
 
-                    <div class="grid-container" id="units-grid">
-                        </div>
+                    <div class="grid-container" id="units-grid"></div>
                 </div>
 
                 <div id="admin-view" class="hide">
-                    
-                    <div class="admin-stats">
-                        <div class="glass stat-box">
-                            <div class="stat-number">120</div>
-                            <small>Total Students</small>
+                    <div class="glass" style="padding: 2rem;">
+                        <h3 style="color: var(--admin-accent);">📢 Broadcast Notice</h3>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <input type="text" id="notice-input" placeholder="Type message here..." style="margin:0; text-align: left;">
+                            <button class="btn" onclick="postNotice()" style="width: auto; padding: 0 30px;">SEND</button>
                         </div>
-                        <div class="glass stat-box">
-                            <div class="stat-number">85%</div>
-                            <small>Avg. Pass Rate</small>
-                        </div>
-                        <div class="glass stat-box">
-                            <div class="stat-number" style="color: var(--success)">Active</div>
-                            <small>Server Status</small>
-                        </div>
+                        <div id="admin-notice-list" style="margin-top: 20px; color: #aaa;"></div>
                     </div>
-
-                    <div class="glass admin-panel" style="padding: 2rem; margin-bottom: 2rem;">
-                        <h3>📢 Post a Notice</h3>
-                        <p style="color: #aaa; margin-bottom: 1rem;">This will be visible to all students on this device.</p>
-                        <div style="display: flex; gap: 10px;">
-                            <input type="text" id="admin-notice-input" placeholder="e.g., Physics Test postponed to Monday..." style="margin:0;">
-                            <button onclick="addNotice()" class="btn" style="width: 150px; background: var(--admin-accent);">Post</button>
-                        </div>
-                        <div id="admin-notice-list" style="margin-top: 15px;">
-                            </div>
-                    </div>
-
-                    <div class="glass admin-panel" style="padding: 2rem;">
-                        <h3>📚 Syllabus Management</h3>
-                        <p style="color: #aaa;">View status of uploaded units.</p>
-                        <div id="admin-syllabus-list" style="margin-top: 1rem;">
-                            </div>
-                    </div>
-
                 </div>
 
             </main>
@@ -223,7 +282,93 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
+        // --- ANIMATED BACKGROUND (CANVAS) ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() * 1) - 0.5;
+                this.speedY = (Math.random() * 1) - 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01; 
+                // wrap around screen
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 210, 255, 0.5)'; // Cyan particles
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 100; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                // Draw connections (Constellations)
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 210, 255, ${0.1 - distance/1000})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+                if (particlesArray[i].size <= 0.3) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                    particlesArray.push(new Particle());
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); });
+
+        // --- BUTTON RIPPLE EFFECT ---
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn')) {
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+                let ripples = document.createElement('span');
+                ripples.classList.add('ripple');
+                ripples.style.left = x + 'px';
+                ripples.style.top = y + 'px';
+                e.target.appendChild(ripples);
+                setTimeout(() => { ripples.remove() }, 600);
+            }
+        });
+
+        // --- APP LOGIC ---
         const USERS = {
             'dadmin': { pass: 'dheeraj123', role: 'admin', name: 'Professor' },
             'dheeraj': { pass: 'study123', role: 'student', name: 'Dheeraj' }
@@ -242,215 +387,168 @@
             { id: 10, title: "500 MCQs", link: "500.html", special: true }
         ];
 
-        // --- ELEMENTS ---
-        const loginSection = document.getElementById('login-section');
-        const dashboard = document.getElementById('dashboard');
-        const sidebar = document.getElementById('sidebar');
-        
-        // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => {
-            checkSession();
-        });
-
-        // --- LOGIN LOGIC ---
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            // Get values and clean them up
             const u = document.getElementById('username').value.toLowerCase().trim();
             const p = document.getElementById('password').value.trim();
-            const errorMsg = document.getElementById('error-msg');
-
-            // Debugging (visible in Console F12)
-            console.log("Trying to log in with:", u, p);
-
+            
             if (USERS[u] && USERS[u].pass === p) {
-                // Login Success
-                const userData = USERS[u];
-                // Save to NEW storage key to avoid cache issues
-                localStorage.setItem('physics_v2_user', JSON.stringify(userData));
-                errorMsg.style.display = 'none';
-                initDashboard(userData);
+                localStorage.setItem('physics_user_v3', JSON.stringify(USERS[u]));
+                document.getElementById('login-section').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-section').classList.add('hide');
+                    initDashboard(USERS[u]);
+                }, 800);
             } else {
-                errorMsg.style.display = 'block';
-                // Shake effect logic
-                errorMsg.classList.remove('shake');
-                void errorMsg.offsetWidth;
-                errorMsg.classList.add('shake');
+                const err = document.getElementById('error-msg');
+                err.style.display = 'block';
+                err.classList.remove('shake');
+                void err.offsetWidth;
+                err.classList.add('shake');
             }
         });
 
-        function checkSession() {
-            // Check the NEW storage key
-            const storedUser = JSON.parse(localStorage.getItem('physics_v2_user'));
-            if (storedUser) {
-                initDashboard(storedUser);
-            }
+        // 3D TILT FUNCTION
+        function addTiltEffect() {
+            const cards = document.querySelectorAll('.unit-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg
+                    const rotateY = ((x - centerX) / centerX) * 10;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
+                });
+            });
         }
 
-        function logout() {
-            localStorage.removeItem('physics_v2_user');
-            location.reload();
-        }
-
-        // --- DASHBOARD ROUTER ---
         function initDashboard(user) {
-            loginSection.classList.add('hide');
-            dashboard.classList.remove('hide');
+            const dash = document.getElementById('dashboard');
+            dash.classList.remove('hide');
+            
+            // Typewriter Effect
+            const text = `Welcome back, ${user.name}`;
+            const typeEl = document.getElementById('welcome-type');
+            typeEl.innerText = '';
+            let i = 0;
+            function typeWriter() {
+                if (i < text.length) {
+                    typeEl.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 50);
+                }
+            }
+            typeWriter();
 
-            // Set Common Elements
             document.getElementById('user-role-label').innerText = user.name;
-            document.getElementById('welcome-msg').innerHTML = `Hello, <span style="font-weight:bold">${user.name}</span>`;
-
-            // Apply Theme
+            
             if (user.role === 'admin') {
-                document.body.classList.add('admin-theme');
                 document.getElementById('avatar-icon').innerText = '👨‍🏫';
-                loadAdminView();
+                document.getElementById('admin-sidebar-menu').classList.remove('hide');
+                document.getElementById('admin-view').classList.remove('hide');
+                renderAdminNotices();
             } else {
-                document.body.classList.add('student-theme');
                 document.getElementById('avatar-icon').innerText = '🎓';
-                loadStudentView();
+                document.getElementById('student-sidebar-stats').classList.remove('hide');
+                document.getElementById('student-view').classList.remove('hide');
+                renderStudentView();
             }
         }
 
-        // --- STUDENT VIEW LOGIC ---
-        function loadStudentView() {
-            document.getElementById('student-view').classList.remove('hide');
-            document.getElementById('student-sidebar-stats').classList.remove('hide');
-            document.getElementById('student-search').classList.remove('hide');
-            
-            renderStudentUnits();
-            renderStudentNotices();
-            updateProgress();
-        }
-
-        function renderStudentUnits() {
+        function renderStudentView() {
             const grid = document.getElementById('units-grid');
-            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
             grid.innerHTML = '';
+            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
 
-            UNITS.forEach(unit => {
-                const isDone = progress[unit.id] ? 'checked' : '';
+            UNITS.forEach((unit, index) => {
+                const isDone = progress[unit.id];
+                const delay = index * 0.1; // Stagger animation
                 const html = `
-                    <div class="glass unit-card" style="border: ${unit.special ? '1px solid gold' : ''}">
-                        <div style="display:flex; justify-content:space-between;">
-                            <span style="color:var(--accent); font-weight:bold; font-size:0.8rem;">UNIT ${unit.id}</span>
-                            <span>${unit.special ? '🏆' : '⚡'}</span>
-                        </div>
-                        <h3 style="margin: 10px 0; font-size: 1.3rem;">${unit.title}</h3>
-                        <div style="margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
-                            <label style="cursor:pointer; display:flex; gap:5px; font-size:0.9rem; color:#aaa;">
-                                <input type="checkbox" ${isDone} onchange="toggleProgress(${unit.id}, this)"> Done
-                            </label>
-                            <a href="${unit.link}" style="background:rgba(255,255,255,0.1); padding:5px 15px; border-radius:20px; text-decoration:none; color:white; font-size:0.9rem;">Open</a>
+                    <div class="glass unit-card" style="animation-delay: ${delay}s; border: ${unit.special ? '1px solid gold' : ''}">
+                        <div class="card-content">
+                            <div style="display:flex; justify-content:space-between;">
+                                <span style="color:${unit.special ? '#ffd700' : 'var(--accent)'}; font-weight:bold; font-size:0.8rem; letter-spacing:1px;">UNIT ${unit.id}</span>
+                                <span class="card-icon">${unit.special ? '🏆' : '⚡'}</span>
+                            </div>
+                            <h2 style="margin: 15px 0; font-size: 1.5rem; line-height: 1.2;">${unit.title}</h2>
+                            <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                                <div onclick="toggleProgress(${unit.id})" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+                                    <div style="width:20px; height:20px; border:2px solid #fff; border-radius:50%; background:${isDone ? 'var(--success)' : 'transparent'}"></div>
+                                    <span style="font-size:0.9rem;">Done</span>
+                                </div>
+                                <a href="${unit.link}" style="background:rgba(255,255,255,0.1); padding:8px 20px; border-radius:30px; text-decoration:none; color:white; font-size:0.9rem; transition:0.3s;">OPEN</a>
+                            </div>
                         </div>
                     </div>
                 `;
                 grid.innerHTML += html;
             });
+            
+            setTimeout(addTiltEffect, 500); // Initialize tilt after cards render
+            updateProgressBar();
+            renderStudentNotice();
         }
 
-        function toggleProgress(id, checkbox) {
+        function toggleProgress(id) {
             let progress = JSON.parse(localStorage.getItem('study_progress')) || {};
-            if (checkbox.checked) progress[id] = true;
-            else delete progress[id];
+            if (progress[id]) delete progress[id];
+            else progress[id] = true;
             localStorage.setItem('study_progress', JSON.stringify(progress));
-            updateProgress();
+            renderStudentView(); // Re-render to update
         }
 
-        function updateProgress() {
+        function updateProgressBar() {
             const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
             const pct = Math.round((Object.keys(progress).length / UNITS.length) * 100);
             document.getElementById('sidebar-progress').style.width = pct + '%';
+            document.getElementById('progress-text').innerText = pct + '% Completed';
         }
 
-        function renderStudentNotices() {
-            const notices = JSON.parse(localStorage.getItem('study_notices')) || [];
-            const container = document.getElementById('student-notices');
-            const list = document.getElementById('notice-list-display');
-
-            if (notices.length > 0) {
-                container.classList.remove('hide');
-                list.innerHTML = notices.map(n => `<div style="padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.1)">• ${n}</div>`).join('');
-            } else {
-                container.classList.add('hide');
+        function postNotice() {
+            const txt = document.getElementById('notice-input').value;
+            if(txt) {
+                localStorage.setItem('physics_notice', txt);
+                document.getElementById('notice-input').value = '';
+                renderAdminNotices();
+                alert('Notice Broadcasted!');
             }
-        }
-
-        // --- ADMIN VIEW LOGIC ---
-        function loadAdminView() {
-            document.getElementById('admin-view').classList.remove('hide');
-            document.getElementById('admin-sidebar-menu').classList.remove('hide');
-            
-            renderAdminNotices();
-            renderAdminSyllabus();
-        }
-
-        function addNotice() {
-            const input = document.getElementById('admin-notice-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            let notices = JSON.parse(localStorage.getItem('study_notices')) || [];
-            notices.push(text);
-            localStorage.setItem('study_notices', JSON.stringify(notices));
-            
-            input.value = '';
-            renderAdminNotices();
-            alert("Notice Posted! Students will see this.");
         }
 
         function renderAdminNotices() {
-            const notices = JSON.parse(localStorage.getItem('study_notices')) || [];
-            const list = document.getElementById('admin-notice-list');
-            
-            if(notices.length === 0) {
-                list.innerHTML = '<small style="color:#666">No active notices.</small>';
-                return;
+            const n = localStorage.getItem('physics_notice');
+            document.getElementById('admin-notice-list').innerText = n ? `Active: "${n}"` : "No active notice.";
+        }
+
+        function renderStudentNotice() {
+            const n = localStorage.getItem('physics_notice');
+            if(n) {
+                document.getElementById('notices-area').classList.remove('hide');
+                document.getElementById('notice-text').innerText = n;
             }
-
-            list.innerHTML = notices.map((n, index) => `
-                <div class="notice-item">
-                    <span>${n}</span>
-                    <span class="delete-btn" onclick="deleteNotice(${index})">×</span>
-                </div>
-            `).join('');
         }
 
-        function deleteNotice(index) {
-            let notices = JSON.parse(localStorage.getItem('study_notices')) || [];
-            notices.splice(index, 1);
-            localStorage.setItem('study_notices', JSON.stringify(notices));
-            renderAdminNotices();
-        }
-
-        function renderAdminSyllabus() {
-            const list = document.getElementById('admin-syllabus-list');
-            list.innerHTML = UNITS.map(u => `
-                <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333;">
-                    <span>Unit ${u.id}: ${u.title}</span>
-                    <span style="color:var(--success)">● Live</span>
-                </div>
-            `).join('');
-        }
-
-        function clearAllData() {
-            if(confirm("Are you sure? This will delete all student progress and notices on this device.")) {
+        function resetSystem() {
+            if(confirm('RESET ALL DATA?')) {
                 localStorage.clear();
                 location.reload();
             }
         }
 
-        // --- SEARCH ---
-        const searchInput = document.getElementById('search-input');
-        if(searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const term = e.target.value.toLowerCase();
-                document.querySelectorAll('.unit-card').forEach(card => {
-                    const txt = card.innerText.toLowerCase();
-                    card.style.display = txt.includes(term) ? 'flex' : 'none';
-                });
-            });
+        function logout() {
+            location.reload();
+        }
+
+        // Auto-login check
+        if(localStorage.getItem('physics_user_v3')) {
+            document.getElementById('login-section').classList.add('hide');
+            initDashboard(JSON.parse(localStorage.getItem('physics_user_v3')));
         }
     </script>
 </body>
