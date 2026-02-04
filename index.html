@@ -2,452 +2,498 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physics IMP Questions | MP Board</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f0c29">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit 8: Atoms & Nuclei (Premium)</title>
     <style>
         :root {
-            /* Physics Theme: Deep Blue/Purple with Electric Cyan Accents */
-            --bg-gradient: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
-            --accent: #00d2ff;
-            --accent-glow: 0 0 15px rgba(0, 210, 255, 0.6);
-            --danger: #ff4b4b;
-            --success: #00ff88;
+            /* Light Mode - Orange/Amber for Energy/Nuclei */
+            --bg-gradient: radial-gradient(circle at 0% 0%, #fbd3e9 0%, #bb377d 100%);
+            --text-main: #2d3748;
+            --text-sec: #4a5568;
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --btn-bg: rgba(255, 255, 255, 0.3);
+            --btn-hover: rgba(255, 255, 255, 0.5);
+            --accent: #db2777; /* Pink-600 */
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        
+        [data-theme="dark"] {
+            /* True Black Mode */
+            --bg-gradient: radial-gradient(circle at 50% 50%, #000000, #3f0e20);
+            --text-main: #fdf2f8;
+            --text-sec: #fbcfe8;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --card-border: rgba(219, 39, 119, 0.2);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --accent: #f472b6; /* Pink-400 */
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
         body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg-gradient);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background-attachment: fixed;
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
             color: var(--text-main);
             min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes gradientBG {
+        @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Physics Background Decorations */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: float 10s infinite ease-in-out;
-        }
-        .orb-1 { width: 300px; height: 300px; background: #302b63; top: -50px; left: -50px; }
-        .orb-2 { width: 400px; height: 400px; background: #1a1a2e; bottom: -100px; right: -100px; animation-delay: -5s; }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(20px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* --- LOGIN SECTION --- */
-        #login-section {
+        /* --- HEADER --- */
+        header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            height: 100vh;
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-            background: rgba(15, 12, 41, 0.98);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
 
-        .login-card {
-            padding: 3rem;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
 
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
         }
-        
-        input {
+        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
+
+        /* --- CONTROLS --- */
+        .controls-area { padding: 20px; z-index: 40; }
+
+        #search {
             width: 100%;
-            padding: 14px;
-            margin-bottom: 1rem;
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            color: white;
+            padding: 14px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
             outline: none;
             transition: 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
         }
-        input:focus { border-color: var(--accent); box-shadow: var(--accent-glow); transform: scale(1.02); }
+        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
 
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--accent);
-            border: none;
-            border-radius: 8px;
-            color: #000;
-            font-weight: 800;
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--btn-bg);
+            color: var(--text-sec);
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .btn:hover { transform: translateY(-3px); box-shadow: var(--accent-glow); }
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent);
+            border-color: transparent;
+        }
 
-        .shake { animation: shake 0.5s; }
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
+        /* --- GRID --- */
+        #question-list {
+            flex: 1;
+            padding: 10px 20px 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            align-items: start;
+        }
 
-        /* --- DASHBOARD --- */
-        #dashboard { display: none; min-height: 100vh; }
-        
-        .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
-
-        /* Sidebar */
-        .sidebar { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; border-right: 1px solid var(--glass-border); }
-        .user-profile { text-align: center; padding-bottom: 1rem; border-bottom: 1px solid var(--glass-border); }
-        .user-avatar { width: 70px; height: 70px; background: linear-gradient(135deg, var(--accent), #0072ff); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #fff; box-shadow: var(--accent-glow); }
-        
-        .stats-container h3 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .countdown-timer { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
-        
-        .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; margin-top: 10px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), #00d2ff); width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(0,255,136,0.3); }
-
-        /* Main Content */
-        .main-content { padding: 2rem; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .search-bar { position: relative; width: 300px; }
-        .search-bar input { padding-left: 40px; margin: 0; background: rgba(255,255,255,0.05); border-radius: 50px; }
-        .search-icon { position: absolute; left: 15px; top: 12px; opacity: 0.5; }
-
-        .logout-btn { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 20px; transition: 0.3s; }
-        .logout-btn:hover { background: var(--danger); color: white; }
-
-        /* Grid & Cards */
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
-
-        .unit-card {
-            padding: 1.5rem;
+        /* --- GLASS CARD --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
             position: relative;
-            text-decoration: none;
-            color: white;
+            overflow: hidden;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 180px;
+            height: auto;
+            min-height: 200px;
             opacity: 0;
-            transform: translateY(30px);
-            transition: transform 0.3s ease, background 0.3s;
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
         }
 
-        .unit-card.visible { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
-
-        .unit-card:hover { transform: translateY(-8px) scale(1.02); background: rgba(255,255,255,0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-        
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-        .unit-number { font-size: 0.75rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; font-weight: bold; background: rgba(0, 210, 255, 0.1); padding: 4px 8px; border-radius: 4px; }
-        .unit-title { font-size: 1.35rem; font-weight: 700; line-height: 1.3; }
-        
-        .card-actions { margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
-        
-        .check-container { cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); }
-        .check-container input { display: none; }
-        .checkmark { width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 6px; display: inline-block; position: relative; transition: 0.3s; }
-        .check-container input:checked ~ .checkmark { background: var(--success); border-color: var(--success); }
-        .check-container input:checked ~ .checkmark::after { content: '✓'; position: absolute; color: black; font-weight: 900; font-size: 14px; left: 4px; top: 0px; }
-
-        .open-link { padding: 8px 16px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 0.8rem; text-decoration: none; color: white; transition: 0.3s; }
-        .open-link:hover { background: var(--accent); color: black; }
-
-        @media (max-width: 768px) {
-            .app-container { grid-template-columns: 1fr; }
-            .sidebar { display: none; } 
-            .header { flex-direction: column; gap: 1rem; align-items: flex-start; }
-            .search-bar { width: 100%; }
-            .mobile-nav { display: block; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 12, 41, 0.95); padding: 15px; display: flex; justify-content: space-around; z-index: 99; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @media (min-width: 769px) { .mobile-nav { display: none; } }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+        }
+        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
+
+        /* ANSWER SECTION */
+        .answer {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
+            margin-top: 0;
+        }
         
-        .toast { position: fixed; bottom: 30px; right: 30px; background: white; color: #000; padding: 16px 32px; border-radius: 12px; transform: translateY(150px); transition: transform 0.4s; font-weight: bold; z-index: 2000; }
-        .toast.show { transform: translateY(0); }
+        .answer-inner {
+            overflow: hidden;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+        }
+        
+        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
+
+        .answer.open {
+            grid-template-rows: 1fr;
+            margin-top: 15px;
+        }
+        
+        .answer.open .answer-inner {
+            padding: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
+
+        /* --- FORMULA MODAL --- */
+        #formula-btn {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer; z-index: 100; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
+
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 200; display: none; flex-direction: column;
+            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
+        
+        .formula-box {
+            background: rgba(255,255,255,0.05); border-radius: 18px;
+            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
+        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
+
     </style>
 </head>
 <body>
 
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <header>
+        <h1>UNIT 8: ATOMS & NUCLEI</h1>
+        <div class="controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" onclick="toggleFS()">⛶</button>
+        </div>
+    </header>
 
-    <div id="login-section">
-        <div class="glass login-card">
-            <h1>PHYSICS HUB</h1>
-            <p style="color: var(--text-muted); margin-bottom: 2rem;">Class 12th MP Board • IMP Questions</p>
-            <form id="login-form">
-                <input type="text" id="username" placeholder="Username" required autocomplete="off">
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit" class="btn">Start Studying</button>
-            </form>
-            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials</p>
+    <div class="controls-area">
+        <input type="text" id="search" placeholder="Search 22 Questions..." onkeyup="filterData()">
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
+            <button class="filter-btn" onclick="setFilter('CONCEPT')">Conceptual</button>
+            <button class="filter-btn" onclick="setFilter('DERIVATION')">Derivations</button>
+            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
         </div>
     </div>
 
-    <div id="dashboard">
-        <div class="app-container">
-            <aside class="sidebar glass">
-                <div class="user-profile">
-                    <div class="user-avatar">⚛️</div>
-                    <h3>Class 12 Student</h3>
-                </div>
-                <div class="stats-container">
-                    <h3>Physics Exam</h3>
-                    <div id="countdown" class="countdown-timer">--:--:--</div>
-                    <small style="color: var(--accent)">Target: Feb 10, 2026</small>
-                </div>
-                <div class="stats-container">
-                    <h3>Syllabus Progress</h3>
-                    <div class="progress-bar-bg"><div id="progress-fill" class="progress-fill"></div></div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                        <small id="progress-text">0%</small>
-                        <small id="units-count" style="color: var(--text-muted)">0/10</small>
-                    </div>
-                </div>
-                <button onclick="logout()" class="btn logout-btn" style="margin-top: auto;">Log Out</button>
-            </aside>
-
-            <main class="main-content">
-                <div class="header">
-                    <div>
-                        <h2 style="font-weight: 300; font-size: 2rem;">Physics <span style="font-weight: 700; color: var(--accent);">Question Bank</span></h2>
-                        <p style="color: var(--text-muted);">MP Board Important Questions & MCQs.</p>
-                    </div>
-                    <div class="search-bar">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="search-input" placeholder="Search chapters...">
-                    </div>
-                </div>
-                <div class="grid-container" id="units-grid"></div>
-            </main>
+    <div id="question-list">
         </div>
 
-        <div class="mobile-nav">
-            <div class="mobile-stat"><div id="mobile-days" style="color: var(--accent); font-weight: bold; font-size: 1.2rem;">0</div><small>Days</small></div>
-            <div class="mobile-stat"><div id="mobile-percent" style="color: var(--success); font-weight: bold; font-size: 1.2rem;">0%</div><small>Done</small></div>
-            <div class="mobile-stat" onclick="logout()"><div style="color: var(--danger); font-size: 1.2rem;">✖</div><small>Exit</small></div>
+    <button id="formula-btn" onclick="openSheet()">
+        <span>📄</span> Formulas
+    </button>
+
+    <div id="modal">
+        <div class="modal-header">
+            <h2 style="color:white; margin:0">Unit 8 Formulas</h2>
+            <button class="icon-btn" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="formula-box">
+                <h3>Bohr's Model</h3>
+                <div class="f-row"><span>L = nh / 2π</span> <span class="f-desc">Quantization</span></div>
+                <div class="f-row"><span>r_n = 0.53 n²/Z Å</span> <span class="f-desc">Radius</span></div>
+                <div class="f-row"><span>E_n = -13.6 Z²/n² eV</span> <span class="f-desc">Energy</span></div>
+                <div class="f-row"><span>1/λ = R(1/n1² - 1/n2²)</span> <span class="f-desc">Rydberg</span></div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Radioactivity</h3>
+                <div class="f-row"><span>N = N₀ e^(-λt)</span> <span class="f-desc">Decay Law</span></div>
+                <div class="f-row"><span>T_half = 0.693 / λ</span> <span class="f-desc">Half Life</span></div>
+                <div class="f-row"><span>T_mean = 1 / λ</span> <span class="f-desc">Mean Life</span></div>
+                <div class="f-row"><span>R = λN</span> <span class="f-desc">Activity</span></div>
+            </div>
+
+            <div class="formula-box">
+                <h3>Nuclei & Energy</h3>
+                <div class="f-row"><span>R = R₀ A^(1/3)</span> <span class="f-desc">Radius</span></div>
+                <div class="f-row"><span>ρ = M/V</span> <span class="f-desc">Density (Const)</span></div>
+                <div class="f-row"><span>E = Δmc²</span> <span class="f-desc">Binding Energy</span></div>
+                <div class="f-row"><span>1 amu = 931 MeV</span> <span class="f-desc">Conversion</span></div>
+            </div>
         </div>
     </div>
 
-    <div id="toast" class="toast"><span>💾</span> Progress Saved!</div>
+<script>
+/* THE 22 QUESTIONS FOR UNIT 8 */
+const db = [
+    // 1. Definition - Atom
+    {c:"CONCEPT", q:"State Bohr's Quantization Condition for angular momentum.", a:"The angular momentum of an electron in a stationary orbit is an integral multiple of h/2π.\nL = mvr = nh / 2π. 
 
-    <script>
-        // --- CONFIGURATION ---
-        const CREDENTIALS = { user: 'admin', pass: 'study123' };
-        // EXAM DATE: Feb 10, 2026
-        const EXAM_DATE = new Date('February 10, 2026 09:00:00').getTime();
-        
-        /* LINKS: Configured for GitHub structure.
-           Note: "%20" represents a space. 
-           It expects your files to be named "Unit 1.html", "Unit 2.html", etc.
-        */
-        const units = [
-            { id: 1, title: "Electrostatics", link: "Unit%201.html" },
-            { id: 2, title: "Current Electricity", link: "Unit%202.html" },
-            { id: 3, title: "Magnetic Effects of Current", link: "Unit%203.html" },
-            { id: 4, title: "EMI & AC", link: "Unit%204.html" },
-            { id: 5, title: "Electromagnetic Waves", link: "Unit%205.html" },
-            { id: 6, title: "Optics (Ray & Wave)", link: "Unit%206.html" },
-            { id: 7, title: "Dual Nature of Matter", link: "Unit%207.html" },
-            { id: 8, title: "Atoms & Nuclei", link: "Unit%208.html" },
-            { id: 9, title: "Semiconductor Devices", link: "Unit%209.html" },
-            { id: 10, title: "500 IMP MCQs (Full Syllabus)", link: "500.html", isSpecial: true }
-        ];
+[Image of Bohr atom]
+"},
+    
+    // 2. Derivation - Atom
+    {c:"DERIVATION", q:"Derive expression for the Radius of nth orbit of Hydrogen atom.", a:"Centripetal force = Electrostatic force.\nmv²/r = ke²/r² ⇒ v² = ke²/mr.\nUsing L = mvr = nh/2π ⇒ v = nh/2πmr.\nSubstitute v: r_n = (n²h²ε₀) / (πme²).\nr_n ∝ n²."},
+    
+    // 3. Derivation - Atom
+    {c:"DERIVATION", q:"Derive expression for Energy of electron in nth orbit.", a:"Total Energy = KE + PE.\nKE = ke²/2r, PE = -ke²/r.\nE = -ke²/2r.\nSubstitute r_n: E_n = -me⁴ / (8ε₀²n²h²).\nE_n = -13.6 / n² eV."},
+    
+    // 4. Concept - Atom
+    {c:"CONCEPT", q:"Draw energy level diagram of Hydrogen atom and show spectral series.", a:"Diagram showing n=1 to n=∞.\n1. Lyman (UV) n=1.\n2. Balmer (Visible) n=2.\n3. Paschen (IR) n=3.\n4. Brackett (IR) n=4.\n5. Pfund (IR) n=5."},
+    
+    // 5. Concept - Atom
+    {c:"CONCEPT", q:"What is the significance of the negative sign in total energy of an electron?", a:"It signifies that the electron is bound to the nucleus. Energy must be supplied to remove it from the atom."},
+    
+    // 6. Numerical - Atom
+    {c:"NUMERICAL", q:"Calculate the radius of the first orbit of Hydrogen atom.", a:"Formula: r = 0.529 n²/Z Å.\nFor H, Z=1, n=1.\nr = 0.529 Å = 5.29 × 10⁻¹¹ m."},
+    
+    // 7. Numerical - Atom
+    {c:"NUMERICAL", q:"The energy of electron in 1st orbit is -13.6 eV. Find energy in 2nd orbit.", a:"Formula: E_n = E₁ / n².\nE₂ = -13.6 / 2²\nE₂ = -13.6 / 4 = -3.4 eV."},
+    
+    // 8. Concept - Nuclei
+    {c:"CONCEPT", q:"Define Mass Defect and Binding Energy.", a:"Mass Defect (Δm): The difference between the sum of masses of nucleons and the actual mass of the nucleus.\nBinding Energy: The energy equivalent to mass defect (E = Δmc²) released during nucleus formation."},
+    
+    // 9. Concept - Nuclei
+    {c:"CONCEPT", q:"Draw Binding Energy per Nucleon curve. What does it indicate?", a:"Curve: BE/A vs Mass Number (A). 
 
-        // --- DOM ELEMENTS ---
-        const loginSection = document.getElementById('login-section');
-        const dashboard = document.getElementById('dashboard');
-        const unitsGrid = document.getElementById('units-grid');
-        const searchInput = document.getElementById('search-input');
-        
-        // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => {
-            checkSession();
-            startTimer();
-            registerSW();
-        });
+[Image of Binding Energy Curve]
+\n1. Max for Iron (Fe-56) ≈ 8.8 MeV (Most stable).\n2. Low for light and heavy nuclei.\n3. Indicates Fusion for light and Fission for heavy nuclei to gain stability."},
+    
+    // 10. Definition - Nuclei
+    {c:"CONCEPT", q:"What are Isotopes, Isobars, and Isotones?", a:"Isotopes: Same Z, different A (e.g., ₁H¹, ₁H²).\nIsobars: Same A, different Z (e.g., ₂₀Ca⁴⁰, ₁₈Ar⁴⁰).\nIsotones: Same number of neutrons (e.g., ₆C¹³, ₇N¹⁴)."},
+    
+    // 11. Concept - Nuclei
+    {c:"CONCEPT", q:"State Laws of Radioactive Decay.", a:"1. It is a spontaneous process.\n2. Rate of decay is directly proportional to the number of undecayed atoms present.\n-dN/dt = λN."},
+    
+    // 12. Derivation - Nuclei
+    {c:"DERIVATION", q:"Derive the expression N = N₀ e^(-λt) for radioactive decay.", a:"Rate -dN/dt = λN.\n∫(1/N) dN = -∫ λ dt.\nln N = -λt + C. At t=0, N=N₀, so C=ln N₀.\nln(N/N₀) = -λt ⇒ N = N₀ e^(-λt)."},
+    
+    // 13. Definition - Nuclei
+    {c:"CONCEPT", q:"Define Half Life (T_1/2) and Mean Life (τ). Relation?", a:"Half Life: Time for half of the radioactive nuclei to decay.\nMean Life: Average time a nucleus survives.\nRelation: T_1/2 = 0.693 τ."},
+    
+    // 14. Comparison - Nuclei
+    {c:"CONCEPT", q:"Compare properties of Alpha, Beta, and Gamma rays.", a:"1. Nature: α (He nucleus), β (electron), γ (EM wave).\n2. Ionization Power: α > β > γ.\n3. Penetration Power: γ > β > α."},
+    
+    // 15. Numerical - Nuclei
+    {c:"NUMERICAL", q:"Half life of a substance is 10 years. How much remains after 20 years?", a:"t = 20 years = 2 × Half lives.\nRemnant = N₀ (1/2)ⁿ = N₀ (1/2)².\nAmount remaining = N₀ / 4 (or 25%)."},
+    
+    // 16. Concept - Nuclei
+    {c:"CONCEPT", q:"Show that Nuclear Density is independent of Mass Number (A).", a:"Mass M = mA. Volume V = 4/3 π R³ = 4/3 π (R₀A¹/³)³ = 4/3 π R₀³ A.\nDensity ρ = M/V = (mA) / (4/3 π R₀³ A).\nA cancels out. ρ is constant (~ 2.3 × 10¹⁷ kg/m³)."},
+    
+    // 17. Concept - Nuclei
+    {c:"CONCEPT", q:"What is Nuclear Fission? Give reaction.", a:"Splitting of a heavy nucleus into two lighter nuclei with release of energy.\n₉₂U²³⁵ + ₀n¹ → ₅₆Ba¹⁴¹ + ₃₆Kr⁹² + 3₀n¹ + Energy."},
+    
+    // 18. Concept - Nuclei
+    {c:"CONCEPT", q:"What is Nuclear Fusion? Why high temp required?", a:"Combining of two light nuclei to form a heavier nucleus.\nHigh temperature (10⁷ K) is needed to overcome the strong electrostatic repulsion between protons."},
+    
+    // 19. Concept - Atom
+    {c:"CONCEPT", q:"What are the limitations of Bohr's Model?", a:"1. Applicable only to hydrogen-like (single electron) atoms.\n2. Could not explain fine spectrum.\n3. Could not explain Zeeman and Stark effects."},
+    
+    // 20. Numerical - Nuclei
+    {c:"NUMERICAL", q:"Calculate energy equivalent of 1 gram of substance.", a:"E = mc².\nm = 10⁻³ kg, c = 3×10⁸ m/s.\nE = 10⁻³ × (9×10¹⁶) = 9 × 10¹³ Joules."},
+    
+    // 21. Concept - Atom
+    {c:"CONCEPT", q:"What is the shortest wavelength in Balmer series?", a:"For shortest wavelength, transition is from ∞ to 2.\n1/λ = R(1/2² - 1/∞) = R/4.\nλ = 4/R = 3646 Å."},
+    
+    // 22. Concept - Nuclei
+    {c:"CONCEPT", q:"Difference between Chemical and Nuclear reactions.", a:"1. Chemical: Valence electrons participate; Low energy.\n2. Nuclear: Nucleus participates; Huge energy released; New elements formed."}
+];
 
-        // --- AUTH ---
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
+const list = document.getElementById('question-list');
+const modal = document.getElementById('modal');
+let activeFilter = 'All';
 
-            if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
-                localStorage.setItem('study_auth', 'true');
-                enterDashboard();
-            } else {
-                const err = document.getElementById('error-msg');
-                err.style.display = 'block';
-                err.parentElement.classList.remove('shake'); 
-                void err.parentElement.offsetWidth; 
-                err.parentElement.classList.add('shake');
-            }
-        });
+function init() {
+    render(db);
+    // Auto detect dark mode
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+}
 
-        function checkSession() {
-            if (localStorage.getItem('study_auth')) {
-                loginSection.style.display = 'none';
-                dashboard.style.display = 'block';
-                renderUnits(); 
-                updateProgress();
-            }
-        }
+function render(data) {
+    list.innerHTML = data.map((item, index) => `
+        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
+            <div class="shimmer"></div>
+            <div class="q-header">
+                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
+                <div class="q-text">${item.q}</div>
+            </div>
+            <div class="answer">
+                <div class="answer-inner">${item.a}</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+        </div>
+    `).join('');
+}
 
-        function enterDashboard() {
-            loginSection.style.opacity = '0';
-            loginSection.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                loginSection.style.display = 'none';
-                dashboard.style.display = 'block';
-                renderUnits();
-                updateProgress();
-            }, 500);
-        }
+function getColor(type) {
+    if(type === 'NUMERICAL') return '#fbbf24'; // Amber
+    if(type === 'DERIVATION') return '#f472b6'; // Pink
+    return 'var(--accent)';
+}
 
-        function logout() {
-            localStorage.removeItem('study_auth');
-            window.location.reload();
-        }
+function toggleAns(btn) {
+    const ans = btn.previousElementSibling;
+    
+    if (ans.classList.contains('open')) {
+        ans.classList.remove('open');
+        btn.innerText = "Show Answer";
+        btn.style.background = "";
+        btn.style.borderColor = "var(--card-border)";
+    } else {
+        ans.classList.add('open');
+        btn.innerText = "Hide Answer";
+        btn.style.background = "rgba(255,255,255,0.2)";
+        btn.style.borderColor = "var(--accent)";
+    }
+}
 
-        // --- RENDER ---
-        function renderUnits() {
-            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
-            unitsGrid.innerHTML = '';
+function setFilter(type) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
+    render(filtered);
+}
 
-            units.forEach((unit, index) => {
-                const isChecked = progress[unit.id] ? 'checked' : '';
-                const cardClass = unit.isSpecial ? 'glass unit-card mcq-card' : 'glass unit-card';
-                const subTitle = unit.isSpecial ? 'MEGA TEST' : `UNIT ${unit.id}`;
-                const icon = unit.isSpecial ? '🔥' : '⚡'; 
-                
-                const html = `
-                    <div class="${cardClass}" data-search="${unit.title.toLowerCase()}" style="animation-delay: ${index * 0.1}s">
-                        <div>
-                            <div class="card-header">
-                                <span class="unit-number">${subTitle}</span>
-                                <span style="font-size: 1.5rem">${icon}</span>
-                            </div>
-                            <h3 class="unit-title">${unit.title}</h3>
-                        </div>
-                        <div class="card-actions">
-                            <label class="check-container">
-                                <input type="checkbox" ${isChecked} onchange="toggleComplete(${unit.id}, this)">
-                                <span class="checkmark"></span>
-                                Done
-                            </label>
-                            <a href="${unit.link}" class="open-link">Open <span>➜</span></a>
-                        </div>
-                    </div>
-                `;
-                unitsGrid.innerHTML += html;
-            });
+function filterData() {
+    const term = document.getElementById('search').value.toLowerCase();
+    render(db.filter(i => i.q.toLowerCase().includes(term)));
+}
 
-            setTimeout(() => {
-                document.querySelectorAll('.unit-card').forEach(card => card.classList.add('visible'));
-            }, 50);
-        }
+function openSheet() { modal.style.display = 'flex'; }
+function closeSheet() { modal.style.display = 'none'; }
 
-        function toggleComplete(id, checkbox) {
-            let progress = JSON.parse(localStorage.getItem('study_progress')) || {};
-            if (checkbox.checked) progress[id] = true;
-            else delete progress[id];
-            localStorage.setItem('study_progress', JSON.stringify(progress));
-            updateProgress();
-            showToast();
-        }
+function toggleTheme() {
+    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
 
-        function updateProgress() {
-            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
-            const total = units.length;
-            const done = Object.keys(progress).length;
-            const percent = Math.round((done / total) * 100);
+function toggleFS() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
 
-            document.getElementById('progress-fill').style.width = `${percent}%`;
-            document.getElementById('progress-text').innerText = `${percent}% Complete`;
-            document.getElementById('units-count').innerText = `${done}/${total}`;
-            document.getElementById('mobile-percent').innerText = `${percent}%`;
-        }
-
-        // --- SEARCH ---
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const cards = document.querySelectorAll('.unit-card');
-            cards.forEach(card => {
-                const match = card.getAttribute('data-search').includes(term);
-                if(match) {
-                    card.style.display = 'flex';
-                    card.classList.remove('visible');
-                    setTimeout(()=> card.classList.add('visible'), 10);
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        // --- TIMER ---
-        function startTimer() {
-            const timerEl = document.getElementById('countdown');
-            const mobileDays = document.getElementById('mobile-days');
-            setInterval(() => {
-                const now = new Date().getTime();
-                const distance = EXAM_DATE - now;
-                if (distance < 0) {
-                    timerEl.innerText = "EXAM DAY!";
-                    timerEl.style.color = "var(--danger)";
-                    mobileDays.innerText = "0";
-                    return;
-                }
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                timerEl.innerText = `${days}d ${hours}h`;
-                mobileDays.innerText = days;
-            }, 1000);
-        }
-
-        function showToast() {
-            const t = document.getElementById('toast');
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-
-        function registerSW() {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./service-worker.js').catch(console.error);
-            }
-        }
-    </script>
+init();
+</script>
 </body>
 </html>
