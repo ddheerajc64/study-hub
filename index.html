@@ -123,11 +123,12 @@
                 <input type="password" id="password" placeholder="Password" required>
                 <button type="submit" class="btn">Login</button>
             </form>
-            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials</p>
-            <small style="display:block; margin-top: 20px; color: #666; font-family: monospace;">
-                Student: dheeraj / study123<br>
-                Admin: dadmin / dheeraj123
-            </small>
+            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials. Check spelling.</p>
+            
+            <div style="margin-top: 20px; font-family: monospace; color: #aaa; font-size: 0.9rem; text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 5px;">
+                <strong>Student:</strong> dheeraj / study123<br>
+                <strong>Admin:</strong> dadmin / dheeraj123
+            </div>
         </div>
     </div>
 
@@ -154,8 +155,8 @@
                 </div>
 
                 <div id="admin-sidebar-menu" class="hide">
-                    <button class="btn" onclick="clearAllData()" style="background: var(--danger); font-size: 0.8rem;">⚠ Reset System</button>
-                    <p style="font-size: 0.8rem; color: #666; margin-top: 10px; text-align: center;">System v1.0 Local</p>
+                    <button class="btn" onclick="clearAllData()" style="background: var(--danger); font-size: 0.8rem;">⚠ Factory Reset</button>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 10px; text-align: center;">System v2.0</p>
                 </div>
 
                 <button onclick="logout()" class="btn" style="background: transparent; border: 1px solid #666; margin-top: auto;">Log Out</button>
@@ -254,30 +255,40 @@
         // --- LOGIN LOGIC ---
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
+            // Get values and clean them up
             const u = document.getElementById('username').value.toLowerCase().trim();
             const p = document.getElementById('password').value.trim();
             const errorMsg = document.getElementById('error-msg');
 
+            // Debugging (visible in Console F12)
+            console.log("Trying to log in with:", u, p);
+
             if (USERS[u] && USERS[u].pass === p) {
                 // Login Success
                 const userData = USERS[u];
-                localStorage.setItem('study_user', JSON.stringify(userData));
+                // Save to NEW storage key to avoid cache issues
+                localStorage.setItem('physics_v2_user', JSON.stringify(userData));
                 errorMsg.style.display = 'none';
                 initDashboard(userData);
             } else {
                 errorMsg.style.display = 'block';
+                // Shake effect logic
+                errorMsg.classList.remove('shake');
+                void errorMsg.offsetWidth;
+                errorMsg.classList.add('shake');
             }
         });
 
         function checkSession() {
-            const storedUser = JSON.parse(localStorage.getItem('study_user'));
+            // Check the NEW storage key
+            const storedUser = JSON.parse(localStorage.getItem('physics_v2_user'));
             if (storedUser) {
                 initDashboard(storedUser);
             }
         }
 
         function logout() {
-            localStorage.removeItem('study_user');
+            localStorage.removeItem('physics_v2_user');
             location.reload();
         }
 
@@ -375,7 +386,6 @@
             renderAdminSyllabus();
         }
 
-        // Feature: Admin Notices
         function addNotice() {
             const input = document.getElementById('admin-notice-input');
             const text = input.value.trim();
