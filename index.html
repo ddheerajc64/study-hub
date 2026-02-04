@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyHub Pro</title>
+    <title>Physics IMP Questions | MP Board</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f0c29">
     <style>
         :root {
-            /* Animated Gradient Colors */
+            /* Physics Theme: Deep Blue/Purple with Electric Blue Accents */
             --bg-gradient: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
@@ -38,7 +38,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Floating Background Orbs */
+        /* Physics Atom/Orbit Animation Background */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -56,7 +56,6 @@
             100% { transform: translateY(0px); }
         }
 
-        /* Glassmorphism Utility */
         .glass {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -75,7 +74,7 @@
             position: fixed;
             width: 100%;
             z-index: 1000;
-            background: rgba(15, 12, 41, 0.95);
+            background: rgba(15, 12, 41, 0.98);
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
@@ -128,10 +127,9 @@
         
         .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
 
-        /* Sidebar */
         .sidebar { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; border-right: 1px solid var(--glass-border); }
         .user-profile { text-align: center; padding-bottom: 1rem; border-bottom: 1px solid var(--glass-border); }
-        .user-avatar { width: 70px; height: 70px; background: linear-gradient(135deg, var(--accent), #0072ff); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: #fff; box-shadow: var(--accent-glow); }
+        .user-avatar { width: 70px; height: 70px; background: linear-gradient(135deg, var(--accent), #0072ff); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #fff; box-shadow: var(--accent-glow); }
         
         .stats-container h3 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .countdown-timer { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
@@ -139,7 +137,6 @@
         .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; margin-top: 10px; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), #00d2ff); width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(0,255,136,0.3); }
 
-        /* Main Content */
         .main-content { padding: 2rem; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
         .search-bar { position: relative; width: 300px; }
@@ -149,7 +146,6 @@
         .logout-btn { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 20px; transition: 0.3s; }
         .logout-btn:hover { background: var(--danger); color: white; }
 
-        /* Grid & Cards */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 
         .unit-card {
@@ -166,7 +162,6 @@
             transition: transform 0.3s ease, background 0.3s;
         }
 
-        /* Waterfall Animation */
         .unit-card.visible { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
 
@@ -187,7 +182,6 @@
         .open-link { padding: 8px 16px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 0.8rem; text-decoration: none; color: white; transition: 0.3s; }
         .open-link:hover { background: var(--accent); color: black; }
 
-        /* Mobile Responsive */
         @media (max-width: 768px) {
             .app-container { grid-template-columns: 1fr; }
             .sidebar { display: none; } 
@@ -208,12 +202,12 @@
 
     <div id="login-section">
         <div class="glass login-card">
-            <h1>STUDY HUB</h1>
-            <p style="color: var(--text-muted); margin-bottom: 2rem;">Unlock your potential</p>
+            <h1>PHYSICS HUB</h1>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Class 12th MP Board • IMP Questions</p>
             <form id="login-form">
                 <input type="text" id="username" placeholder="Username" required autocomplete="off">
                 <input type="password" id="password" placeholder="Password" required>
-                <button type="submit" class="btn">Access Dashboard</button>
+                <button type="submit" class="btn">Start Studying</button>
             </form>
             <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials</p>
         </div>
@@ -223,16 +217,16 @@
         <div class="app-container">
             <aside class="sidebar glass">
                 <div class="user-profile">
-                    <div class="user-avatar">👨‍💻</div>
-                    <h3>Senior Dev</h3>
+                    <div class="user-avatar">⚛️</div>
+                    <h3>Class 12 Student</h3>
                 </div>
                 <div class="stats-container">
-                    <h3>Exam Countdown</h3>
+                    <h3>Physics Exam Date</h3>
                     <div id="countdown" class="countdown-timer">--:--:--</div>
                     <small style="color: var(--accent)">Target: Feb 10, 2026</small>
                 </div>
                 <div class="stats-container">
-                    <h3>Progress</h3>
+                    <h3>Syllabus Progress</h3>
                     <div class="progress-bar-bg"><div id="progress-fill" class="progress-fill"></div></div>
                     <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <small id="progress-text">0%</small>
@@ -245,12 +239,12 @@
             <main class="main-content">
                 <div class="header">
                     <div>
-                        <h2 style="font-weight: 300; font-size: 2rem;">Welcome, <span style="font-weight: 700; color: var(--accent);">Admin</span></h2>
-                        <p style="color: var(--text-muted);">Exam is approaching. Stay focused!</p>
+                        <h2 style="font-weight: 300; font-size: 2rem;">Physics <span style="font-weight: 700; color: var(--accent);">Question Bank</span></h2>
+                        <p style="color: var(--text-muted);">MP Board Important Questions & MCQs.</p>
                     </div>
                     <div class="search-bar">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="search-input" placeholder="Search units...">
+                        <input type="text" id="search-input" placeholder="Search chapters, topics...">
                     </div>
                 </div>
                 <div class="grid-container" id="units-grid"></div>
@@ -270,21 +264,23 @@
         // --- CONFIGURATION ---
         const CREDENTIALS = { user: 'admin', pass: 'study123' };
         
-        // --- FIX: EXACT DATE SET TO FEB 10, 2026 ---
+        // --- DATE: FEB 10, 2026 ---
         const EXAM_DATE = new Date('February 10, 2026 09:00:00').getTime();
         
-        // --- DATA ---
+        /* UPDATED SYLLABUS FOR CLASS 12 PHYSICS (MP BOARD)
+           Links use "Unit%20X.html" format for Github Compatibility.
+        */
         const units = [
-            { id: 1, title: "Introduction to Frontend", link: "Unit%201.html" },
-            { id: 2, title: "HTML5 Mastery", link: "Unit%202.html" },
-            { id: 3, title: "CSS3 & Flexbox", link: "Unit%203.html" },
-            { id: 4, title: "JavaScript Basics", link: "Unit%204.html" },
-            { id: 5, title: "DOM Manipulation", link: "Unit%205.html" },
-            { id: 6, title: "Async Programming", link: "Unit%206.html" },
-            { id: 7, title: "APIs & Fetch", link: "Unit%207.html" },
-            { id: 8, title: "Modern UI Principles", link: "Unit%208.html" },
-            { id: 9, title: "Performance Optimization", link: "Unit%209.html" },
-            { id: 10, title: "500 MCQ Mega Test", link: "500.html", isSpecial: true }
+            { id: 1, title: "Electrostatics", link: "Unit%201.html" },
+            { id: 2, title: "Current Electricity", link: "Unit%202.html" },
+            { id: 3, title: "Magnetic Effects of Current", link: "Unit%203.html" },
+            { id: 4, title: "EMI & AC", link: "Unit%204.html" },
+            { id: 5, title: "Electromagnetic Waves", link: "Unit%205.html" },
+            { id: 6, title: "Optics (Ray & Wave)", link: "Unit%206.html" },
+            { id: 7, title: "Dual Nature of Matter", link: "Unit%207.html" },
+            { id: 8, title: "Atoms & Nuclei", link: "Unit%208.html" },
+            { id: 9, title: "Semiconductor Devices", link: "Unit%209.html" },
+            { id: 10, title: "500 IMP MCQs (Full Syllabus)", link: "500.html", isSpecial: true }
         ];
 
         // --- DOM ELEMENTS ---
@@ -351,14 +347,15 @@
             units.forEach((unit, index) => {
                 const isChecked = progress[unit.id] ? 'checked' : '';
                 const cardClass = unit.isSpecial ? 'glass unit-card mcq-card' : 'glass unit-card';
-                const subTitle = unit.isSpecial ? 'FINAL EXAM PREP' : `UNIT ${unit.id}`;
+                const subTitle = unit.isSpecial ? 'MEGA TEST' : `UNIT ${unit.id}`;
+                const icon = unit.isSpecial ? '🔥' : '⚡'; // Lightning bolt for Physics
                 
                 const html = `
                     <div class="${cardClass}" data-search="${unit.title.toLowerCase()}" style="animation-delay: ${index * 0.1}s">
                         <div>
                             <div class="card-header">
                                 <span class="unit-number">${subTitle}</span>
-                                <span style="font-size: 1.5rem">${unit.isSpecial ? '🔥' : '📘'}</span>
+                                <span style="font-size: 1.5rem">${icon}</span>
                             </div>
                             <h3 class="unit-title">${unit.title}</h3>
                         </div>
@@ -366,7 +363,7 @@
                             <label class="check-container">
                                 <input type="checkbox" ${isChecked} onchange="toggleComplete(${unit.id}, this)">
                                 <span class="checkmark"></span>
-                                Mark Done
+                                Done
                             </label>
                             <a href="${unit.link}" class="open-link">Open <span>➜</span></a>
                         </div>
@@ -417,24 +414,21 @@
             });
         });
 
-        // --- TIMER FIX ---
+        // --- TIMER ---
         function startTimer() {
             const timerEl = document.getElementById('countdown');
             const mobileDays = document.getElementById('mobile-days');
             setInterval(() => {
                 const now = new Date().getTime();
                 const distance = EXAM_DATE - now;
-                
                 if (distance < 0) {
-                    timerEl.innerText = "TODAY IS THE DAY!";
+                    timerEl.innerText = "EXAM DAY!";
                     timerEl.style.color = "var(--danger)";
                     mobileDays.innerText = "0";
                     return;
                 }
-
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                
                 timerEl.innerText = `${days}d ${hours}h`;
                 mobileDays.innerText = days;
             }, 1000);
