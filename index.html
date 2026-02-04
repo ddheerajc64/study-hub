@@ -8,36 +8,87 @@
 
 <style>
 :root{
-  --bg:#050505;--glass:rgba(255,255,255,.08);
-  --border:rgba(255,255,255,.14);--accent:#00ffd5;
-  --done:#2ecc71;--text:#fff;--muted:#aaa;
+  --bg:#050505;
+  --glass:rgba(255,255,255,.08);
+  --border:rgba(255,255,255,.14);
+  --accent:#00ffd5;
+  --done:#2ecc71;
+  --text:#fff;
+  --muted:#aaa;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:system-ui;display:flex}
-aside{width:240px;background:#0a0a0a;padding:18px}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui;
+  display:flex;
+  min-height:100vh;
+}
+aside{
+  width:240px;
+  background:#0a0a0a;
+  padding:18px;
+}
 aside h2{font-size:18px}
 aside p{font-size:12px;color:var(--muted)}
-.progress{height:8px;background:#222;border-radius:10px;overflow:hidden;margin:8px 0}
-.progress div{height:100%;background:var(--accent);width:0%;transition:.4s}
-main{flex:1;padding:20px}
+.progress{
+  height:8px;
+  background:#222;
+  border-radius:10px;
+  overflow:hidden;
+  margin:8px 0;
+}
+.progress div{
+  height:100%;
+  background:var(--accent);
+  width:0%;
+  transition:.4s;
+}
+main{
+  flex:1;
+  padding:20px;
+}
 input,button{
-  width:100%;padding:12px;border-radius:12px;
-  background:var(--glass);border:1px solid var(--border);
-  color:white;margin-bottom:10px
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  color:white;
+  margin-bottom:10px;
 }
 button{cursor:pointer}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
-.card{
-  background:var(--glass);border:1px solid var(--border);
-  border-radius:16px;padding:18px;position:relative;transition:.3s
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:14px;
 }
-.card:hover{transform:translateY(-6px);border-color:var(--accent)}
+.card{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px;
+  position:relative;
+  transition:.3s;
+}
+.card:hover{
+  transform:translateY(-6px);
+  border-color:var(--accent);
+}
 .card.done{border-color:var(--done)}
 .card.done h3::after{content:" ✔";color:var(--done)}
-.mark{position:absolute;top:10px;right:12px;font-size:12px;cursor:pointer}
-a{text-decoration:none;color:inherit}
+.mark{
+  position:absolute;
+  top:10px;
+  right:12px;
+  font-size:12px;
+  cursor:pointer;
+}
 .hidden{display:none}
-@media(max-width:700px){aside{display:none}}
+a{text-decoration:none;color:inherit}
+@media(max-width:700px){
+  aside{display:none}
+}
 </style>
 </head>
 
@@ -45,14 +96,11 @@ a{text-decoration:none;color:inherit}
 
 <aside>
   <h2>📘 Study Hub</h2>
-  <p id="userText">Not logged in</p>
-
+  <p id="status">Not logged in</p>
   <div class="progress"><div id="bar"></div></div>
   <p id="percent">0% Completed</p>
-
   <p id="analytics"></p>
   <p id="countdown"></p>
-
   <button onclick="logout()">Logout</button>
 </aside>
 
@@ -60,8 +108,10 @@ a{text-decoration:none;color:inherit}
 
 <!-- LOGIN -->
 <div id="loginBox">
-  <input id="name" placeholder="Enter your name">
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
+  <p id="error" style="color:#ff6b6b;font-size:12px;"></p>
 </div>
 
 <!-- APP -->
@@ -80,30 +130,35 @@ a{text-decoration:none;color:inherit}
     <a href="Unit 9.html"><div class="card" data-key="unit 9"><div class="mark">mark</div><h3>Unit 9</h3></div></a>
     <a href="500.html"><div class="card" data-key="500 mcqs"><div class="mark">mark</div><h3>500 MCQs</h3></div></a>
   </div>
-
-  <button onclick="notify()">Enable Daily Reminder</button>
 </div>
 
 </main>
 
 <script>
 /* LOGIN */
-const user=localStorage.getItem("user");
-if(user){start(user);}
+const USER="admin";
+const PASS="study123";
+
+if(localStorage.getItem("auth")==="true") start();
+
 function login(){
-  const n=name.value.trim();
-  if(!n) return;
-  localStorage.setItem("user",n);
-  start(n);
+  if(username.value===USER && password.value===PASS){
+    localStorage.setItem("auth","true");
+    start();
+  }else{
+    error.innerText="Invalid username or password";
+  }
 }
+
 function logout(){
   localStorage.clear();
   location.reload();
 }
-function start(n){
+
+function start(){
   loginBox.classList.add("hidden");
   app.classList.remove("hidden");
-  userText.innerText="Hello, "+n;
+  status.innerText="Logged in as admin";
 }
 
 /* SEARCH */
@@ -115,7 +170,7 @@ search.oninput=e=>{
   });
 };
 
-/* PROGRESS + ANALYTICS */
+/* PROGRESS */
 const bar=document.getElementById("bar");
 const percent=document.getElementById("percent");
 const analytics=document.getElementById("analytics");
@@ -140,24 +195,14 @@ cards.forEach((c,i)=>{
 });
 update();
 
-/* EXAM COUNTDOWN (SET DATE) */
+/* EXAM COUNTDOWN */
 const examDate=new Date("2026-02-15");
 setInterval(()=>{
   const d=examDate-new Date();
   if(d>0){
-    const days=Math.floor(d/86400000);
-    countdown.innerText=`Exam in ${days} days`;
+    countdown.innerText="Exam in "+Math.floor(d/86400000)+" days";
   }
 },1000);
-
-/* REMINDER */
-function notify(){
-  Notification.requestPermission().then(p=>{
-    if(p==="granted"){
-      new Notification("📘 Study Hub",{body:"Time to study!"});
-    }
-  });
-}
 
 /* PWA */
 if("serviceWorker" in navigator){
