@@ -2,498 +2,446 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Unit 8: Atoms & Nuclei (Premium)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Hub | MP Board</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0c29">
     <style>
         :root {
-            /* Light Mode - Orange/Amber for Energy/Nuclei */
-            --bg-gradient: radial-gradient(circle at 0% 0%, #fbd3e9 0%, #bb377d 100%);
-            --text-main: #2d3748;
-            --text-sec: #4a5568;
-            --card-bg: rgba(255, 255, 255, 0.25);
-            --card-border: rgba(255, 255, 255, 0.4);
-            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            --btn-bg: rgba(255, 255, 255, 0.3);
-            --btn-hover: rgba(255, 255, 255, 0.5);
-            --accent: #db2777; /* Pink-600 */
+            --bg-gradient: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #00d2ff; /* Student Color */
+            --admin-accent: #ff9d00; /* Admin Color */
+            --danger: #ff4b4b;
+            --success: #00ff88;
         }
 
-        [data-theme="dark"] {
-            /* True Black Mode */
-            --bg-gradient: radial-gradient(circle at 50% 50%, #000000, #3f0e20);
-            --text-main: #fdf2f8;
-            --text-sec: #fbcfe8;
-            --card-bg: rgba(20, 20, 20, 0.6);
-            --card-border: rgba(219, 39, 119, 0.2);
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-            --btn-bg: rgba(255, 255, 255, 0.05);
-            --btn-hover: rgba(255, 255, 255, 0.15);
-            --accent: #f472b6; /* Pink-400 */
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
         body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg-gradient);
-            background-attachment: fixed;
-            background-size: 200% 200%;
-            animation: gradientMove 15s ease infinite;
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
         }
 
-        @keyframes gradientMove {
+        @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* --- HEADER --- */
-        header {
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
-
-        .icon-btn {
-            background: var(--btn-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s ease;
-        }
-        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
-
-        /* --- CONTROLS --- */
-        .controls-area { padding: 20px; z-index: 40; }
-
-        #search {
-            width: 100%;
-            padding: 14px 20px;
-            border-radius: 30px;
-            border: 1px solid var(--card-border);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-            backdrop-filter: blur(10px);
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-        }
-        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            margin-top: 15px;
-            padding-bottom: 5px;
-            scrollbar-width: none;
-        }
-        .filters::-webkit-scrollbar { display: none; }
-
-        .filter-btn {
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-            background: var(--btn-bg);
-            color: var(--text-sec);
-            font-weight: 700;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .filter-btn.active {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 20px var(--accent);
-            border-color: transparent;
-        }
-
-        /* --- GRID --- */
-        #question-list {
-            flex: 1;
-            padding: 10px 20px 100px 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            align-items: start;
-        }
-
-        /* --- GLASS CARD --- */
-        .glass-card {
-            background: var(--card-bg);
+        /* Utility Classes */
+        .glass {
+            background: var(--glass-bg);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 24px;
-            border: 1px solid var(--card-border);
-            box-shadow: var(--card-shadow);
-            position: relative;
-            overflow: hidden;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            height: auto;
-            min-height: 200px;
-            opacity: 0;
-            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         }
 
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .glass-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
-            z-index: 10;
-        }
-
-        .tag {
-            font-size: 0.7rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--accent);
-            margin-bottom: 12px;
-            display: inline-block;
-            background: rgba(255,255,255,0.1);
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        .q-text {
-            font-size: 1.1rem;
-            font-weight: 700;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .reveal-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
-            color: var(--text-main);
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-            z-index: 2;
-            margin-top: auto;
-        }
-        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
-
-        /* ANSWER SECTION */
-        .answer {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
-            margin-top: 0;
-        }
+        .hide { display: none !important; }
         
-        .answer-inner {
-            overflow: hidden;
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 1rem;
-            line-height: 1.6;
-            background: rgba(0,0,0,0.03);
-            border-radius: 12px;
+        /* LOGIN SCREEN */
+        #login-section {
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+            position: fixed; width: 100%; z-index: 1000; background: rgba(15, 12, 41, 0.98);
+            transition: opacity 0.5s ease;
         }
+        .login-card { padding: 3rem; width: 100%; max-width: 400px; text-align: center; }
         
-        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
-
-        .answer.open {
-            grid-template-rows: 1fr;
-            margin-top: 15px;
+        input, textarea {
+            width: 100%; padding: 14px; margin-bottom: 1rem;
+            background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border);
+            border-radius: 8px; color: white; outline: none; transition: 0.3s;
         }
+        input:focus { border-color: var(--accent); }
+
+        .btn {
+            width: 100%; padding: 14px; background: var(--accent); border: none;
+            border-radius: 8px; color: #000; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .btn:hover { transform: translateY(-3px); }
+
+        /* DASHBOARD LAYOUT */
+        .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+        .sidebar { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; border-right: 1px solid var(--glass-border); }
+        .main-content { padding: 2rem; }
+
+        /* AVATARS */
+        .user-avatar { 
+            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px; 
+            display: flex; align-items: center; justify-content: center; font-size: 2.5rem; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+        .student-theme .user-avatar { background: linear-gradient(135deg, var(--accent), #0072ff); }
+        .admin-theme .user-avatar { background: linear-gradient(135deg, var(--admin-accent), #ff4b4b); }
+
+        /* HEADER */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+
+        /* CARDS GRID */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+        /* UNIT CARDS (Student) */
+        .unit-card { padding: 1.5rem; position: relative; display: flex; flex-direction: column; min-height: 180px; transition: 0.3s; text-decoration: none; color: white; }
+        .unit-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.08); }
         
-        .answer.open .answer-inner {
-            padding: 15px;
-            border: 1px solid var(--card-border);
-        }
+        /* ADMIN PANELS */
+        .admin-panel { border: 1px solid var(--admin-accent); }
+        .admin-stats { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .stat-box { flex: 1; padding: 1.5rem; text-align: center; }
+        .stat-number { font-size: 2.5rem; font-weight: bold; color: var(--admin-accent); }
 
-        /* SHIMMER EFFECT */
-        .shimmer {
-            position: absolute;
-            top: 0; left: -150%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            pointer-events: none;
-            transition: left 0.5s;
-        }
-        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
+        /* NOTICE BOARD */
+        .notice-board { padding: 1.5rem; margin-bottom: 2rem; border-left: 4px solid var(--accent); }
+        .notice-item { background: rgba(255,255,255,0.05); padding: 10px; margin-bottom: 5px; border-radius: 4px; display: flex; justify-content: space-between; }
+        .delete-btn { color: var(--danger); cursor: pointer; font-weight: bold; }
 
-        /* --- FORMULA MODAL --- */
-        #formula-btn {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            padding: 15px 30px; border-radius: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            cursor: pointer; z-index: 100; transition: 0.3s;
-            display: flex; align-items: center; gap: 10px;
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .app-container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
         }
-        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
-
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px);
-            z-index: 200; display: none; flex-direction: column;
-            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
-        
-        .formula-box {
-            background: rgba(255,255,255,0.05); border-radius: 18px;
-            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
-        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
-        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
-
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>UNIT 8: ATOMS & NUCLEI</h1>
-        <div class="controls">
-            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
-            <button class="icon-btn" onclick="toggleFS()">⛶</button>
-        </div>
-    </header>
-
-    <div class="controls-area">
-        <input type="text" id="search" placeholder="Search 22 Questions..." onkeyup="filterData()">
-        <div class="filters">
-            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
-            <button class="filter-btn" onclick="setFilter('CONCEPT')">Conceptual</button>
-            <button class="filter-btn" onclick="setFilter('DERIVATION')">Derivations</button>
-            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
-        </div>
-    </div>
-
-    <div id="question-list">
-        </div>
-
-    <button id="formula-btn" onclick="openSheet()">
-        <span>📄</span> Formulas
-    </button>
-
-    <div id="modal">
-        <div class="modal-header">
-            <h2 style="color:white; margin:0">Unit 8 Formulas</h2>
-            <button class="icon-btn" onclick="closeSheet()">✕</button>
-        </div>
-        <div class="modal-body">
-            <div class="formula-box">
-                <h3>Bohr's Model</h3>
-                <div class="f-row"><span>L = nh / 2π</span> <span class="f-desc">Quantization</span></div>
-                <div class="f-row"><span>r_n = 0.53 n²/Z Å</span> <span class="f-desc">Radius</span></div>
-                <div class="f-row"><span>E_n = -13.6 Z²/n² eV</span> <span class="f-desc">Energy</span></div>
-                <div class="f-row"><span>1/λ = R(1/n1² - 1/n2²)</span> <span class="f-desc">Rydberg</span></div>
-            </div>
+    <div id="login-section">
+        <div class="glass login-card">
+            <h1>PHYSICS HUB</h1>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">MP Board Class 12</p>
             
-            <div class="formula-box">
-                <h3>Radioactivity</h3>
-                <div class="f-row"><span>N = N₀ e^(-λt)</span> <span class="f-desc">Decay Law</span></div>
-                <div class="f-row"><span>T_half = 0.693 / λ</span> <span class="f-desc">Half Life</span></div>
-                <div class="f-row"><span>T_mean = 1 / λ</span> <span class="f-desc">Mean Life</span></div>
-                <div class="f-row"><span>R = λN</span> <span class="f-desc">Activity</span></div>
-            </div>
-
-            <div class="formula-box">
-                <h3>Nuclei & Energy</h3>
-                <div class="f-row"><span>R = R₀ A^(1/3)</span> <span class="f-desc">Radius</span></div>
-                <div class="f-row"><span>ρ = M/V</span> <span class="f-desc">Density (Const)</span></div>
-                <div class="f-row"><span>E = Δmc²</span> <span class="f-desc">Binding Energy</span></div>
-                <div class="f-row"><span>1 amu = 931 MeV</span> <span class="f-desc">Conversion</span></div>
-            </div>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required autocomplete="off">
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Invalid credentials</p>
+            <small style="display:block; margin-top: 20px; color: #666; font-family: monospace;">
+                Student: dheeraj / study123<br>
+                Admin: dadmin / dheeraj123
+            </small>
         </div>
     </div>
 
-<script>
-/* THE 22 QUESTIONS FOR UNIT 8 */
-const db = [
-    // 1. Definition - Atom
-    {c:"CONCEPT", q:"State Bohr's Quantization Condition for angular momentum.", a:"The angular momentum of an electron in a stationary orbit is an integral multiple of h/2π.\nL = mvr = nh / 2π. 
+    <div id="dashboard" class="hide">
+        <div class="app-container">
+            
+            <aside class="sidebar glass" id="sidebar">
+                <div style="text-align: center;">
+                    <div class="user-avatar" id="avatar-icon">👤</div>
+                    <h3 id="user-role-label">User</h3>
+                </div>
 
-[Image of Bohr atom]
-"},
-    
-    // 2. Derivation - Atom
-    {c:"DERIVATION", q:"Derive expression for the Radius of nth orbit of Hydrogen atom.", a:"Centripetal force = Electrostatic force.\nmv²/r = ke²/r² ⇒ v² = ke²/mr.\nUsing L = mvr = nh/2π ⇒ v = nh/2πmr.\nSubstitute v: r_n = (n²h²ε₀) / (πme²).\nr_n ∝ n²."},
-    
-    // 3. Derivation - Atom
-    {c:"DERIVATION", q:"Derive expression for Energy of electron in nth orbit.", a:"Total Energy = KE + PE.\nKE = ke²/2r, PE = -ke²/r.\nE = -ke²/2r.\nSubstitute r_n: E_n = -me⁴ / (8ε₀²n²h²).\nE_n = -13.6 / n² eV."},
-    
-    // 4. Concept - Atom
-    {c:"CONCEPT", q:"Draw energy level diagram of Hydrogen atom and show spectral series.", a:"Diagram showing n=1 to n=∞.\n1. Lyman (UV) n=1.\n2. Balmer (Visible) n=2.\n3. Paschen (IR) n=3.\n4. Brackett (IR) n=4.\n5. Pfund (IR) n=5."},
-    
-    // 5. Concept - Atom
-    {c:"CONCEPT", q:"What is the significance of the negative sign in total energy of an electron?", a:"It signifies that the electron is bound to the nucleus. Energy must be supplied to remove it from the atom."},
-    
-    // 6. Numerical - Atom
-    {c:"NUMERICAL", q:"Calculate the radius of the first orbit of Hydrogen atom.", a:"Formula: r = 0.529 n²/Z Å.\nFor H, Z=1, n=1.\nr = 0.529 Å = 5.29 × 10⁻¹¹ m."},
-    
-    // 7. Numerical - Atom
-    {c:"NUMERICAL", q:"The energy of electron in 1st orbit is -13.6 eV. Find energy in 2nd orbit.", a:"Formula: E_n = E₁ / n².\nE₂ = -13.6 / 2²\nE₂ = -13.6 / 4 = -3.4 eV."},
-    
-    // 8. Concept - Nuclei
-    {c:"CONCEPT", q:"Define Mass Defect and Binding Energy.", a:"Mass Defect (Δm): The difference between the sum of masses of nucleons and the actual mass of the nucleus.\nBinding Energy: The energy equivalent to mass defect (E = Δmc²) released during nucleus formation."},
-    
-    // 9. Concept - Nuclei
-    {c:"CONCEPT", q:"Draw Binding Energy per Nucleon curve. What does it indicate?", a:"Curve: BE/A vs Mass Number (A). 
+                <div id="student-sidebar-stats" class="hide">
+                    <div style="margin-bottom: 20px;">
+                        <small style="color:var(--text-muted)">Exam Date</small>
+                        <div style="font-size: 1.5rem; font-weight:bold;">Feb 10</div>
+                    </div>
+                    <div>
+                        <small style="color:var(--text-muted)">Your Progress</small>
+                        <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top:5px;">
+                            <div id="sidebar-progress" style="width: 0%; height: 100%; background: var(--success);"></div>
+                        </div>
+                    </div>
+                </div>
 
-[Image of Binding Energy Curve]
-\n1. Max for Iron (Fe-56) ≈ 8.8 MeV (Most stable).\n2. Low for light and heavy nuclei.\n3. Indicates Fusion for light and Fission for heavy nuclei to gain stability."},
-    
-    // 10. Definition - Nuclei
-    {c:"CONCEPT", q:"What are Isotopes, Isobars, and Isotones?", a:"Isotopes: Same Z, different A (e.g., ₁H¹, ₁H²).\nIsobars: Same A, different Z (e.g., ₂₀Ca⁴⁰, ₁₈Ar⁴⁰).\nIsotones: Same number of neutrons (e.g., ₆C¹³, ₇N¹⁴)."},
-    
-    // 11. Concept - Nuclei
-    {c:"CONCEPT", q:"State Laws of Radioactive Decay.", a:"1. It is a spontaneous process.\n2. Rate of decay is directly proportional to the number of undecayed atoms present.\n-dN/dt = λN."},
-    
-    // 12. Derivation - Nuclei
-    {c:"DERIVATION", q:"Derive the expression N = N₀ e^(-λt) for radioactive decay.", a:"Rate -dN/dt = λN.\n∫(1/N) dN = -∫ λ dt.\nln N = -λt + C. At t=0, N=N₀, so C=ln N₀.\nln(N/N₀) = -λt ⇒ N = N₀ e^(-λt)."},
-    
-    // 13. Definition - Nuclei
-    {c:"CONCEPT", q:"Define Half Life (T_1/2) and Mean Life (τ). Relation?", a:"Half Life: Time for half of the radioactive nuclei to decay.\nMean Life: Average time a nucleus survives.\nRelation: T_1/2 = 0.693 τ."},
-    
-    // 14. Comparison - Nuclei
-    {c:"CONCEPT", q:"Compare properties of Alpha, Beta, and Gamma rays.", a:"1. Nature: α (He nucleus), β (electron), γ (EM wave).\n2. Ionization Power: α > β > γ.\n3. Penetration Power: γ > β > α."},
-    
-    // 15. Numerical - Nuclei
-    {c:"NUMERICAL", q:"Half life of a substance is 10 years. How much remains after 20 years?", a:"t = 20 years = 2 × Half lives.\nRemnant = N₀ (1/2)ⁿ = N₀ (1/2)².\nAmount remaining = N₀ / 4 (or 25%)."},
-    
-    // 16. Concept - Nuclei
-    {c:"CONCEPT", q:"Show that Nuclear Density is independent of Mass Number (A).", a:"Mass M = mA. Volume V = 4/3 π R³ = 4/3 π (R₀A¹/³)³ = 4/3 π R₀³ A.\nDensity ρ = M/V = (mA) / (4/3 π R₀³ A).\nA cancels out. ρ is constant (~ 2.3 × 10¹⁷ kg/m³)."},
-    
-    // 17. Concept - Nuclei
-    {c:"CONCEPT", q:"What is Nuclear Fission? Give reaction.", a:"Splitting of a heavy nucleus into two lighter nuclei with release of energy.\n₉₂U²³⁵ + ₀n¹ → ₅₆Ba¹⁴¹ + ₃₆Kr⁹² + 3₀n¹ + Energy."},
-    
-    // 18. Concept - Nuclei
-    {c:"CONCEPT", q:"What is Nuclear Fusion? Why high temp required?", a:"Combining of two light nuclei to form a heavier nucleus.\nHigh temperature (10⁷ K) is needed to overcome the strong electrostatic repulsion between protons."},
-    
-    // 19. Concept - Atom
-    {c:"CONCEPT", q:"What are the limitations of Bohr's Model?", a:"1. Applicable only to hydrogen-like (single electron) atoms.\n2. Could not explain fine spectrum.\n3. Could not explain Zeeman and Stark effects."},
-    
-    // 20. Numerical - Nuclei
-    {c:"NUMERICAL", q:"Calculate energy equivalent of 1 gram of substance.", a:"E = mc².\nm = 10⁻³ kg, c = 3×10⁸ m/s.\nE = 10⁻³ × (9×10¹⁶) = 9 × 10¹³ Joules."},
-    
-    // 21. Concept - Atom
-    {c:"CONCEPT", q:"What is the shortest wavelength in Balmer series?", a:"For shortest wavelength, transition is from ∞ to 2.\n1/λ = R(1/2² - 1/∞) = R/4.\nλ = 4/R = 3646 Å."},
-    
-    // 22. Concept - Nuclei
-    {c:"CONCEPT", q:"Difference between Chemical and Nuclear reactions.", a:"1. Chemical: Valence electrons participate; Low energy.\n2. Nuclear: Nucleus participates; Huge energy released; New elements formed."}
-];
+                <div id="admin-sidebar-menu" class="hide">
+                    <button class="btn" onclick="clearAllData()" style="background: var(--danger); font-size: 0.8rem;">⚠ Reset System</button>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 10px; text-align: center;">System v1.0 Local</p>
+                </div>
 
-const list = document.getElementById('question-list');
-const modal = document.getElementById('modal');
-let activeFilter = 'All';
+                <button onclick="logout()" class="btn" style="background: transparent; border: 1px solid #666; margin-top: auto;">Log Out</button>
+            </aside>
 
-function init() {
-    render(db);
-    // Auto detect dark mode
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.setAttribute('data-theme', 'dark');
-    }
-}
+            <main class="main-content">
+                
+                <div class="header">
+                    <h2 id="welcome-msg">Welcome</h2>
+                    <div id="student-search" class="hide">
+                        <input type="text" id="search-input" placeholder="Search topics..." style="margin:0; width: 250px;">
+                    </div>
+                </div>
 
-function render(data) {
-    list.innerHTML = data.map((item, index) => `
-        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
-            <div class="shimmer"></div>
-            <div class="q-header">
-                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
-                <div class="q-text">${item.q}</div>
-            </div>
-            <div class="answer">
-                <div class="answer-inner">${item.a}</div>
-            </div>
-            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+                <div id="student-view" class="hide">
+                    <div id="student-notices" class="glass notice-board hide">
+                        <h4 style="margin-bottom: 10px; color: var(--accent);">📢 Class Notices</h4>
+                        <div id="notice-list-display">No new notices.</div>
+                    </div>
+
+                    <div class="grid-container" id="units-grid">
+                        </div>
+                </div>
+
+                <div id="admin-view" class="hide">
+                    
+                    <div class="admin-stats">
+                        <div class="glass stat-box">
+                            <div class="stat-number">120</div>
+                            <small>Total Students</small>
+                        </div>
+                        <div class="glass stat-box">
+                            <div class="stat-number">85%</div>
+                            <small>Avg. Pass Rate</small>
+                        </div>
+                        <div class="glass stat-box">
+                            <div class="stat-number" style="color: var(--success)">Active</div>
+                            <small>Server Status</small>
+                        </div>
+                    </div>
+
+                    <div class="glass admin-panel" style="padding: 2rem; margin-bottom: 2rem;">
+                        <h3>📢 Post a Notice</h3>
+                        <p style="color: #aaa; margin-bottom: 1rem;">This will be visible to all students on this device.</p>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="admin-notice-input" placeholder="e.g., Physics Test postponed to Monday..." style="margin:0;">
+                            <button onclick="addNotice()" class="btn" style="width: 150px; background: var(--admin-accent);">Post</button>
+                        </div>
+                        <div id="admin-notice-list" style="margin-top: 15px;">
+                            </div>
+                    </div>
+
+                    <div class="glass admin-panel" style="padding: 2rem;">
+                        <h3>📚 Syllabus Management</h3>
+                        <p style="color: #aaa;">View status of uploaded units.</p>
+                        <div id="admin-syllabus-list" style="margin-top: 1rem;">
+                            </div>
+                    </div>
+
+                </div>
+
+            </main>
         </div>
-    `).join('');
-}
+    </div>
 
-function getColor(type) {
-    if(type === 'NUMERICAL') return '#fbbf24'; // Amber
-    if(type === 'DERIVATION') return '#f472b6'; // Pink
-    return 'var(--accent)';
-}
+    <script>
+        // --- CONFIGURATION ---
+        const USERS = {
+            'dadmin': { pass: 'dheeraj123', role: 'admin', name: 'Professor' },
+            'dheeraj': { pass: 'study123', role: 'student', name: 'Dheeraj' }
+        };
 
-function toggleAns(btn) {
-    const ans = btn.previousElementSibling;
-    
-    if (ans.classList.contains('open')) {
-        ans.classList.remove('open');
-        btn.innerText = "Show Answer";
-        btn.style.background = "";
-        btn.style.borderColor = "var(--card-border)";
-    } else {
-        ans.classList.add('open');
-        btn.innerText = "Hide Answer";
-        btn.style.background = "rgba(255,255,255,0.2)";
-        btn.style.borderColor = "var(--accent)";
-    }
-}
+        const UNITS = [
+            { id: 1, title: "Electrostatics", link: "Unit%201.html" },
+            { id: 2, title: "Current Electricity", link: "Unit%202.html" },
+            { id: 3, title: "Magnetic Effects", link: "Unit%203.html" },
+            { id: 4, title: "EMI & AC", link: "Unit%204.html" },
+            { id: 5, title: "EM Waves", link: "Unit%205.html" },
+            { id: 6, title: "Optics", link: "Unit%206.html" },
+            { id: 7, title: "Dual Nature", link: "Unit%207.html" },
+            { id: 8, title: "Atoms & Nuclei", link: "Unit%208.html" },
+            { id: 9, title: "Semiconductors", link: "Unit%209.html" },
+            { id: 10, title: "500 MCQs", link: "500.html", special: true }
+        ];
 
-function setFilter(type) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
-    render(filtered);
-}
+        // --- ELEMENTS ---
+        const loginSection = document.getElementById('login-section');
+        const dashboard = document.getElementById('dashboard');
+        const sidebar = document.getElementById('sidebar');
+        
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+        });
 
-function filterData() {
-    const term = document.getElementById('search').value.toLowerCase();
-    render(db.filter(i => i.q.toLowerCase().includes(term)));
-}
+        // --- LOGIN LOGIC ---
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const u = document.getElementById('username').value.toLowerCase().trim();
+            const p = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('error-msg');
 
-function openSheet() { modal.style.display = 'flex'; }
-function closeSheet() { modal.style.display = 'none'; }
+            if (USERS[u] && USERS[u].pass === p) {
+                // Login Success
+                const userData = USERS[u];
+                localStorage.setItem('study_user', JSON.stringify(userData));
+                errorMsg.style.display = 'none';
+                initDashboard(userData);
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        });
 
-function toggleTheme() {
-    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
+        function checkSession() {
+            const storedUser = JSON.parse(localStorage.getItem('study_user'));
+            if (storedUser) {
+                initDashboard(storedUser);
+            }
+        }
 
-function toggleFS() {
-    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else if(document.exitFullscreen) document.exitFullscreen();
-}
+        function logout() {
+            localStorage.removeItem('study_user');
+            location.reload();
+        }
 
-init();
-</script>
+        // --- DASHBOARD ROUTER ---
+        function initDashboard(user) {
+            loginSection.classList.add('hide');
+            dashboard.classList.remove('hide');
+
+            // Set Common Elements
+            document.getElementById('user-role-label').innerText = user.name;
+            document.getElementById('welcome-msg').innerHTML = `Hello, <span style="font-weight:bold">${user.name}</span>`;
+
+            // Apply Theme
+            if (user.role === 'admin') {
+                document.body.classList.add('admin-theme');
+                document.getElementById('avatar-icon').innerText = '👨‍🏫';
+                loadAdminView();
+            } else {
+                document.body.classList.add('student-theme');
+                document.getElementById('avatar-icon').innerText = '🎓';
+                loadStudentView();
+            }
+        }
+
+        // --- STUDENT VIEW LOGIC ---
+        function loadStudentView() {
+            document.getElementById('student-view').classList.remove('hide');
+            document.getElementById('student-sidebar-stats').classList.remove('hide');
+            document.getElementById('student-search').classList.remove('hide');
+            
+            renderStudentUnits();
+            renderStudentNotices();
+            updateProgress();
+        }
+
+        function renderStudentUnits() {
+            const grid = document.getElementById('units-grid');
+            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            grid.innerHTML = '';
+
+            UNITS.forEach(unit => {
+                const isDone = progress[unit.id] ? 'checked' : '';
+                const html = `
+                    <div class="glass unit-card" style="border: ${unit.special ? '1px solid gold' : ''}">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="color:var(--accent); font-weight:bold; font-size:0.8rem;">UNIT ${unit.id}</span>
+                            <span>${unit.special ? '🏆' : '⚡'}</span>
+                        </div>
+                        <h3 style="margin: 10px 0; font-size: 1.3rem;">${unit.title}</h3>
+                        <div style="margin-top:auto; display:flex; justify-content:space-between; align-items:center;">
+                            <label style="cursor:pointer; display:flex; gap:5px; font-size:0.9rem; color:#aaa;">
+                                <input type="checkbox" ${isDone} onchange="toggleProgress(${unit.id}, this)"> Done
+                            </label>
+                            <a href="${unit.link}" style="background:rgba(255,255,255,0.1); padding:5px 15px; border-radius:20px; text-decoration:none; color:white; font-size:0.9rem;">Open</a>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += html;
+            });
+        }
+
+        function toggleProgress(id, checkbox) {
+            let progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            if (checkbox.checked) progress[id] = true;
+            else delete progress[id];
+            localStorage.setItem('study_progress', JSON.stringify(progress));
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            const pct = Math.round((Object.keys(progress).length / UNITS.length) * 100);
+            document.getElementById('sidebar-progress').style.width = pct + '%';
+        }
+
+        function renderStudentNotices() {
+            const notices = JSON.parse(localStorage.getItem('study_notices')) || [];
+            const container = document.getElementById('student-notices');
+            const list = document.getElementById('notice-list-display');
+
+            if (notices.length > 0) {
+                container.classList.remove('hide');
+                list.innerHTML = notices.map(n => `<div style="padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.1)">• ${n}</div>`).join('');
+            } else {
+                container.classList.add('hide');
+            }
+        }
+
+        // --- ADMIN VIEW LOGIC ---
+        function loadAdminView() {
+            document.getElementById('admin-view').classList.remove('hide');
+            document.getElementById('admin-sidebar-menu').classList.remove('hide');
+            
+            renderAdminNotices();
+            renderAdminSyllabus();
+        }
+
+        // Feature: Admin Notices
+        function addNotice() {
+            const input = document.getElementById('admin-notice-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            let notices = JSON.parse(localStorage.getItem('study_notices')) || [];
+            notices.push(text);
+            localStorage.setItem('study_notices', JSON.stringify(notices));
+            
+            input.value = '';
+            renderAdminNotices();
+            alert("Notice Posted! Students will see this.");
+        }
+
+        function renderAdminNotices() {
+            const notices = JSON.parse(localStorage.getItem('study_notices')) || [];
+            const list = document.getElementById('admin-notice-list');
+            
+            if(notices.length === 0) {
+                list.innerHTML = '<small style="color:#666">No active notices.</small>';
+                return;
+            }
+
+            list.innerHTML = notices.map((n, index) => `
+                <div class="notice-item">
+                    <span>${n}</span>
+                    <span class="delete-btn" onclick="deleteNotice(${index})">×</span>
+                </div>
+            `).join('');
+        }
+
+        function deleteNotice(index) {
+            let notices = JSON.parse(localStorage.getItem('study_notices')) || [];
+            notices.splice(index, 1);
+            localStorage.setItem('study_notices', JSON.stringify(notices));
+            renderAdminNotices();
+        }
+
+        function renderAdminSyllabus() {
+            const list = document.getElementById('admin-syllabus-list');
+            list.innerHTML = UNITS.map(u => `
+                <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #333;">
+                    <span>Unit ${u.id}: ${u.title}</span>
+                    <span style="color:var(--success)">● Live</span>
+                </div>
+            `).join('');
+        }
+
+        function clearAllData() {
+            if(confirm("Are you sure? This will delete all student progress and notices on this device.")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // --- SEARCH ---
+        const searchInput = document.getElementById('search-input');
+        if(searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                document.querySelectorAll('.unit-card').forEach(card => {
+                    const txt = card.innerText.toLowerCase();
+                    card.style.display = txt.includes(term) ? 'flex' : 'none';
+                });
+            });
+        }
+    </script>
 </body>
 </html>
