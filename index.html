@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#0f0c29">
     <style>
         :root {
-            /* Physics Theme: Deep Blue/Purple with Electric Blue Accents */
+            /* Physics Theme: Deep Blue/Purple with Electric Cyan Accents */
             --bg-gradient: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
@@ -38,7 +38,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Physics Atom/Orbit Animation Background */
+        /* Physics Background Decorations */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -127,6 +127,7 @@
         
         .app-container { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
 
+        /* Sidebar */
         .sidebar { padding: 2rem; display: flex; flex-direction: column; gap: 2rem; border-right: 1px solid var(--glass-border); }
         .user-profile { text-align: center; padding-bottom: 1rem; border-bottom: 1px solid var(--glass-border); }
         .user-avatar { width: 70px; height: 70px; background: linear-gradient(135deg, var(--accent), #0072ff); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #fff; box-shadow: var(--accent-glow); }
@@ -137,6 +138,7 @@
         .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; margin-top: 10px; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), #00d2ff); width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(0,255,136,0.3); }
 
+        /* Main Content */
         .main-content { padding: 2rem; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
         .search-bar { position: relative; width: 300px; }
@@ -146,6 +148,7 @@
         .logout-btn { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 20px; transition: 0.3s; }
         .logout-btn:hover { background: var(--danger); color: white; }
 
+        /* Grid & Cards */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
 
         .unit-card {
@@ -221,7 +224,7 @@
                     <h3>Class 12 Student</h3>
                 </div>
                 <div class="stats-container">
-                    <h3>Physics Exam Date</h3>
+                    <h3>Physics Exam</h3>
                     <div id="countdown" class="countdown-timer">--:--:--</div>
                     <small style="color: var(--accent)">Target: Feb 10, 2026</small>
                 </div>
@@ -244,7 +247,7 @@
                     </div>
                     <div class="search-bar">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="search-input" placeholder="Search chapters, topics...">
+                        <input type="text" id="search-input" placeholder="Search chapters...">
                     </div>
                 </div>
                 <div class="grid-container" id="units-grid"></div>
@@ -263,12 +266,12 @@
     <script>
         // --- CONFIGURATION ---
         const CREDENTIALS = { user: 'admin', pass: 'study123' };
-        
-        // --- DATE: FEB 10, 2026 ---
+        // EXAM DATE: Feb 10, 2026
         const EXAM_DATE = new Date('February 10, 2026 09:00:00').getTime();
         
-        /* UPDATED SYLLABUS FOR CLASS 12 PHYSICS (MP BOARD)
-           Links use "Unit%20X.html" format for Github Compatibility.
+        /* LINKS: Configured for GitHub structure.
+           Note: "%20" represents a space. 
+           It expects your files to be named "Unit 1.html", "Unit 2.html", etc.
         */
         const units = [
             { id: 1, title: "Electrostatics", link: "Unit%201.html" },
@@ -348,7 +351,7 @@
                 const isChecked = progress[unit.id] ? 'checked' : '';
                 const cardClass = unit.isSpecial ? 'glass unit-card mcq-card' : 'glass unit-card';
                 const subTitle = unit.isSpecial ? 'MEGA TEST' : `UNIT ${unit.id}`;
-                const icon = unit.isSpecial ? '🔥' : '⚡'; // Lightning bolt for Physics
+                const icon = unit.isSpecial ? '🔥' : '⚡'; 
                 
                 const html = `
                     <div class="${cardClass}" data-search="${unit.title.toLowerCase()}" style="animation-delay: ${index * 0.1}s">
