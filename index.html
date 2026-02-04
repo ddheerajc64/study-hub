@@ -269,10 +269,11 @@
     <script>
         // --- CONFIGURATION ---
         const CREDENTIALS = { user: 'admin', pass: 'study123' };
-        // Corrected Date: Feb 10, 2026
+        
+        // --- FIX: EXACT DATE SET TO FEB 10, 2026 ---
         const EXAM_DATE = new Date('February 10, 2026 09:00:00').getTime();
         
-        // --- DATA (With Fixed Links) ---
+        // --- DATA ---
         const units = [
             { id: 1, title: "Introduction to Frontend", link: "Unit%201.html" },
             { id: 2, title: "HTML5 Mastery", link: "Unit%202.html" },
@@ -416,19 +417,24 @@
             });
         });
 
-        // --- TIMER ---
+        // --- TIMER FIX ---
         function startTimer() {
             const timerEl = document.getElementById('countdown');
             const mobileDays = document.getElementById('mobile-days');
             setInterval(() => {
                 const now = new Date().getTime();
                 const distance = EXAM_DATE - now;
+                
                 if (distance < 0) {
                     timerEl.innerText = "TODAY IS THE DAY!";
+                    timerEl.style.color = "var(--danger)";
+                    mobileDays.innerText = "0";
                     return;
                 }
+
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
                 timerEl.innerText = `${days}d ${hours}h`;
                 mobileDays.innerText = days;
             }, 1000);
