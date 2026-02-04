@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit 1: Electrostatics (Premium)</title>
+    <style>
+        :root {
+            /* Light Mode */
+            --bg-gradient: radial-gradient(circle at 0% 0%, #a18cd1 0%, #fbc2eb 100%);
+            --text-main: #2d3748;
+            --text-sec: #4a5568;
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --btn-bg: rgba(255, 255, 255, 0.3);
+            --btn-hover: rgba(255, 255, 255, 0.5);
+            --accent: #667eea;
+        }
+
+        [data-theme="dark"] {
+            /* True Black Mode */
+            --bg-gradient: radial-gradient(circle at 50% 50%, #0f0c29, #302b63, #24243e);
+            --text-main: #e2e8f0;
+            --text-sec: #cbd5e0;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --accent: #764ba2;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
+
+        /* --- CONTROLS --- */
+        .controls-area { padding: 20px; z-index: 40; }
+
+        #search {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--btn-bg);
+            color: var(--text-sec);
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent);
+            border-color: transparent;
+        }
+
+        /* --- GRID --- */
+        #question-list {
+            flex: 1;
+            padding: 10px 20px 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            align-items: start; /* Critical Fix: Prevents cards from stretching to match row height */
+        }
+
+        /* --- PREMIUM CARD --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            
+            /* Dynamic Height Fix */
+            height: auto;
+            min-height: 200px;
+            
+            opacity: 0;
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .q-header { margin-bottom: 15px; }
+        
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+            margin-top: auto; /* Pushes to bottom */
+        }
+        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
+
+        /* ANSWER SECTION FIX */
+        .answer {
+            /* Using grid transition for smooth height animation without cutting off */
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
+            margin-top: 0;
+        }
+        
+        .answer-inner {
+            overflow: hidden;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+        }
+        
+        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
+
+        .answer.open {
+            grid-template-rows: 1fr;
+            margin-top: 15px;
+        }
+        
+        .answer.open .answer-inner {
+            padding: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
+
+        /* --- FORMULA MODAL --- */
+        #formula-btn {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer; z-index: 100; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
+
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 200; display: none; flex-direction: column;
+            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
+        
+        .formula-box {
+            background: rgba(255,255,255,0.05); border-radius: 18px;
+            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
+        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ELECTROSTATICS (UNIT 1)</h1>
+        <div class="controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" onclick="toggleFS()">⛶</button>
+        </div>
+    </header>
+
+    <div class="controls-area">
+        <input type="text" id="search" placeholder="Search 25 Questions..." onkeyup="filterData()">
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
+            <button class="filter-btn" onclick="setFilter('CONCEPT')">Conceptual</button>
+            <button class="filter-btn" onclick="setFilter('DERIVATION')">Derivations</button>
+            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
+        </div>
+    </div>
+
+    <div id="question-list">
+        </div>
+
+    <button id="formula-btn" onclick="openSheet()">
+        <span>📄</span> Formulas
+    </button>
+
+    <div id="modal">
+        <div class="modal-header">
+            <h2 style="color:white; margin:0">Unit 1 Formula Sheet</h2>
+            <button class="icon-btn" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="formula-box">
+                <h3>Electric Charge & Field</h3>
+                <div class="f-row"><span>q = ±ne</span> <span class="f-desc">Quantization</span></div>
+                <div class="f-row"><span>F = k·q₁q₂/r²</span> <span class="f-desc">Coulomb Law</span></div>
+                <div class="f-row"><span>E = F/q₀</span> <span class="f-desc">Intensity</span></div>
+                <div class="f-row"><span>E = kQ/r²</span> <span class="f-desc">Point Charge</span></div>
+                <div class="f-row"><span>τ = pE sinθ</span> <span class="f-desc">Torque</span></div>
+                <div class="f-row"><span>E_axial = 2kp/r³</span> <span class="f-desc">Dipole</span></div>
+                <div class="f-row"><span>E_equi = kp/r³</span> <span class="f-desc">Dipole</span></div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Gauss Law</h3>
+                <div class="f-row"><span>Φ = ∮E·dS = q/ε₀</span> <span class="f-desc">Theorem</span></div>
+                <div class="f-row"><span>E = λ / 2πε₀r</span> <span class="f-desc">Linear Charge</span></div>
+                <div class="f-row"><span>E = σ / 2ε₀</span> <span class="f-desc">Plane Sheet</span></div>
+            </div>
+
+            <div class="formula-box">
+                <h3>Potential & Capacitance</h3>
+                <div class="f-row"><span>V = W/q₀</span> <span class="f-desc">Definition</span></div>
+                <div class="f-row"><span>V = kQ/r</span> <span class="f-desc">Point Charge</span></div>
+                <div class="f-row"><span>E = -dV/dr</span> <span class="f-desc">Gradient</span></div>
+                <div class="f-row"><span>C = Q/V</span> <span class="f-desc">Capacitance</span></div>
+                <div class="f-row"><span>C = ε₀A/d</span> <span class="f-desc">Parallel Plate</span></div>
+                <div class="f-row"><span>C = K·ε₀A/d</span> <span class="f-desc">Dielectric</span></div>
+                <div class="f-row"><span>U = ½CV²</span> <span class="f-desc">Energy</span></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* THE 25 QUESTIONS FROM VIDEO */
+const db = [
+    // 1. Definition
+    {c:"CONCEPT", q:"Define Electric Flux and write its formula.", a:"Total number of electric field lines passing normally through a surface. <br>Formula: Φ = E·dS = E dS cosθ."},
+    
+    // 2. Definition
+    {c:"CONCEPT", q:"Define Electric Capacitance of a conductor and its SI unit.", a:"Ratio of charge given to a conductor to the rise in its potential. <br>C = Q/V. <br>SI Unit: Farad (F)."},
+    
+    // 3. Conceptual
+    {c:"CONCEPT", q:"Prove value of electric flux passing through a surface parallel to electric field is zero.", a:"If surface is parallel to E, the Area Vector is perpendicular to E (θ = 90°). <br>Φ = E dS cos(90°) = 0."},
+    
+    // 4. Conceptual
+    {c:"CONCEPT", q:"Explain Electric Field and Potential inside a charged conductor.", a:"1. Electric Field (E) inside is ZERO (Charge resides on surface). <br>2. Potential (V) is CONSTANT and equal to surface potential (since dV/dr = 0)."},
+    
+    // 5. Short
+    {c:"CONCEPT", q:"What is Fundamental Charge? Write its value.", a:"Smallest independent charge found in nature (charge of electron/proton). <br>Value: e = 1.6 × 10⁻¹⁹ C."},
+    
+    // 6. Reasoning
+    {c:"CONCEPT", q:"Will an electron move towards higher or lower potential? Why?", a:"Higher Potential. <br>Electron is -ve charged, so Force F = -eE. Electric field is High→Low, so Electron moves Low→High."},
+    
+    // 7. Properties
+    {c:"CONCEPT", q:"Write two characteristics of Electric Field Lines.", a:"1. Start from +ve and end at -ve charge. <br>2. Two lines never intersect each other."},
+    
+    // 8. Properties
+    {c:"CONCEPT", q:"Write two characteristics of Equipotential Surface.", a:"1. Potential is same at every point. <br>2. Electric field lines are always perpendicular to the surface."},
+    
+    // 9. Reasoning
+    {c:"CONCEPT", q:"Why does mass of isolated conductor decrease when positively charged?", a:"To become +ve charged, it must LOSE electrons. Since electrons have mass, loss of electrons leads to slight decrease in mass."},
+    
+    // 10. Reasoning
+    {c:"CONCEPT", q:"Why do two equipotential surfaces never intersect?", a:"If they intersect, there would be two values of potential at the intersection point, which is impossible."},
+    
+    // 11. Reasoning
+    {c:"CONCEPT", q:"Why is electric potential uniform inside a hollow charged conductor?", a:"Inside conductor E = 0. Since E = -dV/dr, if E is zero, derivative of V is zero, meaning V is Constant."},
+    
+    // 12. Numerical
+    {c:"NUMERICAL", q:"Capacitor of 100 pF charged to 100V. Find Charge and Energy.", a:"C = 100pF = 10⁻¹⁰ F, V = 100V. <br>1. Q = CV = 10⁻¹⁰ × 100 = 10⁻⁸ C. <br>2. U = ½CV² = ½ × 10⁻¹⁰ × 10000 = 5 × 10⁻⁷ J."},
+    
+    // 13. Numerical
+    {c:"NUMERICAL", q:"Sphere R=1cm, Charge=10μC. Find Potential and Capacitance.", a:"R = 0.01m, Q = 10⁻⁵ C. <br>1. V = kQ/R = (9×10⁹ × 10⁻⁵) / 0.01 = 9 × 10⁶ V. <br>2. C = R/k = 0.01 / 9×10⁹ = 1.11 pF."},
+    
+    // 14. Derivation
+    {c:"DERIVATION", q:"Derive Coulomb's Inverse Square Law using Gauss Law.", a:"1. Consider sphere of radius r around charge q. <br>2. Φ = E(4πr²). <br>3. By Gauss: Φ = q/ε₀. <br>4. E(4πr²) = q/ε₀ ⇒ E = 1/4πε₀ (q/r²). <br>5. F = q₀E = 1/4πε₀ (qq₀/r²)."},
+    
+    // 15. Concept
+    {c:"CONCEPT", q:"Factors affecting Capacitance of a conductor.", a:"1. Area of Plate (C ∝ A). <br>2. Distance between plates (C ∝ 1/d). <br>3. Dielectric Medium (C ∝ K)."},
+    
+    // 16. Derivation
+    {c:"DERIVATION", q:"Find Electric Field intensity due to infinite long linear charge.", a:"Using Gaussian Cylinder: <br>1. Φ = E(2πrl). <br>2. Charge q = λl. <br>3. E(2πrl) = λl/ε₀. <br>Final Formula: E = λ / (2πε₀r)."},
+    
+    // 17. Derivation
+    {c:"DERIVATION", q:"Derive expression for Electric Potential due to point charge.", a:"Work done to bring unit +ve charge from ∞ to r. <br>V = -∫(∞ to r) E.dr <br>V = -∫ (kQ/x²) dx <br>Final Formula: V = 1/4πε₀ (Q/r)."},
+    
+    // 18. Derivation
+    {c:"DERIVATION", q:"Derive Electric Field at AXIAL position of Dipole.", a:"Net Field E = E(+q) - E(-q). <br>Distance r from center. <br>Final Formula: E = 1/4πε₀ (2p / r³) (for short dipole)."},
+    
+    // 19. Derivation
+    {c:"DERIVATION", q:"Derive Capacitance of Parallel Plate Capacitor.", a:"1. E = σ/ε₀ = Q/Aε₀. <br>2. V = Ed = Qd/Aε₀. <br>3. C = Q/V = Q / (Qd/Aε₀). <br>Final Formula: C = ε₀A / d."},
+    
+    // 20. Derivation
+    {c:"DERIVATION", q:"Derive Electric Field at EQUATORIAL position of Dipole.", a:"Components E sinθ cancel, E cosθ add up. <br>E_net = 2E cosθ. <br>Final Formula: E = 1/4πε₀ (p / r³) (direction opposite to p)."},
+    
+    // 21. Numerical
+    {c:"NUMERICAL", q:"Charges ±2μC separated by 40cm. Find E at midpoint.", a:"r = 20cm = 0.2m. q = 2×10⁻⁶. <br>E1 and E2 are in SAME direction. <br>E_net = 2 × (kq/r²) <br>= 2 × (9×10⁹ × 2×10⁻⁶) / 0.04 <br>= 9 × 10⁵ N/C."},
+    
+    // 22. Numerical
+    {c:"NUMERICAL", q:"3 Capacitors (3,4,5 pF) in Parallel with 120V. Find Total C and Charge.", a:"1. Total C = C1+C2+C3 = 12 pF. <br>2. Charge Q1 = C1V = 360 pC. <br>3. Q2 = 480 pC. <br>4. Q3 = 600 pC."},
+    
+    // 23. Derivation
+    {c:"DERIVATION", q:"State and Prove Gauss Theorem.", a:"Statement: Total flux Φ = q/ε₀. <br>Proof: Consider sphere around q. <br>Φ = ∮E.dS = ∮(kq/r²)dS = (kq/r²) (4πr²) = q/ε₀."},
+    
+    // 24. Derivation
+    {c:"DERIVATION", q:"Prove Electric Potential at Equatorial position of dipole is Zero.", a:"V = V(+q) + V(-q). <br>Distance from both charges is same (x = √r²+a²). <br>V = k(+q)/x + k(-q)/x = 0."},
+    
+    // 25. Derivation
+    {c:"DERIVATION", q:"Derive equivalent capacitance for Series and Parallel.", a:"Series: V = V1+V2... ⇒ Q/C = Q/C1... ⇒ 1/C = 1/C1 + 1/C2. <br>Parallel: Q = Q1+Q2... ⇒ CV = C1V... ⇒ C = C1 + C2."}
+];
+
+const list = document.getElementById('question-list');
+const modal = document.getElementById('modal');
+let activeFilter = 'All';
+
+function init() {
+    render(db);
+    // Auto detect dark mode
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+}
+
+function render(data) {
+    list.innerHTML = data.map((item, index) => `
+        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
+            <div class="shimmer"></div>
+            <div>
+                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
+                <div class="q-text">${item.q}</div>
+            </div>
+            <div class="answer">
+                <div class="answer-inner">${item.a}</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+        </div>
+    `).join('');
+}
+
+function getColor(type) {
+    if(type === 'NUMERICAL') return '#f59e0b'; // Amber
+    if(type === 'DERIVATION') return '#ec4899'; // Pink
+    return 'var(--accent)';
+}
+
+function toggleAns(btn) {
+    const ans = btn.previousElementSibling; // Changed to previous sibling because button is at bottom
+    
+    if (ans.classList.contains('open')) {
+        ans.classList.remove('open');
+        btn.innerText = "Show Answer";
+        btn.style.background = "";
+        btn.style.borderColor = "var(--card-border)";
+    } else {
+        ans.classList.add('open');
+        btn.innerText = "Hide Answer";
+        btn.style.background = "rgba(255,255,255,0.2)";
+        btn.style.borderColor = "var(--accent)";
+    }
+}
+
+function setFilter(type) {
+    activeFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
+    render(filtered);
+}
+
+function filterData() {
+    const term = document.getElementById('search').value.toLowerCase();
+    const filtered = db.filter(item => {
+        const matchesType = activeFilter === 'All' ? true : item.c === activeFilter;
+        const matchesSearch = item.q.toLowerCase().includes(term) || item.a.toLowerCase().includes(term);
+        return matchesType && matchesSearch;
+    });
+    render(filtered);
+}
+
+// Modal Logic
+function openSheet() { modal.style.display = 'flex'; }
+function closeSheet() { modal.style.display = 'none'; }
+
+function toggleTheme() {
+    const body = document.body;
+    body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function toggleFS() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
+
+init();
+</script>
+</body>
+</html>

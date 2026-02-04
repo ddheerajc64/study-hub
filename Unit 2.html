@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit 2: Current Electricity (Premium)</title>
+    <style>
+        :root {
+            /* Light Mode */
+            --bg-gradient: radial-gradient(circle at 0% 0%, #a18cd1 0%, #fbc2eb 100%);
+            --text-main: #2d3748;
+            --text-sec: #4a5568;
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --btn-bg: rgba(255, 255, 255, 0.3);
+            --btn-hover: rgba(255, 255, 255, 0.5);
+            --accent: #667eea;
+        }
+
+        [data-theme="dark"] {
+            /* True Black Mode */
+            --bg-gradient: radial-gradient(circle at 50% 50%, #0f0c29, #302b63, #24243e);
+            --text-main: #e2e8f0;
+            --text-sec: #cbd5e0;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --accent: #764ba2;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
+
+        /* --- CONTROLS --- */
+        .controls-area { padding: 20px; z-index: 40; }
+
+        #search {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--btn-bg);
+            color: var(--text-sec);
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent);
+            border-color: transparent;
+        }
+
+        /* --- GRID --- */
+        #question-list {
+            flex: 1;
+            padding: 10px 20px 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            align-items: start; /* Fixes height stretching */
+        }
+
+        /* --- PREMIUM CARD --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            
+            /* Dynamic Height Fix */
+            height: auto;
+            min-height: 200px;
+            
+            opacity: 0;
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .q-header { margin-bottom: 15px; }
+        
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+            margin-top: auto; /* Pushes to bottom */
+        }
+        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
+
+        /* ANSWER SECTION FIX */
+        .answer {
+            /* Using grid transition for smooth height animation without cutting off */
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
+            margin-top: 0;
+        }
+        
+        .answer-inner {
+            overflow: hidden;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+        }
+        
+        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
+
+        .answer.open {
+            grid-template-rows: 1fr;
+            margin-top: 15px;
+        }
+        
+        .answer.open .answer-inner {
+            padding: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
+
+        /* --- FORMULA MODAL --- */
+        #formula-btn {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer; z-index: 100; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
+
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 200; display: none; flex-direction: column;
+            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
+        
+        .formula-box {
+            background: rgba(255,255,255,0.05); border-radius: 18px;
+            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
+        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CURRENT ELECTRICITY</h1>
+        <div class="controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" onclick="toggleFS()">⛶</button>
+        </div>
+    </header>
+
+    <div class="controls-area">
+        <input type="text" id="search" placeholder="Search 22 Questions..." onkeyup="filterData()">
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
+            <button class="filter-btn" onclick="setFilter('CONCEPT')">Conceptual</button>
+            <button class="filter-btn" onclick="setFilter('DERIVATION')">Derivations</button>
+            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
+        </div>
+    </div>
+
+    <div id="question-list">
+        </div>
+
+    <button id="formula-btn" onclick="openSheet()">
+        <span>📄</span> Formulas
+    </button>
+
+    <div id="modal">
+        <div class="modal-header">
+            <h2 style="color:white; margin:0">Unit 2 Formulas</h2>
+            <button class="icon-btn" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="formula-box">
+                <h3>Ohm's Law & Parameters</h3>
+                <div class="f-row"><span>I = nAev_d</span> <span class="f-desc">Current Eq</span></div>
+                <div class="f-row"><span>V = IR</span> <span class="f-desc">Ohm's Law</span></div>
+                <div class="f-row"><span>R = ρL/A</span> <span class="f-desc">Resistance</span></div>
+                <div class="f-row"><span>J = σE</span> <span class="f-desc">Vector Form</span></div>
+                <div class="f-row"><span>G = 1/R</span> <span class="f-desc">Conductance</span></div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Kirchhoff's Laws</h3>
+                <div class="f-row"><span>ΣI = 0</span> <span class="f-desc">Junction Law</span></div>
+                <div class="f-row"><span>ΣV = ΣIR</span> <span class="f-desc">Loop Law</span></div>
+                <div class="f-row"><span>P/Q = R/S</span> <span class="f-desc">Wheatstone</span></div>
+            </div>
+
+            <div class="formula-box">
+                <h3>Cells & Power</h3>
+                <div class="f-row"><span>V = E - Ir</span> <span class="f-desc">Discharging</span></div>
+                <div class="f-row"><span>r = (E/V - 1)R</span> <span class="f-desc">Internal Res</span></div>
+                <div class="f-row"><span>I = nE / (R+nr)</span> <span class="f-desc">Series Comb</span></div>
+                <div class="f-row"><span>P = V²/R</span> <span class="f-desc">Elec Power</span></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* THE COMPLETE 22 QUESTIONS FROM UNIT 2 TRANSCRIPT */
+const db = [
+    // 1. Definition
+    {c:"CONCEPT", q:"Define EMF of a cell and its SI unit.", a:"The maximum potential difference between the terminals of a cell in an open circuit (when no current is drawn).\nSI Unit: Volt (V) or Joule/Coulomb."},
+    
+    // 2. Definition
+    {c:"CONCEPT", q:"Write two limitations of Ohm's Law.", a:"1. It is valid only if physical conditions (like temperature, pressure) remain constant.\n2. It does not apply to non-ohmic devices like diodes, transistors, and electrolytes."},
+    
+    // 3. Definition
+    {c:"CONCEPT", q:"What is an Electric Cell? Give examples.", a:"A device that converts chemical energy into electrical energy to maintain a continuous flow of charge.\nExamples: Dry Cell, Daniel Cell, Leclanche Cell."},
+    
+    // 4. Conceptual
+    {c:"CONCEPT", q:"State Ohm's Law and draw V-I graph.", a:"Statement: If physical conditions remain unchanged, the potential difference (V) across a conductor is directly proportional to the current (I) flowing through it.\nV = IR.\nGraph: A straight line passing through the origin (Linear)."},
+    
+    // 5. Numerical
+    {c:"NUMERICAL", q:"An electric bulb is rated 200W, 220V. Find the resistance of the bulb.", a:"Given: P = 200W, V = 220V.\nFormula: P = V² / R  ⇒  R = V² / P\nR = (220 × 220) / 200\nR = 48400 / 200\nR = 242 Ohm."},
+    
+    // 6. Conceptual
+    {c:"CONCEPT", q:"State Kirchhoff's Voltage Law (KVL) / Second Law.", a:"In any closed loop of an electrical circuit, the algebraic sum of the products of current and resistance is equal to the algebraic sum of the EMFs in that loop.\nΣIR = ΣE.\nIt is based on the Law of Conservation of Energy."},
+    
+    // 7. Numerical
+    {c:"NUMERICAL", q:"Battery EMF=12V, Internal Resistance r=0.4Ω. Find Maximum Current.", a:"For Maximum Current, External Resistance (R) must be 0.\nI_max = E / r\nI_max = 12 / 0.4\nI_max = 30 A."},
+    
+    // 8. Numerical
+    {c:"NUMERICAL", q:"Battery EMF=10V, Internal r=3Ω connected to a resistor. Current=0.5A. Find Resistance of resistor.", a:"Formula: I = E / (R + r)\n0.5 = 10 / (R + 3)\nR + 3 = 10 / 0.5\nR + 3 = 20\nR = 17 Ω."},
+    
+    // 9. Numerical
+    {c:"NUMERICAL", q:"Battery connected to 9Ω resistor. Potential drops from 40V to 30V. Find Internal Resistance.", a:"Given: EMF (E) = 40V, V = 30V, R = 9Ω.\nFormula: r = (E/V - 1)R\nr = (40/30 - 1) × 9\nr = (4/3 - 1) × 9\nr = (1/3) × 9\nr = 3 Ω."},
+    
+    // 10. Numerical
+    {c:"NUMERICAL", q:"Current of 1A flows for 1s. Find number of electrons flowing.", a:"Given: I=1A, t=1s.\nCharge Q = I × t = 1 C.\nQuantization: Q = ne  ⇒  n = Q / e\nn = 1 / (1.6 × 10⁻¹⁹)\nn = 6.25 × 10¹⁸ electrons."},
+    
+    // 11. Comparison
+    {c:"CONCEPT", q:"Differentiate between Resistance and Specific Resistance (Resistivity).", a:"1. Resistance (R): Opposition to current. Depends on Length and Area. Unit: Ohm (Ω).\n2. Specific Resistance (ρ): Resistance of a unit length and unit area conductor. Depends ONLY on material and temperature. Unit: Ohm-meter (Ωm)."},
+    
+    // 12. Derivation
+    {c:"DERIVATION", q:"Establish relationship between EMF (E), Potential Difference (V), and Internal Resistance (r).", a:"Consider a circuit with Cell (E, r) and External Resistor (R).\nCurrent I = E / (R + r)\nE = I(R + r)\nE = IR + Ir\nSince V = IR (Terminal Voltage)\nE = V + Ir  OR  V = E - Ir."},
+    
+    // 13. Numerical
+    {c:"NUMERICAL", q:"Compare Resistance of two bulbs: 100W and 400W (Rated Voltage is Same).", a:"Formula: P = V² / R  ⇒  R = V² / P.\nSince V is constant, R ∝ 1/P.\nR1 / R2 = P2 / P1\nR1 / R2 = 400 / 100 = 4 / 1.\nResistance of 100W bulb is 4 times higher than 400W bulb."},
+    
+    // 14. Numerical
+    {c:"NUMERICAL", q:"(Case 1) Wire length is halved (L/2) and Area is doubled (2A). New Resistance?", a:"Old R = ρL/A.\nNew R' = ρ(L/2) / (2A) = (ρL/A) × (1/4).\nR' = R / 4.\nResistance becomes 1/4th."},
+    
+    // 15. Comparison
+    {c:"CONCEPT", q:"Write three differences between EMF and Potential Difference.", a:"1. EMF: Max potential in open circuit. PD: Potential in closed circuit.\n2. EMF: Cause of current. PD: Result of current.\n3. EMF: Independent of external resistance. PD: Depends on resistance.\n4. EMF is usually greater than PD."},
+    
+    // 16. Concept
+    {c:"CONCEPT", q:"Draw Wheatstone Bridge and write the condition for balance.", a:"It is an arrangement of 4 resistors P, Q, R, S forming a quadrilateral with a galvanometer.\nBalance Condition: No current flows through galvanometer (Ig = 0).\nFormula: P / Q = R / S."},
+    
+    // 17. Derivation
+    {c:"DERIVATION", q:"Establish relationship between Electric Current and Drift Velocity.", a:"Consider conductor of length l, area A.\nVolume = Al. Electron density = n.\nTotal charge Q = neAl.\nTime t = l / v_d.\nCurrent I = Q / t = (neAl) / (l / v_d)\nI = nAe v_d."},
+    
+    // 18. Numerical
+    {c:"NUMERICAL", q:"(Case 2) Wire is STRETCHED to double its length. How many times Resistance increases?", a:"When stretched, Volume remains constant.\nLength L → 2L. Area A → A/2.\nNew R' = ρ(2L) / (A/2) = 4 (ρL/A).\nR' = 4R.\nResistance increases 4 times."},
+    
+    // 19. Concept
+    {c:"CONCEPT", q:"Explain Kirchhoff's First Law (Junction Law) with diagram.", a:"The algebraic sum of all currents meeting at any junction is Zero.\nΣI = 0.\nIncoming currents = Positive (+).\nOutgoing currents = Negative (-).\nIt is based on Conservation of Charge."},
+    
+    // 20. Derivation
+    {c:"DERIVATION", q:"Derive Wheatstone Bridge Principle using Kirchhoff's Laws.", a:"Apply KVL to Loop 1 (ABDA):\nI₁P - I₂R = 0 (since Ig=0) ⇒ I₁P = I₂R (eq 1)\nApply KVL to Loop 2 (BCDB):\nI₁Q - I₂S = 0 ⇒ I₁Q = I₂S (eq 2)\nDivide eq 1 by eq 2:\nP/Q = R/S."},
+    
+    // 21. Derivation
+    {c:"DERIVATION", q:"Establish formula for Conductivity (σ) based on Drift Velocity.", a:"Current Density J = I/A = nev_d.\nWe know Drift Velocity v_d = (eE/m)τ.\nSubstitute v_d: J = ne(eE/m)τ = (ne²τ/m)E.\nCompare with Microscopic Ohm's Law J = σE.\nConductivity σ = (ne²τ) / m."}
+];
+
+const list = document.getElementById('question-list');
+const modal = document.getElementById('modal');
+let activeFilter = 'All';
+
+function init() {
+    render(db);
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+}
+
+function render(data) {
+    list.innerHTML = data.map((item, index) => `
+        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
+            <div class="shimmer"></div>
+            <div class="q-header">
+                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
+                <div class="q-text">${item.q}</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+            <div class="answer">
+                <div class="answer-inner">${item.a}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getColor(type) {
+    if(type === 'NUMERICAL') return '#fbbf24'; // Amber
+    if(type === 'DERIVATION') return '#f472b6'; // Pink
+    return 'var(--accent)';
+}
+
+function toggleAns(btn) {
+    const ans = btn.previousElementSibling;
+    
+    if (ans.classList.contains('open')) {
+        ans.classList.remove('open');
+        btn.innerText = "Show Answer";
+        btn.style.background = "";
+        btn.style.borderColor = "var(--card-border)";
+    } else {
+        ans.classList.add('open');
+        btn.innerText = "Hide Answer";
+        btn.style.background = "rgba(255,255,255,0.2)";
+        btn.style.borderColor = "var(--accent)";
+    }
+}
+
+function setFilter(type) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
+    render(filtered);
+}
+
+function filterData() {
+    const term = document.getElementById('search').value.toLowerCase();
+    render(db.filter(i => i.q.toLowerCase().includes(term)));
+}
+
+function openSheet() { modal.style.display = 'flex'; }
+function closeSheet() { modal.style.display = 'none'; }
+
+function toggleTheme() {
+    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function toggleFS() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
+
+init();
+</script>
+</body>
+</html>

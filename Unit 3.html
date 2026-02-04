@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit 3: Magnetism (Premium)</title>
+    <style>
+        :root {
+            /* Light Mode */
+            --bg-gradient: radial-gradient(circle at 0% 0%, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            --text-main: #2d3748;
+            --text-sec: #4a5568;
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --btn-bg: rgba(255, 255, 255, 0.3);
+            --btn-hover: rgba(255, 255, 255, 0.5);
+            --accent: #e11d48; /* Red/Pink Accent for Magnetism */
+        }
+
+        [data-theme="dark"] {
+            /* True Black Mode */
+            --bg-gradient: radial-gradient(circle at 50% 50%, #1a0b0e, #000000);
+            --text-main: #e2e8f0;
+            --text-sec: #cbd5e0;
+            --card-bg: rgba(30, 20, 20, 0.6);
+            --card-border: rgba(255, 100, 100, 0.15);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --accent: #fb7185;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
+
+        /* --- CONTROLS --- */
+        .controls-area { padding: 20px; z-index: 40; }
+
+        #search {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--btn-bg);
+            color: var(--text-sec);
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent);
+            border-color: transparent;
+        }
+
+        /* --- GRID --- */
+        #question-list {
+            flex: 1;
+            padding: 10px 20px 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            align-items: start; /* Critical Fix: Prevents stretching */
+        }
+
+        /* --- PREMIUM CARD --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            
+            /* Dynamic Height Fix */
+            height: auto;
+            min-height: 200px;
+            
+            opacity: 0;
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+            margin-top: auto; /* Pushes to bottom */
+        }
+        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
+
+        /* ANSWER SECTION FIX */
+        .answer {
+            /* Using grid transition for smooth height animation without cutting off */
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
+            margin-top: 0;
+        }
+        
+        .answer-inner {
+            overflow: hidden;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+        }
+        
+        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
+
+        .answer.open {
+            grid-template-rows: 1fr;
+            margin-top: 15px;
+        }
+        
+        .answer.open .answer-inner {
+            padding: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
+
+        /* --- FORMULA MODAL --- */
+        #formula-btn {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer; z-index: 100; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
+
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 200; display: none; flex-direction: column;
+            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
+        
+        .formula-box {
+            background: rgba(255,255,255,0.05); border-radius: 18px;
+            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
+        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MAGNETISM (UNIT 3)</h1>
+        <div class="controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" onclick="toggleFS()">⛶</button>
+        </div>
+    </header>
+
+    <div class="controls-area">
+        <input type="text" id="search" placeholder="Search 22 Questions..." onkeyup="filterData()">
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
+            <button class="filter-btn" onclick="setFilter('CONCEPT')">Conceptual</button>
+            <button class="filter-btn" onclick="setFilter('DERIVATION')">Derivations</button>
+            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
+        </div>
+    </div>
+
+    <div id="question-list">
+        </div>
+
+    <button id="formula-btn" onclick="openSheet()">
+        <span>📄</span> Formulas
+    </button>
+
+    <div id="modal">
+        <div class="modal-header">
+            <h2 style="color:white; margin:0">Unit 3 Formula Sheet</h2>
+            <button class="icon-btn" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="formula-box">
+                <h3>Force & Fields</h3>
+                <div class="f-row"><span>F = q(v × B)</span> <span class="f-desc">Lorentz</span></div>
+                <div class="f-row"><span>F = IlB sinθ</span> <span class="f-desc">Conductor</span></div>
+                <div class="f-row"><span>B = μ₀I / 2πr</span> <span class="f-desc">Infinite Wire</span></div>
+                <div class="f-row"><span>B = μ₀nI</span> <span class="f-desc">Solenoid</span></div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Laws</h3>
+                <div class="f-row"><span>∮B·dl = μ₀I</span> <span class="f-desc">Ampere's</span></div>
+                <div class="f-row"><span>dB = μ₀Idl sinθ/4πr²</span> <span class="f-desc">Biot-Savart</span></div>
+                <div class="f-row"><span>∮B·dS = 0</span> <span class="f-desc">Gauss Mag</span></div>
+            </div>
+
+            <div class="formula-box">
+                <h3>Dipole & Matter</h3>
+                <div class="f-row"><span>m = NIA</span> <span class="f-desc">Dipole Moment</span></div>
+                <div class="f-row"><span>τ = mB sinθ</span> <span class="f-desc">Torque</span></div>
+                <div class="f-row"><span>B = μ₀(H+M)</span> <span class="f-desc">Relation</span></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* THE COMPLETE 22 QUESTIONS FROM UNIT 3 TRANSCRIPT */
+const db = [
+    // 1. Definition
+    {c:"CONCEPT", q:"State Ampere's Circuital Law and write its mathematical form.", a:"The line integral of magnetic field B around any closed path is equal to μ₀ times the net current I enclosed by the path.\n∮ B·dl = μ₀I."},
+    
+    // 2. Concept
+    {c:"CONCEPT", q:"How is a current loop equivalent to a magnetic dipole? Write formula for Dipole Moment.", a:"A current loop acts as a magnetic dipole because one face behaves as North Pole and the opposite face as South Pole.\nDipole Moment m = NIA (N=turns, I=current, A=area)."},
+    
+    // 3. Numerical
+    {c:"NUMERICAL", q:"Power line carries 90A East to West. Find B at 1.5m below.", a:"I=90A, r=1.5m. Formula: B = (μ₀I) / (2πr)\nB = (4π×10⁻⁷ × 90) / (2π × 1.5)\nB = 2 × 90 × 10⁻⁷ / 1.5\nB = 1.2 × 10⁻⁵ Tesla.\nDirection: Towards South (by Right Hand Thumb Rule)."},
+    
+    // 4. Numerical
+    {c:"NUMERICAL", q:"Two parallel wires 4cm apart carry 8A and 5A in same direction. Find force on 10cm section.", a:"d=0.04m, I1=8A, I2=5A, L=0.1m.\nForce F = (μ₀ I1 I2 L) / (2πd)\nF = (2×10⁻⁷ × 8 × 5 × 0.1) / 0.04\nF = 2 × 10⁻⁵ N.\nNature: Attractive (Same direction current)."},
+    
+    // 5. Concept
+    {c:"CONCEPT", q:"State Biot-Savart Law and define 1 Ampere using force between wires.", a:"Biot-Savart: dB = (μ₀/4π) (I dl sinθ / r²).\n1 Ampere: The constant current which, if maintained in two straight parallel conductors of infinite length placed 1m apart in vacuum, produces a force of 2×10⁻⁷ N per meter length."},
+    
+    // 6. Definition
+    {c:"CONCEPT", q:"What is Lorentz Force? Write its formula.", a:"The total force experienced by a charge q moving with velocity v in a region where both electric (E) and magnetic (B) fields are present.\nFormula: F = qE + q(v × B)."},
+    
+    // 8. Formula
+    {c:"CONCEPT", q:"Write vector form of Biot-Savart Law.", a:"dB = (μ₀/4π) [ I (dl × r) / r³ ]\n(Note: r in numerator is vector, r³ in denominator is magnitude)."},
+    
+    // 9. Reasoning
+    {c:"CONCEPT", q:"Why do magnetic field lines not have starting and ending points?", a:"Magnetic field lines form continuous closed loops. Outside the magnet, they go from North to South, but inside they go from South to North. Hence, no isolated start/end points."},
+    
+    // 10. Concept
+    {c:"CONCEPT", q:"State Gauss Law for Magnetism.", a:"The net magnetic flux through any closed surface is always zero.\n∮ B·dS = 0.\nThis implies that isolated magnetic monopoles do not exist."},
+    
+    // 11. Numerical
+    {c:"NUMERICAL", q:"Solenoid Length 2m, 100 turns, Current 10A. Find B inside.", a:"Turns density n = N/L = 100/2 = 50 turns/m.\nFormula: B = μ₀nI\nB = 4π×10⁻⁷ × 50 × 10\nB = 2000π × 10⁻⁷\nB = 6.28 × 10⁻⁴ T."},
+    
+    // 12. Numerical
+    {c:"NUMERICAL", q:"Long straight wire carries 30A. Find B at a point 30cm away.", a:"I=30A, r=0.3m.\nFormula: B = (μ₀I) / (2πr)\nB = (2×10⁻⁷ × 30) / 0.3\nB = 200 × 10⁻⁷\nB = 2 × 10⁻⁵ T."},
+    
+    // 13. Derivation
+    {c:"DERIVATION", q:"Derive expression for Torque on a magnetic dipole in uniform magnetic field.", a:"Consider dipole with pole strength m, length 2l in field B.\nForce on poles: F = mB (Couple).\nTorque τ = Force × Perpendicular Distance\nPerp Dist = 2l sinθ\nτ = mB (2l sinθ) = (m×2l)B sinθ = MB sinθ.\nVector form: τ = M × B."},
+    
+    // 14. Derivation
+    {c:"DERIVATION", q:"Derive Magnetic Field on the AXIS of a circular current carrying coil.", a:"Consider element dl. dB = (μ₀/4π) I dl / (r²+x²).\nVertical components dB sinθ add up, horizontal dB cosθ cancel.\nTotal B = ∫ dB sinθ = ∫ (μ₀/4π) (I dl / (r²+x²)) (a / √(r²+x²))\nFinal Formula: B = (μ₀ I a²) / 2(a²+x²)^(3/2)."},
+    
+    // 16. Concept
+    {c:"CONCEPT", q:"Do magnetic field lines represent direction of force on a moving charge?", a:"No. They represent the direction of magnetic field B. The force on a moving charge is F = q(v×B), which is PERPENDICULAR to the magnetic field, not along it."},
+    
+    // 17a. Concept
+    {c:"CONCEPT", q:"If magnetic field lines are parallel and equidistant, what does it represent?", a:"It represents a Uniform Magnetic Field (Constant magnitude and direction)."},
+    
+    // 17b. Derivation
+    {c:"DERIVATION", q:"Derive Magnetic Field at EQUATORIAL position of a Bar Magnet.", a:"North pole repels, South attracts. Resultant is parallel to axis.\nB_net = 2 B cosθ\nB = (μ₀/4π) m / (d²+l²)\ncosθ = l / √(d²+l²)\nFinal (short magnet): B = (μ₀/4π) (M / d³)."},
+    
+    // 18. Derivation
+    {c:"DERIVATION", q:"Derive Magnetic Field at AXIAL position of a Bar Magnet.", a:"Field due to N is outwards, S is inwards.\nB_net = B_N - B_S\nB = (μ₀/4π) [ m/(d-l)² - m/(d+l)² ]\nFinal (short magnet): B = (μ₀/4π) (2M / d³)."},
+    
+    // 19. Comparison
+    {c:"CONCEPT", q:"Difference between Electromagnet and Permanent Magnet (4 points).", a:"1. Material: EM uses Soft Iron core | PM uses Steel/Alnico.\n2. Nature: EM is Temporary | PM is Permanent.\n3. Strength: EM strength is variable (via current) | PM strength is fixed.\n4. Polarity: EM polarity can be reversed | PM polarity is fixed."},
+    
+    // 20. Comparison
+    {c:"CONCEPT", q:"Difference between Diamagnetic, Paramagnetic, and Ferromagnetic substances.", a:"1. Dia: Weakly repelled, χ is small negative.\n2. Para: Weakly attracted, χ is small positive.\n3. Ferro: Strongly attracted, χ is very large positive."},
+    
+    // 21. Definition
+    {c:"CONCEPT", q:"Define Magnetization (M) and Magnetic Intensity (H). Relationship?", a:"Magnetization (M): Net magnetic moment per unit volume.\nMagnetic Intensity (H): External magnetizing field capability.\nRelationship: B = μ₀(H + M)."},
+    
+    // 22. Derivation
+    {c:"DERIVATION", q:"Prove angular frequency of charge in B-field is independent of velocity.", a:"Centripetal Force = Magnetic Force.\nmv²/r = qvB\nv/r = qB/m\nWe know Angular frequency ω = v/r.\nTherefore, ω = qB/m.\nThis expression has no velocity (v) term, hence proved."}
+];
+
+const list = document.getElementById('question-list');
+const modal = document.getElementById('modal');
+let activeFilter = 'All';
+
+function init() {
+    render(db);
+    // Auto detect dark mode
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+}
+
+function render(data) {
+    list.innerHTML = data.map((item, index) => `
+        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
+            <div class="shimmer"></div>
+            <div class="q-header">
+                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
+                <div class="q-text">${item.q}</div>
+            </div>
+            
+            <div class="answer">
+                <div class="answer-inner">${item.a}</div>
+            </div>
+            
+            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+        </div>
+    `).join('');
+}
+
+function getColor(type) {
+    if(type === 'NUMERICAL') return '#fbbf24'; // Amber
+    if(type === 'DERIVATION') return '#f472b6'; // Pink
+    return 'var(--accent)';
+}
+
+function toggleAns(btn) {
+    const ans = btn.previousElementSibling;
+    
+    if (ans.classList.contains('open')) {
+        ans.classList.remove('open');
+        btn.innerText = "Show Answer";
+        btn.style.background = "";
+        btn.style.borderColor = "var(--card-border)";
+    } else {
+        ans.classList.add('open');
+        btn.innerText = "Hide Answer";
+        btn.style.background = "rgba(255,255,255,0.2)";
+        btn.style.borderColor = "var(--accent)";
+    }
+}
+
+function setFilter(type) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
+    render(filtered);
+}
+
+function filterData() {
+    const term = document.getElementById('search').value.toLowerCase();
+    render(db.filter(i => i.q.toLowerCase().includes(term)));
+}
+
+function openSheet() { modal.style.display = 'flex'; }
+function closeSheet() { modal.style.display = 'none'; }
+
+function toggleTheme() {
+    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function toggleFS() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
+
+init();
+</script>
+</body>
+</html>

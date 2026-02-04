@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Physics 2026: Master Glass UI</title>
+    <style>
+        :root {
+            /* Light Mode */
+            --bg-gradient: radial-gradient(circle at 0% 0%, #a8c0ff, #3f2b96);
+            --text-main: #ffffff;
+            --text-sec: #e2e8f0;
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            --btn-bg: rgba(255, 255, 255, 0.2);
+            --btn-hover: rgba(255, 255, 255, 0.3);
+            --accent: #00d2ff;
+        }
+
+        [data-theme="dark"] {
+            /* True Black / Deep Space Mode */
+            --bg-gradient: radial-gradient(circle at 50% 50%, #1a1a2e, #000000);
+            --text-main: #f0f0f0;
+            --text-sec: #a0a0a0;
+            --card-bg: rgba(20, 20, 20, 0.4);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --accent: #4facfe;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed; /* Essential for Glass effect */
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- UI COMPONENTS --- */
+        
+        /* Header */
+        header {
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
+
+        /* Search & Filter Bar */
+        .controls-area {
+            padding: 15px;
+            z-index: 40;
+        }
+
+        #search {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            backdrop-filter: blur(5px);
+            font-size: 1rem;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            transition: box-shadow 0.3s;
+        }
+        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--btn-bg);
+            color: var(--text-sec);
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 15px var(--accent);
+            border-color: transparent;
+        }
+
+        /* --- GLASS CARDS GRID --- */
+        #question-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 15px 100px 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            /* Smooth scrolling */
+            scroll-behavior: smooth;
+        }
+
+        /* THE GLASSMORPHISM CARD STYLE (Adapted from your code) */
+        .glass-card {
+            /* Responsive Sizing */
+            width: 100%; 
+            min-height: 200px;
+            
+            /* Glass Core */
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            /* ANIMATION 1: Entrance */
+            opacity: 0;
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            
+            /* ANIMATION 2: Hover Transition */
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        /* Stagger delays handled in JS */
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Inner Content */
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: block;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Action Button inside Card */
+        .reveal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+        }
+        .reveal-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, margin-top 0.3s;
+            color: var(--accent);
+            font-weight: 700;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+        }
+        .answer.show { max-height: 100px; margin-top: 15px; }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .glass-card:hover .shimmer {
+            left: 150%;
+            transition: left 0.7s ease-in-out;
+        }
+
+        /* --- FORMULA SHEET MODAL --- */
+        #formula-btn {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-weight: 700;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 100;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #formula-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateX(-50%) translateY(-5px); }
+
+        #modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 20px; }
+        
+        .formula-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; }
+        .f-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-family: monospace; font-size: 1rem; }
+        .f-desc { color: #888; font-family: sans-serif; font-size: 0.8rem; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>PHYSICS '26</h1>
+        <div class="controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" onclick="toggleFS()">⛶</button>
+        </div>
+    </header>
+
+    <div class="controls-area">
+        <input type="text" id="search" placeholder="Search 350+ Questions..." onkeyup="filterData()">
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('All')">All</button>
+            <button class="filter-btn" onclick="setFilter('MCQ')">MCQs</button>
+            <button class="filter-btn" onclick="setFilter('MATCH')">Match</button>
+            <button class="filter-btn" onclick="setFilter('FILL')">Fill Ups</button>
+            <button class="filter-btn" onclick="setFilter('TF')">True/False</button>
+            <button class="filter-btn" onclick="setFilter('ONE')">One Word</button>
+        </div>
+    </div>
+
+    <div id="question-list">
+        </div>
+
+    <button id="formula-btn" onclick="openSheet()">
+        <span>📜</span> Formulas
+    </button>
+
+    <div id="modal">
+        <div class="modal-header">
+            <h2 style="margin:0">Formula Sheet</h2>
+            <button class="icon-btn" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="formula-box">
+                <h3>1. Electrostatics</h3>
+                <div class="f-row"><span>F = k·q₁q₂/r²</span> <span class="f-desc">Coulomb</span></div>
+                <div class="f-row"><span>E = F/q</span> <span class="f-desc">Field</span></div>
+                <div class="f-row"><span>V = kQ/r</span> <span class="f-desc">Potential</span></div>
+                <div class="f-row"><span>C = ε₀A/d</span> <span class="f-desc">Capacitor</span></div>
+                <div class="f-row"><span>U = ½CV²</span> <span class="f-desc">Energy</span></div>
+                <div class="f-row"><span>q = ±ne</span> <span class="f-desc">Quantization</span></div>
+            </div>
+            <div class="formula-box">
+                <h3>2. Current Electricity</h3>
+                <div class="f-row"><span>I = nAev_d</span> <span class="f-desc">Drift</span></div>
+                <div class="f-row"><span>R = ρL/A</span> <span class="f-desc">Resistance</span></div>
+                <div class="f-row"><span>P = I²R</span> <span class="f-desc">Power</span></div>
+                <div class="f-row"><span>V = E - Ir</span> <span class="f-desc">Terminal V</span></div>
+            </div>
+            <div class="formula-box">
+                <h3>3. Magnetism</h3>
+                <div class="f-row"><span>F = q(v×B)</span> <span class="f-desc">Lorentz</span></div>
+                <div class="f-row"><span>B = μ₀nI</span> <span class="f-desc">Solenoid</span></div>
+                <div class="f-row"><span>τ = MB sinθ</span> <span class="f-desc">Torque</span></div>
+            </div>
+            <div class="formula-box">
+                <h3>4. EMI & AC</h3>
+                <div class="f-row"><span>e = -dφ/dt</span> <span class="f-desc">Faraday</span></div>
+                <div class="f-row"><span>L = Nφ/I</span> <span class="f-desc">Inductance</span></div>
+                <div class="f-row"><span>X_L = ωL</span> <span class="f-desc">Reactance</span></div>
+                <div class="f-row"><span>f_r = 1/2π√LC</span> <span class="f-desc">Resonance</span></div>
+            </div>
+            <div class="formula-box">
+                <h3>5. Optics</h3>
+                <div class="f-row"><span>1/f = 1/v - 1/u</span> <span class="f-desc">Lens</span></div>
+                <div class="f-row"><span>μ = sin i/sin r</span> <span class="f-desc">Snell</span></div>
+                <div class="f-row"><span>1/f = (μ-1)(1/R₁-1/R₂)</span> <span class="f-desc">Maker's</span></div>
+                <div class="f-row"><span>β = λD/d</span> <span class="f-desc">Fringe</span></div>
+            </div>
+            <div class="formula-box">
+                <h3>6. Modern Physics</h3>
+                <div class="f-row"><span>E = hν</span> <span class="f-desc">Photon</span></div>
+                <div class="f-row"><span>Kmax = hν - Φ</span> <span class="f-desc">Einstein</span></div>
+                <div class="f-row"><span>λ = h/p</span> <span class="f-desc">De Broglie</span></div>
+                <div class="f-row"><span>E = -13.6/n² eV</span> <span class="f-desc">Bohr</span></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* THE FULL DATA BANK (350+ Questions) */
+const db = [
+    // MCQs
+    {c:"MCQ", q:"Unit of Electric Permittivity (ε₀)", a:"C² / N·m²"},
+    {c:"MCQ", q:"Force on alpha particle parallel to B-field", a:"Zero (Angle = 0°)"},
+    {c:"MCQ", q:"Refractive index of glass is minimum for", a:"Red Light"},
+    {c:"MCQ", q:"First atomic model proposed by", a:"J.J. Thomson"},
+    {c:"MCQ", q:"Semiconductor at 0 Kelvin behaves as", a:"Insulator"},
+    {c:"MCQ", q:"Electrons in 1 Coulomb of charge", a:"6.25 × 10¹⁸"},
+    {c:"MCQ", q:"SI Unit of Capacitance", a:"Farad (F)"},
+    {c:"MCQ", q:"Moving charge generates", a:"Electric & Magnetic Fields"},
+    {c:"MCQ", q:"Weak but positive magnetic susceptibility", a:"Paramagnetic"},
+    {c:"MCQ", q:"Speed of EM waves in vacuum", a:"c = 1 / √(μ₀ε₀)"},
+    {c:"MCQ", q:"Approximate width of PN junction diode", a:"10⁻⁶ m (Micron)"},
+    {c:"MCQ", q:"Relation: Mass Number (A) & Radius (R)", a:"R ∝ A¹/³"},
+    {c:"MCQ", q:"SI Unit of Current Density", a:"A/m²"},
+    {c:"MCQ", q:"Pure Capacitor: Phase diff (I vs V)", a:"Current Leads by 90°"},
+    {c:"MCQ", q:"If electron orbit radius increases, Energy?", a:"Increases"},
+    {c:"MCQ", q:"Reverse Bias: N-side connected to?", a:"Positive Terminal"},
+    {c:"MCQ", q:"Smallest possible charge", a:"1.6 × 10⁻¹⁹ C"},
+    {c:"MCQ", q:"Pure Resistor: Phase diff (V vs I)", a:"Zero"},
+    {c:"MCQ", q:"Relation: R & f (Mirror)", a:"R = 2f"},
+    {c:"MCQ", q:"Example of Ohmic Resistor", a:"Copper Wire"},
+    {c:"MCQ", q:"CGS Unit of Magnetic Intensity", a:"Oersted"},
+    {c:"MCQ", q:"Compound Microscope: focal length of Eyepiece", a:"Greater than Objective"},
+    {c:"MCQ", q:"Potential at mid-point of dipole", a:"Zero"},
+    {c:"MCQ", q:"SI Unit of Magnetic Flux", a:"Weber (Wb)"},
+    {c:"MCQ", q:"Relation: Energy & Momentum of Photon", a:"E = pc"},
+    {c:"MCQ", q:"Path of scattered alpha particle", a:"Hyperbolic"},
+    {c:"MCQ", q:"Effective length of bar magnet", a:"5/6 of Length"},
+    {c:"MCQ", q:"Rays undeflected in Magnetic Field", a:"Gamma Rays"},
+    {c:"MCQ", q:"Electric Cell is a source of", a:"Electrical Energy"},
+    {c:"MCQ", q:"B-field at center of circular coil", a:"Perpendicular to plane"},
+    {c:"MCQ", q:"Avg value of AC over complete cycle", a:"Zero"},
+    {c:"MCQ", q:"Induced EMF is independent of", a:"Coil Resistance"},
+    {c:"MCQ", q:"Wave nature cannot explain", a:"Photoelectric Effect"},
+    {c:"MCQ", q:"Photoelectric current depends on", a:"Intensity of Light"},
+    {c:"MCQ", q:"Density of Nucleus is", a:"Constant"},
+    {c:"MCQ", q:"Charge entering B-field parallel moves in", a:"Straight Line"},
+    {c:"MCQ", q:"Relation: Peak vs RMS Current", a:"I₀ = √2 × Irms"},
+    {c:"MCQ", q:"Unit of √LC", a:"Second (Time)"},
+    {c:"MCQ", q:"Discovery of Magnetic Effect", a:"Oersted"},
+    {c:"MCQ", q:"Specific Resistance depends on", a:"Material"},
+    {c:"MCQ", q:"Depletion Layer contains", a:"Immobile Ions"},
+    {c:"MCQ", q:"Unit of Potential Gradient", a:"V/m"},
+    {c:"MCQ", q:"Image by Simple Microscope", a:"Virtual, Erect, Magnified"},
+    {c:"MCQ", q:"P-type semiconductor electrical nature", a:"Neutral"},
+    {c:"MCQ", q:"Dipole moment per unit volume", a:"Polarization"},
+    {c:"MCQ", q:"Resistance decreases as Temp increases for", a:"Semiconductor"},
+    {c:"MCQ", q:"Resistance of Ideal Voltmeter", a:"Infinite"},
+    {c:"MCQ", q:"Waves used for signals in Fog", a:"Infrared"},
+    {c:"MCQ", q:"EM waves generated by", a:"Accelerated Charge"},
+    {c:"MCQ", q:"Naming of Positive/Negative charge by", a:"Benjamin Franklin"},
+    {c:"MCQ", q:"Work done rotating dipole 90°", a:"MB"},
+    {c:"MCQ", q:"Mirage is an example of", a:"Total Internal Reflection"},
+    {c:"MCQ", q:"Work Function measured in", a:"Electron Volt (eV)"},
+    {c:"MCQ", q:"Nucleus discovered by", a:"Rutherford"},
+    {c:"MCQ", q:"Dielectric constant of Air", a:"1"},
+    {c:"MCQ", q:"Device: Mechanical to Electrical Energy", a:"AC Generator"},
+    {c:"MCQ", q:"Interference occurs in", a:"Both Long. & Trans. Waves"},
+    {c:"MCQ", q:"Electric field inside hollow conductor", a:"Zero"},
+    {c:"MCQ", q:"Focal length minimum for which color", a:"Violet"},
+    {c:"MCQ", q:"Germanium at 0 Kelvin is", a:"Insulator"},
+    {c:"MCQ", q:"Formula: Momentum of Matter Wave", a:"p = h/λ"},
+    {c:"MCQ", q:"Ozone layer absorbs", a:"UV Rays"},
+    {c:"MCQ", q:"Neutron discovered by", a:"Chadwick"},
+    {c:"MCQ", q:"Magnet cut in half (Lengthwise)", a:"Pole Strength Same"},
+    {c:"MCQ", q:"Unit of Impedance", a:"Ohm"},
+    {c:"MCQ", q:"Bending of light into shadow", a:"Diffraction"},
+    {c:"MCQ", q:"Waves used in TV Networks", a:"UHF (Radio Waves)"},
+    {c:"MCQ", q:"Temp Increase -> Semiconductor Conductivity?", a:"Increases"},
+    {c:"MCQ", q:"E-Field near charged plane sheet", a:"σ / 2ε₀"},
+    {c:"MCQ", q:"Photoelectric Effect discovered by", a:"Hertz"},
+    {c:"MCQ", q:"Diode used for Voltage Regulation", a:"Zener Diode"},
+    {c:"MCQ", q:"Self Inductance does NOT depend on", a:"Current in coil"},
+    {c:"MCQ", q:"Transformer Principle", a:"Mutual Induction"},
+    {c:"MCQ", q:"Energy Equivalent of 1 AMU", a:"931 MeV"},
+    {c:"MCQ", q:"Weber is unit of", a:"Magnetic Flux"},
+    {c:"MCQ", q:"Wattless Current flows in", a:"Pure Inductor / Capacitor"},
+    {c:"MCQ", q:"Direction of EM Wave Propagation", a:"E × B"},
+    {c:"MCQ", q:"Current in metal due to", a:"Free Electrons"},
+    {c:"MCQ", q:"Phase diff in Pure Capacitor", a:"90°"},
+    {c:"MCQ", q:"Galvanometer + High Resistance in Series", a:"Voltmeter"},
+    // MATCH THE COLUMN
+    {c:"MATCH", q:"Unit of Power of Lens", a:"Diopter"},
+    {c:"MATCH", q:"Unit of Pole Strength", a:"Ampere-meter (Am)"},
+    {c:"MATCH", q:"Unit of Magnetic Flux", a:"Weber"},
+    {c:"MATCH", q:"Who discovered Infrared Rays?", a:"Herschel"},
+    {c:"MATCH", q:"Principle of Transformer", a:"Mutual Induction"},
+    {c:"MATCH", q:"Minimum Energy for Electron Emission", a:"Work Function"},
+    {c:"MATCH", q:"Violet Color shows", a:"Maximum Deviation"},
+    {c:"MATCH", q:"Unit of Magnetic Field Intensity", a:"Tesla"},
+    {c:"MATCH", q:"Range of Microwave Wavelength", a:"10⁻³ m to 10⁻¹ m"},
+    {c:"MATCH", q:"Mass-Energy Relation given by", a:"Einstein"},
+    {c:"MATCH", q:"Faraday's Law relates to", a:"EMI"},
+    {c:"MATCH", q:"Dual Nature of Matter proposed by", a:"De Broglie"},
+    {c:"MATCH", q:"Alpha Particle is effectively", a:"Helium Nucleus"},
+    {c:"MATCH", q:"Small Bar Magnet acts as", a:"Magnetic Dipole"},
+    {c:"MATCH", q:"Snell's Law is for", a:"Refraction"},
+    {c:"MATCH", q:"Unit of Electric Field Intensity", a:"N/C"},
+    {c:"MATCH", q:"Moving Coil Galvanometer based on", a:"Magnetic Effect of Current"},
+    {c:"MATCH", q:"Red Light in glass has", a:"Maximum Speed"},
+    {c:"MATCH", q:"Parallel Plate Capacitor Formula", a:"ε₀A / d"},
+    {c:"MATCH", q:"Magnetic Field at Center of Solenoid", a:"μ₀nI"},
+    {c:"MATCH", q:"Unit of Specific Resistance", a:"Ohm-meter"},
+    {c:"MATCH", q:"Principle of Optical Fiber", a:"TIR"},
+    {c:"MATCH", q:"Kirchhoff's Second Law is based on", a:"Conservation of Energy"},
+    {c:"MATCH", q:"Formula for Quantization of Charge", a:"q = ± ne"},
+    {c:"MATCH", q:"Electron Discovered by", a:"J.J. Thomson"},
+    {c:"MATCH", q:"Electric Field inside Conductor", a:"Zero"},
+    {c:"MATCH", q:"Wave Number Formula", a:"1 / λ"},
+    {c:"MATCH", q:"Unit of Current", a:"Ampere"},
+    {c:"MATCH", q:"Einstein's Photoelectric Equation", a:"Kmax = hν - Φ"},
+    {c:"MATCH", q:"Energy stored in Capacitor", a:"½ CV²"},
+    {c:"MATCH", q:"Unit of Electric Potential", a:"Volt"},
+    {c:"MATCH", q:"Lorentz Force Formula", a:"q(v × B)"},
+    {c:"MATCH", q:"Surface Tension Unit", a:"N/m"},
+    {c:"MATCH", q:"Order of Wavelength of Visible Light", a:"10⁻⁶ m"},
+    {c:"MATCH", q:"Silicon is an example of", a:"Pure Semiconductor"},
+    {c:"MATCH", q:"Unit of Electric Flux", a:"N·m²/C"},
+    {c:"MATCH", q:"Discovery of EM Waves", a:"Hertz"},
+    {c:"MATCH", q:"Instrument to measure current", a:"Ammeter"},
+    {c:"MATCH", q:"Direction of Induced Current given by", a:"Lenz's Law"},
+    {c:"MATCH", q:"Magnetic Field at ends of Solenoid", a:"½ μ₀nI"},
+    {c:"MATCH", q:"Formula for Electric Power", a:"P = VI"},
+    {c:"MATCH", q:"Energy of Photon", a:"E = hν"},
+    {c:"MATCH", q:"Shunted Galvanometer becomes", a:"Ammeter"},
+    {c:"MATCH", q:"Unit of Current Density", a:"A/m²"},
+    {c:"MATCH", q:"Nichrome wire used for", a:"Resistance Wire"},
+    {c:"MATCH", q:"Dynamo works on", a:"EMI"},
+    {c:"MATCH", q:"Example of Pure Semiconductor", a:"Germanium / Silicon"},
+    {c:"MATCH", q:"Electrostatic Force Law", a:"Coulomb's Law"},
+    {c:"MATCH", q:"Double Slit Experiment by", a:"Young"},
+    {c:"MATCH", q:"Unit of Specific Heat", a:"J/kg·°C"},
+    {c:"MATCH", q:"Unit of Mutual Inductance", a:"Henry"},
+    {c:"MATCH", q:"Unit of Self Inductance", a:"Henry"},
+    {c:"MATCH", q:"Internal Resistance related to", a:"Cell"},
+    {c:"MATCH", q:"Drift Velocity relation", a:"vd ∝ E"},
+    // FILL
+    {c:"FILL", q:"3 capacitors of 3μF in series, Equivalent C?", a:"1 μF"},
+    {c:"FILL", q:"Principle of Moving Coil Galvanometer?", a:"Torque on current loop"},
+    {c:"FILL", q:"Induced EMF is due to change in?", a:"Magnetic Flux"},
+    {c:"FILL", q:"Wavelength increases, Refractive Index?", a:"Decreases"},
+    {c:"FILL", q:"Number of photoelectrons depends on?", a:"Intensity"},
+    {c:"FILL", q:"Ionization energy of Hydrogen atom?", a:"13.6 eV"},
+    {c:"FILL", q:"SI Unit of Pole Strength?", a:"Ampere-meter (Am)"},
+    {c:"FILL", q:"1 kWh equals how many Joules?", a:"3.6 × 10⁶ J"},
+    {c:"FILL", q:"Frequency of DC Current?", a:"Zero"},
+    {c:"FILL", q:"EM waves with max frequency?", a:"Gamma Rays"},
+    {c:"FILL", q:"Light from Rare to Denser, Velocity?", a:"Decreases"},
+    {c:"FILL", q:"Electric Potential of Earth taken as?", a:"Zero"},
+    {c:"FILL", q:"Relation: Peak Current & RMS Current?", a:"I₀ = √2 × Irms"},
+    {c:"FILL", q:"Air bubble in water behaves as?", a:"Concave Lens"},
+    {c:"FILL", q:"Hydrogen Bomb based on?", a:"Nuclear Fusion"},
+    {c:"FILL", q:"Temp Coeff of Resistance for Semiconductor?", a:"Negative"},
+    {c:"FILL", q:"Depletion layer contains?", a:"Immobile Ions"},
+    {c:"FILL", q:"SI Unit of Electric Field?", a:"N/C or V/m"},
+    {c:"FILL", q:"Potentiometer is considered an ___ Voltmeter.", a:"Ideal"},
+    {c:"FILL", q:"Voltmeter is connected in ___ in circuit.", a:"Parallel"},
+    {c:"FILL", q:"SI Unit of Inductive Reactance?", a:"Ohm"},
+    {c:"FILL", q:"Ozone layer absorbs?", a:"UV Radiations"},
+    {c:"FILL", q:"EM Waves are ___ in nature.", a:"Transverse"},
+    {c:"FILL", q:"Corpuscular Theory proposed by?", a:"Newton"},
+    {c:"FILL", q:"Majority carriers in N-type?", a:"Electrons"},
+    {c:"FILL", q:"Resistance of Forward Biased Diode?", a:"Very Low"},
+    {c:"FILL", q:"To obtain P-type, add ___ impurity.", a:"Trivalent"},
+    {c:"FILL", q:"Light enters glass from air, Frequency?", a:"Remains Unchanged"},
+    {c:"FILL", q:"Least Distance of Distinct Vision?", a:"25 cm"},
+    {c:"FILL", q:"Unit of Current Density?", a:"A/m²"},
+    {c:"FILL", q:"Value of Specific Charge of Electron?", a:"1.76 × 10¹¹ C/kg"},
+    {c:"FILL", q:"Electric Field is a ___ quantity.", a:"Vector"},
+    {c:"FILL", q:"AC shows ___ effect.", a:"Heating"},
+    {c:"FILL", q:"1 Fermi equals?", a:"10⁻¹⁵ m"},
+    {c:"FILL", q:"μ₀ represents ___ of vacuum.", a:"Permeability"},
+    {c:"FILL", q:"Paramagnetic susceptibility is?", a:"Positive"},
+    {c:"FILL", q:"Order of Frequency of Visible Light?", a:"10¹⁴ Hz"},
+    {c:"FILL", q:"Rest Mass of Electron?", a:"9.1 × 10⁻³¹ kg"},
+    {c:"FILL", q:"Add impurity to semiconductor, Resistance?", a:"Decreases"},
+    {c:"FILL", q:"Meter Bridge based on principle of?", a:"Wheatstone Bridge"},
+    {c:"FILL", q:"Current carrying solenoid behaves like?", a:"Bar Magnet"},
+    {c:"FILL", q:"Band above Valence Band?", a:"Conduction Band"},
+    {c:"FILL", q:"Unit of Magnetic Flux?", a:"Weber"},
+    {c:"FILL", q:"Size of Atom is of order?", a:"10⁻¹⁰ m"},
+    {c:"FILL", q:"Ohmic resistance of Ideal Inductor?", a:"Zero"},
+    {c:"FILL", q:"Radius of Curvature of Plane Mirror?", a:"Infinite"},
+    {c:"FILL", q:"Charge on Single Electron (Fundamental)?", a:"1.6 × 10⁻¹⁹ C"},
+    {c:"FILL", q:"Relation: Energy & Frequency?", a:"Directly Proportional"},
+    {c:"FILL", q:"Electric Potential is ___ quantity.", a:"Scalar"},
+    {c:"FILL", q:"Temp increases, Ferromagnetism?", a:"Decreases"},
+    {c:"FILL", q:"Distance between electrodes inc, Internal R?", a:"Increases"},
+    {c:"FILL", q:"Explanation of Photoelectric Effect by?", a:"Einstein"},
+    {c:"FILL", q:"Electric Dipole Moment is ___ quantity.", a:"Vector"},
+    {c:"FILL", q:"Current Carrying Solenoid acts as?", a:"Bar Magnet"},
+    {c:"FILL", q:"Deficiency of electrons causes ___ charge.", a:"Positive"},
+    {c:"FILL", q:"Work done moving charge perpendicular to E?", a:"Zero"},
+    {c:"FILL", q:"Rays used to kill germs?", a:"UV / Gamma"},
+    {c:"FILL", q:"Shunt is connected in ___ with Galv.", a:"Parallel"},
+    {c:"FILL", q:"Reflecting Telescope free from ___ defect.", a:"Chromatic Aberration"},
+    {c:"FILL", q:"1 eV = ___ Joules.", a:"1.6 × 10⁻¹⁹"},
+    {c:"FILL", q:"Radius of Atomic Nucleus order?", a:"10⁻¹⁵ m"},
+    {c:"FILL", q:"Dim Formula of Charge?", a:"[AT]"},
+    {c:"FILL", q:"SI Unit of Inductance?", a:"Henry"},
+    {c:"FILL", q:"Mass-Energy Equivalence Relation?", a:"E = mc²"},
+    {c:"FILL", q:"E-Field due to infinite sheet depends on r?", a:"No"},
+    {c:"FILL", q:"Electric Current per unit area?", a:"Current Density"},
+    {c:"FILL", q:"Changing Electric Field produces?", a:"Displacement Current"},
+    {c:"FILL", q:"Waves meeting in opposite phase undergo?", a:"Destructive Interference"},
+    {c:"FILL", q:"Final image in Terrestrial Telescope?", a:"Erect"},
+    {c:"FILL", q:"Bohr's Stationary Orbit Radius prop to?", a:"n²"},
+    {c:"FILL", q:"RMS Current = ___ x Peak Current.", a:"0.707 (or 1/√2)"},
+    {c:"FILL", q:"1 Coulomb contains ___ electrons.", a:"6.25 × 10¹⁸"},
+    {c:"FILL", q:"De Broglie Wave equation?", a:"λ = h / mv"},
+    {c:"FILL", q:"New wavefronts originate from?", a:"Secondary Wavelets"},
+    {c:"FILL", q:"Nuclear Fission bombards with ___ neutrons.", a:"Slow / Thermal"},
+    {c:"FILL", q:"Temp increases, Metal Conductivity?", a:"Decreases"},
+    {c:"FILL", q:"Pure Capacitive Circuit, Current leads by?", a:"90°"},
+    {c:"FILL", q:"SI Unit of Magnetic Field?", a:"Tesla"},
+    {c:"FILL", q:"Redistribution of energy is called?", a:"Interference"},
+    {c:"FILL", q:"Move in direction of E-field, Potential?", a:"Decreases"},
+    {c:"FILL", q:"Ammeter connected in ___.", a:"Series"},
+    {c:"FILL", q:"Bright colors in oil film due to?", a:"Interference"},
+    {c:"FILL", q:"Light nuclei combining process?", a:"Nuclear Fusion"},
+    {c:"FILL", q:"Unit of Power of Lens?", a:"Diopter"},
+    {c:"FILL", q:"Every moving particle associated with?", a:"Matter Wave"},
+    {c:"FILL", q:"Forbidden Gap of Intrinsic Semi order?", a:"1 eV"},
+    {c:"FILL", q:"Kirchhoff's 1st Law based on?", a:"Conservation of Charge"},
+    {c:"FILL", q:"TV Remote uses ___ waves.", a:"Infrared"},
+    {c:"FILL", q:"Sound waves cannot show?", a:"Polarization"},
+    {c:"FILL", q:"Light from ordinary bulb is?", a:"Unpolarized"},
+    {c:"FILL", q:"Nature of Radiation is?", a:"Dual (Wave & Particle)"},
+    {c:"FILL", q:"Food preservation uses ___ rays.", a:"Gamma / UV"},
+    {c:"FILL", q:"At Resonance, Current is?", a:"Maximum"},
+    {c:"FILL", q:"Dielectric Constant of Metal?", a:"Infinite"},
+    {c:"FILL", q:"Fog visibility uses ___ rays.", a:"Infrared"},
+    {c:"FILL", q:"Size of Electric Potential?", a:"Point Size"},
+    // TF
+    {c:"TF", q:"Shunt is always connected in Series.", a:"False (Parallel)"},
+    {c:"TF", q:"Lorentz force on charge moving parallel to B is Zero.", a:"True"},
+    {c:"TF", q:"Electrons move from Low to High Potential.", a:"True"},
+    {c:"TF", q:"Electron Volt (eV) is unit of Electric Charge.", a:"False (Energy)"},
+    {c:"TF", q:"EM waves are Longitudinal in nature.", a:"False (Transverse)"},
+    {c:"TF", q:"N-type is an example of Pure Semiconductor.", a:"False"},
+    {c:"TF", q:"Temp Coeff of Resistance for Germanium is Negative.", a:"True"},
+    {c:"TF", q:"Potential inside hollow charged conductor is Zero.", a:"False (Constant)"},
+    {c:"TF", q:"Electric Field is a Vector Quantity.", a:"True"},
+    {c:"TF", q:"Capacitor blocks DC but allows AC.", a:"True"},
+    {c:"TF", q:"Energy is conserved in Interference.", a:"True"},
+    {c:"TF", q:"Atom is positively charged.", a:"False (Neutral)"},
+    {c:"TF", q:"In P-type, majority carriers are Electrons.", a:"False (Holes)"},
+    {c:"TF", q:"Matter waves are Electromagnetic waves.", a:"False"},
+    {c:"TF", q:"Einstein's Mass-Energy relation is E=mc².", a:"True"},
+    {c:"TF", q:"Conductivity of Semiconductor increases with Temp.", a:"True"},
+    {c:"TF", q:"V-I graph for Ohmic resistance is Straight Line.", a:"True"},
+    {c:"TF", q:"Direction of Electric Field is + to -.", a:"True"},
+    {c:"TF", q:"Resistivity of Semiconductor increases as Temp decreases.", a:"True"},
+    {c:"TF", q:"Unit of Induced EMF is Volt.", a:"True"},
+    {c:"TF", q:"Microwave Oven is based on Radio Waves.", a:"False (Microwaves)"},
+    {c:"TF", q:"Forbidden Energy Gap in Metal is Zero.", a:"True"},
+    {c:"TF", q:"Shunt is always connected in Parallel.", a:"True"},
+    {c:"TF", q:"Dispersion Power has no unit.", a:"True"},
+    {c:"TF", q:"Experimental study of Photoelectric Effect by Lenard.", a:"True"},
+    {c:"TF", q:"Energy to separate Electron from H-atom is 13.6 eV.", a:"True"},
+    {c:"TF", q:"Infrared waves discovered by Ritter.", a:"False (Herschel)"},
+    {c:"TF", q:"Radius of 1st Bohr Orbit is 0.53 Å.", a:"True"},
+    {c:"TF", q:"Phase diff between points on Wavefront is 90°.", a:"False (Zero)"},
+    {c:"TF", q:"Dipole direction (Outside) is North to South.", a:"True"},
+    {c:"TF", q:"Electric Potential of Earth is taken as Zero.", a:"True"},
+    {c:"TF", q:"Diffraction fringes are equally spaced.", a:"False"},
+    {c:"TF", q:"Unit of Power of Lens is Meter.", a:"False (Diopter)"},
+    {c:"TF", q:"KE of charge in uniform Magnetic Field is constant.", a:"True"},
+    {c:"TF", q:"Weber is unit of Magnetic Field.", a:"False (Flux)"},
+    {c:"TF", q:"Volume of Nucleus proportional to Mass Number.", a:"True"},
+    {c:"TF", q:"AC is more dangerous than DC of same voltage.", a:"True"},
+    {c:"TF", q:"Increasing conductor size decreases Capacitance.", a:"False (Increases)"},
+    {c:"TF", q:"Fleming Left Hand Rule gives direction of E-Field.", a:"False (Force)"},
+    {c:"TF", q:"Magnetic Field lines never intersect.", a:"True"},
+    {c:"TF", q:"In Intrinsic Semi, Electrons = Holes.", a:"True"},
+    {c:"TF", q:"Dead Beat Galvanometer caused by Eddy Current.", a:"True"},
+    {c:"TF", q:"Nucleons means only Neutrons.", a:"False (Protons+Neutrons)"},
+    {c:"TF", q:"Photons are smallest bundles of energy.", a:"True"},
+    {c:"TF", q:"To increase Capacitance, connect in Series.", a:"False (Parallel)"},
+    {c:"TF", q:"Direction of Induced Current given by Left Hand Rule.", a:"False (Lenz/Right Hand)"},
+    {c:"TF", q:"Helium Nucleus is called Alpha Particle.", a:"True"},
+    {c:"TF", q:"Lens immersed in liquid, Power Increases.", a:"False (Decreases)"},
+    {c:"TF", q:"Soap bubbles appear colorful due to Interference.", a:"True"},
+    {c:"TF", q:"Parallel currents in same direction attract.", a:"True"},
+    {c:"TF", q:"Forbidden Gap for Diamond is 6 eV.", a:"True"},
+    {c:"TF", q:"Displacement Current produced by Magnetic Field.", a:"False (Changing E-Field)"},
+    {c:"TF", q:"Transformer works on Mutual Induction.", a:"True"},
+    {c:"TF", q:"Angle of Dip is max at Poles.", a:"True"},
+    {c:"TF", q:"Rest Mass of Photon is Zero.", a:"True"},
+    {c:"TF", q:"Binding Energy of Stable Nucleus < 8 MeV.", a:"False (> 8MeV)"},
+    {c:"TF", q:"Absorption of Neutrons in reactor done by Cadmium.", a:"True"},
+    {c:"TF", q:"Density of all atomic nuclei is approx same.", a:"True"},
+    {c:"TF", q:"Interference fringes are at equal distance.", a:"True"},
+    {c:"TF", q:"Gamma rays have highest penetration power.", a:"True"},
+    {c:"TF", q:"Magnetic Flux is Scalar Quantity.", a:"True"},
+    {c:"TF", q:"Sound waves can undergo Polarization.", a:"False"},
+    {c:"TF", q:"Nuclear Force is Short Range.", a:"True"},
+    {c:"TF", q:"Intrinsic Semi current only due to Electrons.", a:"False (Both)"},
+    {c:"TF", q:"Step Down Transformer increases Current.", a:"True"},
+    {c:"TF", q:"Si and Ge are examples of Impure Semi.", a:"False (Pure)"},
+    {c:"TF", q:"X-rays discovered by Becquerel.", a:"False (Roentgen)"},
+    {c:"TF", q:"Rutherford model explained Stability.", a:"False"},
+    {c:"TF", q:"Majority carriers in Depletion Layer are Electrons.", a:"False (Ions)"},
+    {c:"TF", q:"Lenz Law is accordance with Energy Conservation.", a:"True"},
+    {c:"TF", q:"Coulomb Law valid for Moving Charges.", a:"False (Static)"},
+    {c:"TF", q:"Silicon Atom has 4 Valence Electrons.", a:"True"},
+    {c:"TF", q:"Resistance of Ideal Ammeter is Infinite.", a:"False (Zero)"},
+    {c:"TF", q:"In Young's Exp, sources are Real.", a:"False (Virtual)"},
+    {c:"TF", q:"When metal heated, electrons emitted.", a:"True"},
+    {c:"TF", q:"Two independent sources can be Coherent.", a:"False"},
+    {c:"TF", q:"Dielectric Constant of Metal is Infinite.", a:"True"},
+    {c:"TF", q:"Swapping Cell & Galv affects Wheatstone Balance.", a:"False"},
+    {c:"TF", q:"Ammeter is connected in Parallel.", a:"False (Series)"},
+    {c:"TF", q:"Iron core inside coil increases Self Inductance.", a:"True"},
+    {c:"TF", q:"Refractive Index of Prism max for Violet.", a:"True"},
+    {c:"TF", q:"Avg Power of Pure Inductor is Zero.", a:"True"},
+    {c:"TF", q:"X-rays used for Photography in Fog.", a:"False (Infrared)"},
+    {c:"TF", q:"Wavelength for Balmer Series is 3684 Å.", a:"True"},
+    {c:"TF", q:"Convert Galv to Ammeter: High R in Series.", a:"False (Low R in Parallel)"},
+    {c:"TF", q:"Electron Orbits are Quantized.", a:"True"},
+    {c:"TF", q:"TIR: Incidence Angle > Critical Angle.", a:"True"},
+    {c:"TF", q:"Photon is electrically Neutral.", a:"True"},
+    {c:"TF", q:"Electrolysis possible using AC.", a:"False"},
+    {c:"TF", q:"Dim of Planck Constant same as Frequency.", a:"False"},
+    {c:"TF", q:"Electrons & Protons present inside Nucleus.", a:"False (Neutrons)"},
+    {c:"TF", q:"Diamagnetic materials repelled by magnet.", a:"True"},
+    {c:"TF", q:"TIR: Angle of Refraction is Zero.", a:"False (Does not exist)"},
+    {c:"TF", q:"Unlimited charge given to conductor.", a:"False"},
+    {c:"TF", q:"Specific Resistance of Alloy is High.", a:"True"},
+    {c:"TF", q:"Use of Shunt decreases Sensitivity.", a:"True"},
+    {c:"TF", q:"Transformer used in DC Current.", a:"False"},
+    {c:"TF", q:"Like Magnetic Poles Attract.", a:"False"},
+    {c:"TF", q:"EM waves cannot travel in vacuum.", a:"False"},
+    {c:"TF", q:"Potential Barrier increases with Temp.", a:"False (Decreases)"},
+    {c:"TF", q:"Unit of Capacitance is Farad/Coulomb.", a:"False"},
+    {c:"TF", q:"Voltmeter is Superior to Potentiometer.", a:"False"},
+    {c:"TF", q:"Paschen Series lies in Infrared Region.", a:"True"},
+    {c:"TF", q:"SI Unit of Capacitance is Farad.", a:"True"},
+    {c:"TF", q:"Speed of light different in different media.", a:"True"},
+    {c:"TF", q:"1 Photon emits only 1 Electron.", a:"True"},
+    {c:"TF", q:"Self Inductance independent of Radius.", a:"False"},
+    {c:"TF", q:"De Broglie waves are EM waves.", a:"False"},
+    {c:"TF", q:"E-Field lines do not pass through conductor.", a:"True"},
+    {c:"TF", q:"Unit of B-Field is Weber/m².", a:"True"},
+    {c:"TF", q:"Resistance of Semi increases with Impurity.", a:"False (Decreases)"},
+    {c:"TF", q:"Current Density inv prop to Drift Velocity.", a:"False (Direct)"},
+    {c:"TF", q:"Silicon has 6 valence electrons.", a:"False (4)"},
+    {c:"TF", q:"Unit of Dipole Moment is C/m.", a:"False (C·m)"},
+    // ONE WORD
+    {c:"ONE", q:"Majority charge carriers in N-type?", a:"Electrons"},
+    {c:"ONE", q:"Principle of Transformer?", a:"Mutual Induction"},
+    {c:"ONE", q:"Color with Maximum Wavelength?", a:"Red"},
+    {c:"ONE", q:"Another name for Convex Lens?", a:"Converging Lens"},
+    {c:"ONE", q:"Angular Momentum in 1st Bohr Orbit?", a:"h / 2π"},
+    {c:"ONE", q:"Power Factor for Pure Resistance?", a:"1"},
+    {c:"ONE", q:"Current produced by Time Varying E-Field?", a:"Displacement Current"},
+    {c:"ONE", q:"Nature of image by Convex Mirror?", a:"Virtual, Erect, Diminished"},
+    {c:"ONE", q:"Convert Galvanometer to Ammeter?", a:"Connect Shunt (Low R) in Parallel"},
+    {c:"ONE", q:"Lenz Law based on?", a:"Conservation of Energy"},
+    {c:"ONE", q:"Direction of Dipole Moment (Inside)?", a:"South to North"},
+    {c:"ONE", q:"Force on charge moving in B-Field?", a:"Lorentz Force"},
+    {c:"ONE", q:"Min Frequency for Photoelectric Emission?", a:"Threshold Frequency"},
+    {c:"ONE", q:"Forbidden Energy Gap for Metal?", a:"Zero"},
+    {c:"ONE", q:"Effect of Dielectric on Potential?", a:"Decreases"},
+    {c:"ONE", q:"Increase Magnifying Power of Telescope?", a:"Increase Focal Length of Objective"},
+    {c:"ONE", q:"Relation: Focal Length & Power?", a:"P = 1/f"},
+    {c:"ONE", q:"Electric Flux is Vector or Scalar?", a:"Scalar"},
+    {c:"ONE", q:"Frequency of DC?", a:"Zero"},
+    {c:"ONE", q:"Value of 1 eV in Joules?", a:"1.6 × 10⁻¹⁹ J"},
+    {c:"ONE", q:"SI Unit of Power of Lens?", a:"Diopter"},
+    {c:"ONE", q:"SI Unit of Self Inductance?", a:"Henry"},
+    {c:"ONE", q:"Effect of Temp on Diamagnetism?", a:"No Effect"},
+    {c:"ONE", q:"Wavelength Range of Visible Light?", a:"4000Å - 7800Å"},
+    {c:"ONE", q:"Forbidden Gap for Germanium?", a:"0.72 eV"},
+    {c:"ONE", q:"Why Transformer Core Laminated?", a:"To Reduce Eddy Current Loss"},
+    {c:"ONE", q:"Frequency of AC in India?", a:"50 Hz"},
+    {c:"ONE", q:"Definition of Diffraction?", a:"Bending of Light at Corners"},
+    {c:"ONE", q:"Instrument to measure Current?", a:"Ammeter"},
+    {c:"ONE", q:"What are Nucleons?", a:"Protons + Neutrons"},
+    {c:"ONE", q:"Lens used as Reading Lens?", a:"Convex Lens"},
+    {c:"ONE", q:"Unit of Dipole Moment?", a:"Coulomb-meter (Cm)"},
+    {c:"ONE", q:"Unit of Potential Gradient?", a:"Volt/meter"},
+    {c:"ONE", q:"What is Wattless Current?", a:"Current with Zero Avg Power Consumption"},
+    {c:"ONE", q:"One use of Concave Mirror?", a:"Shaving Mirror / Dentist"},
+    {c:"ONE", q:"Semi formed by adding Pentavalent impurity?", a:"N-type"},
+    {c:"ONE", q:"Value of Fundamental Charge?", a:"1.6 × 10⁻¹⁹ C"},
+    {c:"ONE", q:"Instrument to measure Potential Diff?", a:"Voltmeter"},
+    {c:"ONE", q:"Effect of Temp on Drift Velocity?", a:"Decreases"},
+    {c:"ONE", q:"Factors affecting Angle of Deviation?", a:"Refractive Index, Angle of Prism, Wavelength"},
+    {c:"ONE", q:"Voltmeter connected in?", a:"Parallel"},
+    {c:"ONE", q:"Mirror with Positive Focal Length?", a:"Convex Mirror"},
+    {c:"ONE", q:"Capacitors in Parallel?", a:"Increases Capacity"},
+    {c:"ONE", q:"Fields produced by Moving Charge?", a:"Electric & Magnetic"},
+    {c:"ONE", q:"Law for direction of Induced Current?", a:"Lenz Law"},
+    {c:"ONE", q:"SI Unit of Electric Capacitance?", a:"Farad"},
+    {c:"ONE", q:"Convert Galvanometer to Voltmeter?", a:"High R in Series"},
+    {c:"ONE", q:"Effect on Focal Length of lens in liquid?", a:"Increases"},
+    {c:"ONE", q:"Cause of Displacement Current?", a:"Changing Electric Flux"},
+    {c:"ONE", q:"SI Unit of Electric Charge?", a:"Coulomb"},
+    {c:"ONE", q:"Exp confirming Matter Waves?", a:"Davisson-Germer"},
+    {c:"ONE", q:"Energy of electron in nth Orbit (H-atom)?", a:"-13.6 / n² eV"},
+    {c:"ONE", q:"Rays used in Fog?", a:"Infrared"},
+    {c:"ONE", q:"SI Unit of Electric Potential?", a:"Volt"},
+    {c:"ONE", q:"Minority carriers in N-type?", a:"Holes"},
+    {c:"ONE", q:"Value of Rydberg Constant?", a:"1.097 × 10⁷ m⁻¹"},
+    {c:"ONE", q:"Relation: Work Function & Threshold Freq?", a:"Φ = hν₀"},
+    {c:"ONE", q:"Quantization of Charge Formula?", a:"q = ± ne"},
+    {c:"ONE", q:"Discovery of Electron?", a:"J.J. Thomson"},
+    {c:"ONE", q:"Electric Field inside Conductor?", a:"Zero"}
+];
+
+// Logic
+const list = document.getElementById('question-list');
+const modal = document.getElementById('modal');
+let activeFilter = 'All';
+
+function init() {
+    render(db);
+    // Auto detect dark mode preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+}
+
+function render(data) {
+    list.innerHTML = data.map((item, index) => `
+        <div class="glass-card" style="animation-delay: ${Math.min(index * 0.05, 1.5)}s">
+            <div class="shimmer"></div>
+            <div>
+                <span class="tag" style="color:${item.c==='MATCH'?'#ffd700':''};">${item.c}</span>
+                <div class="q-text">${item.q}</div>
+            </div>
+            <div>
+                <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+                <div class="answer">${item.a}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleAns(btn) {
+    const ans = btn.nextElementSibling;
+    const isHidden = ans.style.maxHeight === '0px' || !ans.style.maxHeight;
+    
+    if (isHidden) {
+        ans.style.maxHeight = "150px";
+        ans.classList.add('show');
+        btn.innerHTML = "Hide Answer";
+        btn.style.background = "rgba(255,255,255,0.3)";
+    } else {
+        ans.style.maxHeight = "0px";
+        ans.classList.remove('show');
+        btn.innerHTML = "Show Answer";
+        btn.style.background = "";
+    }
+}
+
+function setFilter(type) {
+    activeFilter = type;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        if(b.textContent.includes(type) || (type === 'All' && b.textContent === 'All')) b.classList.add('active');
+    });
+    filterData();
+}
+
+function filterData() {
+    const term = document.getElementById('search').value.toLowerCase();
+    const filtered = db.filter(item => {
+        const matchesType = activeFilter === 'All' ? true : item.c === activeFilter;
+        const matchesSearch = item.q.toLowerCase().includes(term) || item.a.toLowerCase().includes(term);
+        return matchesType && matchesSearch;
+    });
+    render(filtered);
+}
+
+// Modal Logic
+function openSheet() {
+    modal.style.display = 'flex';
+}
+
+function closeSheet() {
+    modal.style.animation = 'modalDown 0.3s forwards';
+    setTimeout(() => {
+        modal.style.display = 'none';
+        modal.style.animation = 'modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+    }, 300);
+}
+
+// Add closing animation style dynamically
+const style = document.createElement('style');
+style.innerHTML = `
+    @keyframes modalDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
+`;
+document.head.appendChild(style);
+
+function toggleTheme() {
+    const body = document.body;
+    body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function toggleFS() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
+
+init();
+</script>
+</body>
+</html>
