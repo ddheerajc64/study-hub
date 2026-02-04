@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unit 6: Optics (Premium)</title>
+    <style>
+        :root {
+            /* Light Mode - Indigo/Blue/Purple for Optics */
+            --bg-gradient: radial-gradient(circle at 0% 0%, #a1c4fd 0%, #c2e9fb 100%);
+            --text-main: #1e293b;
+            --text-sec: #475569;
+            --card-bg: rgba(255, 255, 255, 0.25);
+            --card-border: rgba(255, 255, 255, 0.4);
+            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --btn-bg: rgba(255, 255, 255, 0.3);
+            --btn-hover: rgba(255, 255, 255, 0.5);
+            --accent: #4f46e5; /* Indigo-600 */
+        }
+
+        [data-theme="dark"] {
+            /* True Black Mode */
+            --bg-gradient: radial-gradient(circle at 50% 50%, #000000, #0f172a);
+            --text-main: #f8fafc;
+            --text-sec: #cbd5e0;
+            --card-bg: rgba(20, 20, 20, 0.6);
+            --card-border: rgba(79, 70, 229, 0.2);
+            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            --btn-bg: rgba(255, 255, 255, 0.05);
+            --btn-hover: rgba(255, 255, 255, 0.15);
+            --accent: #818cf8; /* Indigo-400 */
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- HEADER --- */
+        header {
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
+
+        .icon-btn {
+            background: var(--btn-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+        }
+        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
+
+        /* --- CONTROLS --- */
+        .controls-area { padding: 20px; z-index: 40; }
+
+        #search {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            margin-top: 15px;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        .filters::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--btn-bg);
+            color: var(--text-sec);
+            font-weight: 700;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .filter-btn.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent);
+            border-color: transparent;
+        }
+
+        /* --- GRID --- */
+        #question-list {
+            flex: 1;
+            padding: 10px 20px 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* --- GLASS CARD --- */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            height: auto;
+            min-height: 200px;
+            opacity: 0;
+            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            z-index: 10;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .reveal-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
+            color: var(--text-main);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+        }
+        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
+
+        /* ANSWER SECTION */
+        .answer {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
+            margin-top: 0;
+        }
+        
+        .answer-inner {
+            overflow: hidden;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+        }
+        
+        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
+
+        .answer.open {
+            grid-template-rows: 1fr;
+            margin-top: 15px;
+        }
+        
+        .answer.open .answer-inner {
+            padding: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        /* SHIMMER EFFECT */
+        .shimmer {
+            position: absolute;
+            top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            transition: left 0.5s;
+        }
+        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
+
+        /* --- FORMULA MODAL --- */
+        #formula-btn {
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer; z-index: 100; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
+
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            z-index: 200; display: none; flex-direction: column;
+            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
+        
+        .formula-box {
+            background: rgba(255,255,255,0.05); border-radius: 18px;
+            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
+        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>UNIT 6: OPTICS</h1>
+        <div class="controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="icon-btn" onclick="toggleFS()">⛶</button>
+        </div>
+    </header>
+
+    <div class="controls-area">
+        <input type="text" id="search" placeholder="Search 25 Questions..." onkeyup="filterData()">
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
+            <button class="filter-btn" onclick="setFilter('RAY')">Ray Optics</button>
+            <button class="filter-btn" onclick="setFilter('WAVE')">Wave Optics</button>
+            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
+        </div>
+    </div>
+
+    <div id="question-list">
+        </div>
+
+    <button id="formula-btn" onclick="openSheet()">
+        <span>📄</span> Formulas
+    </button>
+
+    <div id="modal">
+        <div class="modal-header">
+            <h2 style="color:white; margin:0">Unit 6 Formulas</h2>
+            <button class="icon-btn" onclick="closeSheet()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div class="formula-box">
+                <h3>Reflection & Refraction</h3>
+                <div class="f-row"><span>1/f = 1/v + 1/u</span> <span class="f-desc">Mirror Eq</span></div>
+                <div class="f-row"><span>μ = c/v</span> <span class="f-desc">Refractive Index</span></div>
+                <div class="f-row"><span>μ = sin i / sin r</span> <span class="f-desc">Snell's Law</span></div>
+                <div class="f-row"><span>μ = 1 / sin C</span> <span class="f-desc">Critical Angle</span></div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Lenses & Prism</h3>
+                <div class="f-row"><span>1/f = (μ-1)(1/R1-1/R2)</span> <span class="f-desc">Lens Maker</span></div>
+                <div class="f-row"><span>1/f = 1/v - 1/u</span> <span class="f-desc">Lens Eq</span></div>
+                <div class="f-row"><span>P = 1/f (m)</span> <span class="f-desc">Power</span></div>
+                <div class="f-row"><span>μ = sin((A+dm)/2) / sin(A/2)</span> <span class="f-desc">Prism</span></div>
+            </div>
+
+            <div class="formula-box">
+                <h3>Wave Optics</h3>
+                <div class="f-row"><span>β = λD/d</span> <span class="f-desc">Fringe Width</span></div>
+                <div class="f-row"><span>path diff = nλ</span> <span class="f-desc">Max (Interference)</span></div>
+                <div class="f-row"><span>d sinθ = nλ</span> <span class="f-desc">Min (Diffraction)</span></div>
+                <div class="f-row"><span>μ = tan(ip)</span> <span class="f-desc">Brewster Law</span></div>
+            </div>
+        </div>
+    </div>
+
+<script>
+/* THE 25 QUESTIONS FOR UNIT 6 */
+const db = [
+    // 1. Definition - Ray
+    {c:"RAY", q:"Define Refractive Index. What is its unit?", a:"The ratio of speed of light in vacuum (c) to the speed of light in the medium (v).\nμ = c/v.\nIt has NO unit (dimensionless)."},
+    
+    // 2. Definition - Ray
+    {c:"RAY", q:"What is Total Internal Reflection (TIR)? Write two conditions.", a:"When light travels from dense to rare medium and angle of incidence > critical angle, it reflects back into the same medium.\nConditions:\n1. Light must go Dense → Rare.\n2. Angle i > Critical Angle (C)."},
+    
+    // 3. Concept - Ray
+    {c:"RAY", q:"Write two applications of Total Internal Reflection.", a:"1. Optical Fibers (Communication).\n2. Mirage formation in deserts.\n3. Brilliance of Diamond."},
+    
+    // 4. Derivation - Ray
+    {c:"RAY", q:"Derive relation between Refractive Index (μ) and Critical Angle (C).", a:"By Snell's Law: μ sin C = 1 sin 90° (Grazing emergence).\nμ sin C = 1\nμ = 1 / sin C."},
+    
+    // 5. Derivation - Ray
+    {c:"RAY", q:"Derive Lens Maker's Formula for a thin convex lens.", a:"Refraction at 1st surface: μ/v1 - 1/u = (μ-1)/R1\nRefraction at 2nd surface: 1/v - μ/v1 = (1-μ)/R2\nAdding both:\n1/f = (μ-1) [ 1/R1 - 1/R2 ]."},
+    
+    // 6. Concept - Ray
+    {c:"RAY", q:"Define Power of a Lens and its SI unit.", a:"The reciprocal of focal length (in meters).\nP = 1/f(m).\nSI Unit: Diopter (D)."},
+    
+    // 7. Numerical - Ray
+    {c:"NUMERICAL", q:"Focal lengths of two thin lenses in contact are +20cm and -40cm. Find effective power.", a:"f1=+20cm=+0.2m, f2=-40cm=-0.4m.\nP1 = 1/0.2 = +5D\nP2 = 1/-0.4 = -2.5D\nP = P1 + P2 = 5 - 2.5 = +2.5 D."},
+    
+    // 8. Derivation - Ray
+    {c:"RAY", q:"Derive Prism Formula for refractive index.", a:"At minimum deviation (δm), i=e and r1=r2=r.\nA = 2r ⇒ r = A/2.\nδm = 2i - A ⇒ i = (A+δm)/2.\nBy Snell's Law: μ = sin i / sin r\nμ = sin((A+δm)/2) / sin(A/2)."},
+    
+    // 9. Concept - Ray
+    {c:"RAY", q:"Why does the sky appear blue?", a:"Due to Scattering of Light (Rayleigh Scattering).\nScattering ∝ 1/λ⁴.\nBlue has shorter wavelength, so it scatters more than red."},
+    
+    // 10. Concept - Ray
+    {c:"RAY", q:"Draw ray diagram of Simple Microscope. Write magnification formula.", a:"Diagram: Object within focus, Virtual erect magnified image.\nFormula (at D): m = 1 + D/f."},
+    
+    // 11. Concept - Ray
+    {c:"RAY", q:"Draw ray diagram of Compound Microscope. Why is objective aperture small?", a:"Diagram: Objective forms real image, Eyepiece magnifies it.\nAperture is small to reduce spherical aberration and because object is very small/bright."},
+    
+    // 12. Concept - Ray
+    {c:"RAY", q:"Draw ray diagram of Astronomical Telescope. Formula for length?", a:"Diagram: Objective forms image at focus, Eyepiece magnifies.\nLength L = f₀ + fe (at normal adjustment)."},
+    
+    // 13. Comparison - Wave
+    {c:"WAVE", q:"Differentiate between Interference and Diffraction.", a:"1. Interference: Superposition of waves from 2 coherent sources. | Diffraction: Bending of waves around corners.\n2. Fringes: Equal width. | Fringes: Central max is widest.\n3. Intensity: Minima is dark. | Intensity: Minima not perfectly dark."},
+    
+    // 14. Definition - Wave
+    {c:"WAVE", q:"What is a Wavefront? Types?", a:"Locus of all points vibrating in the same phase.\nTypes: Spherical, Cylindrical, Plane."},
+    
+    // 15. Concept - Wave
+    {c:"WAVE", q:"State Huygen's Principle of secondary wavelets.", a:"1. Every point on a wavefront acts as a source of new disturbance.\n2. The secondary wavelets spread out in all directions with speed of light.\n3. The new wavefront is the tangent envelope to these secondary wavelets."},
+    
+    // 16. Derivation - Wave
+    {c:"WAVE", q:"Verify Laws of Reflection/Refraction using Huygen's Principle.", a:"Consider a plane wavefront incident on a surface. Draw secondary wavelets. By congruent triangles (Reflection) or Snell's law geometry (Refraction), laws are proved."},
+    
+    // 17. Derivation - Wave
+    {c:"WAVE", q:"Young's Double Slit Experiment (YDSE): Derive Fringe Width (β).", a:"Path difference Δx = d sinθ ≈ dy/D.\nFor Bright Fringe: dy/D = nλ ⇒ y = nλD/d.\nFringe Width β = y(n+1) - y(n)\nβ = λD / d."},
+    
+    // 18. Concept - Wave
+    {c:"WAVE", q:"What are Coherent Sources? Why are they necessary?", a:"Sources that emit light of same frequency and constant phase difference.\nNecessary to produce sustained interference pattern."},
+    
+    // 19. Concept - Wave
+    {c:"WAVE", q:"Can two independent bulbs produce interference? Why?", a:"No. Because they are incoherent sources. Their phase difference changes randomly with time, so no sustained pattern is visible."},
+    
+    // 20. Numerical - Wave
+    {c:"NUMERICAL", q:"In YDSE, D=1m, d=1mm, λ=500nm. Find Fringe Width.", a:"D=1m, d=10⁻³m, λ=5×10⁻⁷m.\nβ = λD / d\nβ = (5×10⁻⁷ × 1) / 10⁻³\nβ = 5 × 10⁻⁴ m = 0.5 mm."},
+    
+    // 21. Concept - Wave
+    {c:"WAVE", q:"What is Polarization of light? Which waves show it?", a:"The phenomenon of restricting vibrations of light wave to a single plane.\nOnly Transverse waves (Light) show polarization. Sound waves (Longitudinal) do not."},
+    
+    // 22. Derivation - Wave
+    {c:"WAVE", q:"State and Prove Brewster's Law.", a:"Statement: Refractive index is equal to tangent of polarizing angle (ip).\nμ = tan(ip).\nProof: At ip, reflected and refracted rays are perpendicular (r + r' = 90°). Use Snell's law."},
+    
+    // 23. Numerical - Ray
+    {c:"NUMERICAL", q:"A lens of power +2D and -1D are placed in contact. Find focal length.", a:"P = P1 + P2 = +2 - 1 = +1 D.\nf = 1/P = 1/1 = 1 meter = 100 cm."},
+    
+    // 24. Concept - Ray
+    {c:"RAY", q:"What is Conjugate Foci?", a:"Two points on the principal axis such that if an object is placed at one, the image is formed at the other."},
+    
+    // 25. Concept - Ray
+    {c:"RAY", q:"Conditions for Formation of Rainbow.", a:"1. Sun must be behind the observer.\n2. Water droplets must be present in front.\n(Phenomenon: Dispersion + TIR + Refraction)."}
+];
+
+const list = document.getElementById('question-list');
+const modal = document.getElementById('modal');
+let activeFilter = 'All';
+
+function init() {
+    render(db);
+    // Auto detect dark mode
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.setAttribute('data-theme', 'dark');
+    }
+}
+
+function render(data) {
+    list.innerHTML = data.map((item, index) => `
+        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
+            <div class="shimmer"></div>
+            <div class="q-header">
+                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
+                <div class="q-text">${item.q}</div>
+            </div>
+            <div class="answer">
+                <div class="answer-inner">${item.a}</div>
+            </div>
+            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+        </div>
+    `).join('');
+}
+
+function getColor(type) {
+    if(type === 'NUMERICAL') return '#f6e05e'; // Yellow
+    if(type === 'RAY') return '#fb7185'; // Pink
+    if(type === 'WAVE') return '#4ade80'; // Green
+    return 'var(--accent)';
+}
+
+function toggleAns(btn) {
+    const ans = btn.previousElementSibling;
+    
+    if (ans.classList.contains('open')) {
+        ans.classList.remove('open');
+        btn.innerText = "Show Answer";
+        btn.style.background = "";
+        btn.style.borderColor = "var(--card-border)";
+    } else {
+        ans.classList.add('open');
+        btn.innerText = "Hide Answer";
+        btn.style.background = "rgba(255,255,255,0.2)";
+        btn.style.borderColor = "var(--accent)";
+    }
+}
+
+function setFilter(type) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
+    render(filtered);
+}
+
+function filterData() {
+    const term = document.getElementById('search').value.toLowerCase();
+    render(db.filter(i => i.q.toLowerCase().includes(term)));
+}
+
+function openSheet() { modal.style.display = 'flex'; }
+function closeSheet() { modal.style.display = 'none'; }
+
+function toggleTheme() {
+    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
+
+function toggleFS() {
+    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else if(document.exitFullscreen) document.exitFullscreen();
+}
+
+init();
+</script>
+</body>
+</html>
