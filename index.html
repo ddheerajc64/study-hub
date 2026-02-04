@@ -25,21 +25,20 @@
         body {
             background: var(--bg-gradient);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite; /* Live Background */
+            animation: gradientBG 15s ease infinite;
             color: var(--text-main);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Background Animation Keyframes */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Floating Background Orbs for Depth */
+        /* Floating Background Orbs */
         .orb {
             position: absolute;
             border-radius: 50%;
@@ -57,7 +56,7 @@
             100% { transform: translateY(0px); }
         }
 
-        /* Glassmorphism */
+        /* Glassmorphism Utility */
         .glass {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -76,8 +75,8 @@
             position: fixed;
             width: 100%;
             z-index: 1000;
-            background: rgba(15, 12, 41, 0.9); /* Slight tint over animated BG */
-            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background: rgba(15, 12, 41, 0.95);
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
 
         .login-card {
@@ -118,18 +117,9 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            position: relative;
-            overflow: hidden;
         }
-        .btn::after {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: 0.5s;
-        }
-        .btn:hover::after { left: 100%; }
         .btn:hover { transform: translateY(-3px); box-shadow: var(--accent-glow); }
 
-        /* Error Shake Animation */
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
 
@@ -144,10 +134,10 @@
         .user-avatar { width: 70px; height: 70px; background: linear-gradient(135deg, var(--accent), #0072ff); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: #fff; box-shadow: var(--accent-glow); }
         
         .stats-container h3 { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .countdown-timer { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .countdown-timer { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
         
         .progress-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; margin-top: 10px; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), #00d2ff); width: 0%; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(0,255,136,0.3); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--success), #00d2ff); width: 0%; transition: width 1s ease; box-shadow: 0 0 10px rgba(0,255,136,0.3); }
 
         /* Main Content */
         .main-content { padding: 2rem; }
@@ -157,7 +147,7 @@
         .search-icon { position: absolute; left: 15px; top: 12px; opacity: 0.5; }
 
         .logout-btn { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px 20px; transition: 0.3s; }
-        .logout-btn:hover { background: var(--danger); color: white; box-shadow: 0 0 10px rgba(255, 75, 75, 0.4); }
+        .logout-btn:hover { background: var(--danger); color: white; }
 
         /* Grid & Cards */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
@@ -171,27 +161,16 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 180px;
-            /* Animation Setup */
             opacity: 0;
             transform: translateY(30px);
-            transition: transform 0.4s ease, background 0.4s, box-shadow 0.4s;
+            transition: transform 0.3s ease, background 0.3s;
         }
 
-        /* Waterfall Animation Class (Added by JS) */
-        .unit-card.visible {
-            animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
+        /* Waterfall Animation */
+        .unit-card.visible { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideUpFade {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .unit-card:hover { 
-            transform: translateY(-8px) scale(1.02); 
-            background: rgba(255,255,255,0.08); 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
-            border-color: rgba(255,255,255,0.3);
-        }
+        .unit-card:hover { transform: translateY(-8px) scale(1.02); background: rgba(255,255,255,0.08); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
         
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
         .unit-number { font-size: 0.75rem; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; font-weight: bold; background: rgba(0, 210, 255, 0.1); padding: 4px 8px; border-radius: 4px; }
@@ -199,27 +178,14 @@
         
         .card-actions { margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
         
-        /* Custom Checkbox */
-        .check-container { cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); transition: color 0.3s; }
-        .check-container:hover { color: white; }
+        .check-container { cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); }
         .check-container input { display: none; }
-        .checkmark {
-            width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 6px; display: inline-block; position: relative; transition: 0.3s;
-        }
-        .check-container input:checked ~ .checkmark { background: var(--success); border-color: var(--success); transform: rotate(360deg); }
-        .check-container input:checked ~ .checkmark::after {
-            content: '✓'; position: absolute; color: black; font-weight: 900; font-size: 14px; left: 4px; top: 0px;
-        }
+        .checkmark { width: 22px; height: 22px; border: 2px solid var(--text-muted); border-radius: 6px; display: inline-block; position: relative; transition: 0.3s; }
+        .check-container input:checked ~ .checkmark { background: var(--success); border-color: var(--success); }
+        .check-container input:checked ~ .checkmark::after { content: '✓'; position: absolute; color: black; font-weight: 900; font-size: 14px; left: 4px; top: 0px; }
 
-        .open-link { 
-            padding: 8px 16px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 0.8rem; text-decoration: none; color: white; transition: 0.3s; 
-            display: flex; align-items: center; gap: 5px;
-        }
-        .open-link:hover { background: var(--accent); color: black; padding-right: 20px; }
-
-        /* Special MCQ Card */
-        .mcq-card { border: 1px solid var(--accent); box-shadow: 0 0 15px rgba(0, 210, 255, 0.1); }
-        .mcq-card .unit-number { color: #000; background: var(--success); }
+        .open-link { padding: 8px 16px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 0.8rem; text-decoration: none; color: white; transition: 0.3s; }
+        .open-link:hover { background: var(--accent); color: black; }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
@@ -229,14 +195,9 @@
             .search-bar { width: 100%; }
             .mobile-nav { display: block; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 12, 41, 0.95); padding: 15px; display: flex; justify-content: space-around; z-index: 99; border-top: 1px solid var(--glass-border); backdrop-filter: blur(10px); }
         }
-        
         @media (min-width: 769px) { .mobile-nav { display: none; } }
         
-        .toast {
-            position: fixed; bottom: 30px; right: 30px; background: white; color: #000; padding: 16px 32px; border-radius: 12px;
-            transform: translateY(150px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; gap: 10px;
-        }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: white; color: #000; padding: 16px 32px; border-radius: 12px; transform: translateY(150px); transition: transform 0.4s; font-weight: bold; z-index: 2000; }
         .toast.show { transform: translateY(0); }
     </style>
 </head>
@@ -260,30 +221,24 @@
 
     <div id="dashboard">
         <div class="app-container">
-            
             <aside class="sidebar glass">
                 <div class="user-profile">
                     <div class="user-avatar">👨‍💻</div>
                     <h3>Senior Dev</h3>
                 </div>
-                
                 <div class="stats-container">
                     <h3>Exam Countdown</h3>
                     <div id="countdown" class="countdown-timer">--:--:--</div>
                     <small style="color: var(--accent)">Target: Feb 10, 2026</small>
                 </div>
-
                 <div class="stats-container">
                     <h3>Progress</h3>
-                    <div class="progress-bar-bg">
-                        <div id="progress-fill" class="progress-fill"></div>
-                    </div>
+                    <div class="progress-bar-bg"><div id="progress-fill" class="progress-fill"></div></div>
                     <div style="display: flex; justify-content: space-between; margin-top: 5px;">
                         <small id="progress-text">0%</small>
                         <small id="units-count" style="color: var(--text-muted)">0/10</small>
                     </div>
                 </div>
-
                 <button onclick="logout()" class="btn logout-btn" style="margin-top: auto;">Log Out</button>
             </aside>
 
@@ -295,28 +250,17 @@
                     </div>
                     <div class="search-bar">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="search-input" placeholder="Search units, topics...">
+                        <input type="text" id="search-input" placeholder="Search units...">
                     </div>
                 </div>
-
-                <div class="grid-container" id="units-grid">
-                    </div>
+                <div class="grid-container" id="units-grid"></div>
             </main>
         </div>
 
         <div class="mobile-nav">
-            <div class="mobile-stat">
-                <div id="mobile-days" style="color: var(--accent); font-weight: bold; font-size: 1.2rem;">0</div>
-                <small>Days</small>
-            </div>
-            <div class="mobile-stat">
-                <div id="mobile-percent" style="color: var(--success); font-weight: bold; font-size: 1.2rem;">0%</div>
-                <small>Done</small>
-            </div>
-            <div class="mobile-stat" onclick="logout()">
-                <div style="color: var(--danger); font-size: 1.2rem;">✖</div>
-                <small>Exit</small>
-            </div>
+            <div class="mobile-stat"><div id="mobile-days" style="color: var(--accent); font-weight: bold; font-size: 1.2rem;">0</div><small>Days</small></div>
+            <div class="mobile-stat"><div id="mobile-percent" style="color: var(--success); font-weight: bold; font-size: 1.2rem;">0%</div><small>Done</small></div>
+            <div class="mobile-stat" onclick="logout()"><div style="color: var(--danger); font-size: 1.2rem;">✖</div><small>Exit</small></div>
         </div>
     </div>
 
@@ -325,20 +269,20 @@
     <script>
         // --- CONFIGURATION ---
         const CREDENTIALS = { user: 'admin', pass: 'study123' };
-        // UPDATED DATE: 10 Feb 2026
+        // Corrected Date: Feb 10, 2026
         const EXAM_DATE = new Date('February 10, 2026 09:00:00').getTime();
         
-        // --- DATA ---
+        // --- DATA (With Fixed Links) ---
         const units = [
-            { id: 1, title: "Introduction to Frontend", link: "unit1.html" },
-            { id: 2, title: "HTML5 Mastery", link: "unit2.html" },
-            { id: 3, title: "CSS3 & Flexbox", link: "unit3.html" },
-            { id: 4, title: "JavaScript Basics", link: "unit4.html" },
-            { id: 5, title: "DOM Manipulation", link: "unit5.html" },
-            { id: 6, title: "Async Programming", link: "unit6.html" },
-            { id: 7, title: "APIs & Fetch", link: "unit7.html" },
-            { id: 8, title: "Modern UI Principles", link: "unit8.html" },
-            { id: 9, title: "Performance Optimization", link: "unit9.html" },
+            { id: 1, title: "Introduction to Frontend", link: "Unit%201.html" },
+            { id: 2, title: "HTML5 Mastery", link: "Unit%202.html" },
+            { id: 3, title: "CSS3 & Flexbox", link: "Unit%203.html" },
+            { id: 4, title: "JavaScript Basics", link: "Unit%204.html" },
+            { id: 5, title: "DOM Manipulation", link: "Unit%205.html" },
+            { id: 6, title: "Async Programming", link: "Unit%206.html" },
+            { id: 7, title: "APIs & Fetch", link: "Unit%207.html" },
+            { id: 8, title: "Modern UI Principles", link: "Unit%208.html" },
+            { id: 9, title: "Performance Optimization", link: "Unit%209.html" },
             { id: 10, title: "500 MCQ Mega Test", link: "500.html", isSpecial: true }
         ];
 
@@ -348,14 +292,14 @@
         const unitsGrid = document.getElementById('units-grid');
         const searchInput = document.getElementById('search-input');
         
-        // --- APP INITIALIZATION ---
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             checkSession();
             startTimer();
             registerSW();
         });
 
-        // --- AUTHENTICATION ---
+        // --- AUTH ---
         document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const u = document.getElementById('username').value;
@@ -367,25 +311,22 @@
             } else {
                 const err = document.getElementById('error-msg');
                 err.style.display = 'block';
-                err.parentElement.classList.remove('shake'); // reset anim
-                void err.parentElement.offsetWidth; // trigger reflow
+                err.parentElement.classList.remove('shake'); 
+                void err.parentElement.offsetWidth; 
                 err.parentElement.classList.add('shake');
             }
         });
 
         function checkSession() {
-            const isAuth = localStorage.getItem('study_auth');
-            if (isAuth) {
-                // Skip login screen immediately if auth
+            if (localStorage.getItem('study_auth')) {
                 loginSection.style.display = 'none';
                 dashboard.style.display = 'block';
-                renderUnits(); // Render immediately
+                renderUnits(); 
                 updateProgress();
             }
         }
 
         function enterDashboard() {
-            // Smooth Transition
             loginSection.style.opacity = '0';
             loginSection.style.transform = 'scale(1.1)';
             setTimeout(() => {
@@ -401,7 +342,7 @@
             window.location.reload();
         }
 
-        // --- RENDERING & ANIMATION ---
+        // --- RENDER ---
         function renderUnits() {
             const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
             unitsGrid.innerHTML = '';
@@ -433,7 +374,6 @@
                 unitsGrid.innerHTML += html;
             });
 
-            // Trigger animations
             setTimeout(() => {
                 document.querySelectorAll('.unit-card').forEach(card => card.classList.add('visible'));
             }, 50);
@@ -441,12 +381,8 @@
 
         function toggleComplete(id, checkbox) {
             let progress = JSON.parse(localStorage.getItem('study_progress')) || {};
-            if (checkbox.checked) {
-                progress[id] = true;
-                // Add celebration effect here if desired
-            } else {
-                delete progress[id];
-            }
+            if (checkbox.checked) progress[id] = true;
+            else delete progress[id];
             localStorage.setItem('study_progress', JSON.stringify(progress));
             updateProgress();
             showToast();
@@ -458,12 +394,9 @@
             const done = Object.keys(progress).length;
             const percent = Math.round((done / total) * 100);
 
-            // Desktop
             document.getElementById('progress-fill').style.width = `${percent}%`;
             document.getElementById('progress-text').innerText = `${percent}% Complete`;
             document.getElementById('units-count').innerText = `${done}/${total}`;
-            
-            // Mobile
             document.getElementById('mobile-percent').innerText = `${percent}%`;
         }
 
@@ -471,12 +404,10 @@
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             const cards = document.querySelectorAll('.unit-card');
-            
             cards.forEach(card => {
                 const match = card.getAttribute('data-search').includes(term);
                 if(match) {
                     card.style.display = 'flex';
-                    // Re-trigger animation briefly
                     card.classList.remove('visible');
                     setTimeout(()=> card.classList.add('visible'), 10);
                 } else {
@@ -485,24 +416,19 @@
             });
         });
 
-        // --- COUNTDOWN TIMER ---
+        // --- TIMER ---
         function startTimer() {
             const timerEl = document.getElementById('countdown');
             const mobileDays = document.getElementById('mobile-days');
-            
             setInterval(() => {
                 const now = new Date().getTime();
                 const distance = EXAM_DATE - now;
-
                 if (distance < 0) {
                     timerEl.innerText = "TODAY IS THE DAY!";
-                    timerEl.style.color = "var(--danger)";
                     return;
                 }
-
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                
                 timerEl.innerText = `${days}d ${hours}h`;
                 mobileDays.innerText = days;
             }, 1000);
@@ -514,12 +440,9 @@
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
-        // --- SERVICE WORKER ---
         function registerSW() {
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(() => console.log('SW Registered'))
-                    .catch(err => console.log('SW Fail', err));
+                navigator.serviceWorker.register('./service-worker.js').catch(console.error);
             }
         }
     </script>
