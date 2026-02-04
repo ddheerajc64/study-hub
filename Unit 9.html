@@ -2,512 +2,546 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Unit 9: Semiconductors (Premium)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Hub | Ultra Animated</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f0c29">
     <style>
         :root {
-            /* Light Mode - Orange/Yellow for Electronics */
-            --bg-gradient: radial-gradient(circle at 0% 0%, #ffe259 0%, #ffa751 100%);
-            --text-main: #2d3748;
-            --text-sec: #4a5568;
-            --card-bg: rgba(255, 255, 255, 0.25);
-            --card-border: rgba(255, 255, 255, 0.4);
-            --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-            --btn-bg: rgba(255, 255, 255, 0.3);
-            --btn-hover: rgba(255, 255, 255, 0.5);
-            --accent: #d97706; /* Amber-600 */
+            --bg-dark: #0f0c29;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --accent: #00d2ff;       /* Cyan */
+            --accent-2: #ff00ff;     /* Magenta */
+            --admin-accent: #ff9d00; /* Orange */
+            --success: #00ff88;
         }
 
-        [data-theme="dark"] {
-            /* True Black Mode */
-            --bg-gradient: radial-gradient(circle at 50% 50%, #000000, #451a03);
-            --text-main: #fffbeb;
-            --text-sec: #fde68a;
-            --card-bg: rgba(20, 20, 20, 0.6);
-            --card-border: rgba(245, 158, 11, 0.2);
-            --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-            --btn-bg: rgba(255, 255, 255, 0.05);
-            --btn-hover: rgba(255, 255, 255, 0.15);
-            --accent: #fbbf24; /* Amber-400 */
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        
         body {
-            margin: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            background-size: 200% 200%;
-            animation: gradientMove 15s ease infinite;
+            background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- BACKGROUND PARTICLES --- */
+        #canvas-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.6;
         }
 
-        /* --- HEADER --- */
-        header {
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
+        /* --- ANIMATION KEYFRAMES --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 5px var(--accent); } 50% { box-shadow: 0 0 20px var(--accent), 0 0 10px var(--accent-2); } 100% { box-shadow: 0 0 5px var(--accent); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
 
-        h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: var(--text-main); text-transform: uppercase; }
-
-        .icon-btn {
-            background: var(--btn-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
+        /* --- GLASS UI --- */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             transition: all 0.3s ease;
         }
-        .icon-btn:hover { background: var(--btn-hover); transform: scale(1.05); }
 
-        /* --- CONTROLS --- */
-        .controls-area { padding: 20px; z-index: 40; }
+        .hide { display: none !important; }
 
-        #search {
-            width: 100%;
-            padding: 14px 20px;
-            border-radius: 30px;
-            border: 1px solid var(--card-border);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-            backdrop-filter: blur(10px);
-            font-size: 1rem;
-            outline: none;
-            transition: 0.3s;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-        }
-        #search:focus { box-shadow: 0 0 15px var(--accent); border-color: var(--accent); background: rgba(255, 255, 255, 0.15); }
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            margin-top: 15px;
-            padding-bottom: 5px;
-            scrollbar-width: none;
-        }
-        .filters::-webkit-scrollbar { display: none; }
-
-        .filter-btn {
-            padding: 8px 20px;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-            background: var(--btn-bg);
-            color: var(--text-sec);
-            font-weight: 700;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .filter-btn.active {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 20px var(--accent);
-            border-color: transparent;
+        /* --- LOGIN SCREEN --- */
+        #login-section {
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+            position: fixed; width: 100%; z-index: 1000;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0c29 100%);
+            transition: opacity 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
 
-        /* --- GRID --- */
-        #question-list {
-            flex: 1;
-            padding: 10px 20px 100px 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            align-items: start;
+        .login-card {
+            padding: 3rem; width: 100%; max-width: 400px; text-align: center;
+            animation: slideUp 0.8s ease forwards;
+            position: relative; overflow: hidden;
         }
 
-        /* --- GLASS CARD --- */
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 24px;
-            border: 1px solid var(--card-border);
-            box-shadow: var(--card-shadow);
-            position: relative;
-            overflow: hidden;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            height: auto;
-            min-height: 200px;
-            opacity: 0;
-            animation: cardEntrance 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.4s ease;
+        /* Neon Title */
+        .neon-text {
+            font-size: 2.5rem; margin-bottom: 2rem;
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 20px var(--accent), 0 0 40px var(--accent), 0 0 80px var(--accent);
+            animation: float 3s ease-in-out infinite;
         }
 
-        @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(40px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+        /* Inputs */
+        input {
+            width: 100%; padding: 15px; margin-bottom: 1.2rem;
+            background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
+            border-radius: 50px; color: white; outline: none; text-align: center;
+            transition: 0.4s;
+        }
+        input:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5); 
+            transform: scale(1.05);
         }
 
-        .glass-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.5);
+        /* Ripple Button */
+        .btn {
+            position: relative; overflow: hidden;
+            width: 100%; padding: 15px; background: linear-gradient(90deg, var(--accent), #0072ff);
+            border: none; border-radius: 50px; color: #fff; font-weight: bold; letter-spacing: 1px;
+            cursor: pointer; text-transform: uppercase; transition: 0.4s; z-index: 1;
+        }
+        .btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.4); 
+        }
+        .btn .ripple {
+            position: absolute; border-radius: 50%; transform: scale(0);
+            animation: ripple 0.6s linear; background-color: rgba(255, 255, 255, 0.5);
+        }
+        @keyframes ripple { to { transform: scale(4); opacity: 0; } }
+
+        /* --- DASHBOARD --- */
+        .app-container { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar {
+            padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
+            border-right: 1px solid var(--glass-border);
+            background: rgba(15, 12, 41, 0.8);
+            animation: slideInLeft 0.8s ease forwards;
             z-index: 10;
         }
-
-        .tag {
-            font-size: 0.7rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--accent);
-            margin-bottom: 12px;
-            display: inline-block;
-            background: rgba(255,255,255,0.1);
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        .q-text {
-            font-size: 1.1rem;
-            font-weight: 700;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .reveal-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0));
-            color: var(--text-main);
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-            z-index: 2;
-            margin-top: auto;
-        }
-        .reveal-btn:hover { background: rgba(255, 255, 255, 0.15); border-color: var(--accent); }
-
-        /* ANSWER SECTION */
-        .answer {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.4s ease-out, margin-top 0.4s ease;
-            margin-top: 0;
-        }
         
-        .answer-inner {
-            overflow: hidden;
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 1rem;
-            line-height: 1.6;
-            background: rgba(0,0,0,0.03);
-            border-radius: 12px;
+        .user-avatar { 
+            width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 15px;
+            display: flex; align-items: center; justify-content: center; font-size: 3rem;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.3);
+            border: 2px solid rgba(255,255,255,0.1);
+            animation: pulseGlow 3s infinite;
         }
+
+        .main-content { padding: 2rem; position: relative; z-index: 5; }
+
+        /* Header */
+        .header { 
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; 
+            animation: fadeIn 1s ease forwards;
+        }
+        .typing-effect {
+            border-right: 2px solid var(--accent);
+            white-space: nowrap; overflow: hidden;
+            animation: blink 0.75s step-end infinite;
+        }
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        /* Grid */
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+
+        /* --- 3D CARDS --- */
+        .unit-card {
+            padding: 1.5rem; position: relative; display: flex; flex-direction: column; min-height: 200px;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            opacity: 0; /* Hidden initially for stagger */
+            animation: slideUp 0.6s ease forwards;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+        }
+
+        .unit-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 16px; padding: 2px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            opacity: 0.5; transition: 0.5s; pointer-events: none;
+        }
+
+        .unit-card:hover { transform: translateY(-10px); }
+        .unit-card:hover::before { opacity: 1; }
         
-        [data-theme="dark"] .answer-inner { background: rgba(255,255,255,0.05); }
+        .card-content { transform: translateZ(20px); } /* Parallax inside card */
+        .card-icon { font-size: 2rem; margin-bottom: 10px; display: inline-block; transition: 0.3s; }
+        .unit-card:hover .card-icon { transform: scale(1.2) rotate(10deg); }
 
-        .answer.open {
-            grid-template-rows: 1fr;
-            margin-top: 15px;
+        .progress-bar-container {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 10px;
         }
-        
-        .answer.open .answer-inner {
-            padding: 15px;
-            border: 1px solid var(--card-border);
+        .progress-bar-fill {
+            height: 100%; background: var(--success); width: 0%;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--success);
         }
 
-        /* SHIMMER EFFECT */
-        .shimmer {
-            position: absolute;
-            top: 0; left: -150%; width: 50%; height: 100%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0) 100%);
-            transform: skewX(-25deg);
-            pointer-events: none;
-            transition: left 0.5s;
+        /* Mobile */
+        @media (max-width: 768px) {
+            .app-container { grid-template-columns: 1fr; }
+            .sidebar { display: none; }
         }
-        .glass-card:hover .shimmer { left: 150%; transition: left 0.7s ease-in-out; }
 
-        /* --- FORMULA MODAL --- */
-        #formula-btn {
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
-            padding: 15px 30px; border-radius: 50px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: var(--text-main); font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            cursor: pointer; z-index: 100; transition: 0.3s;
-            display: flex; align-items: center; gap: 10px;
-        }
-        #formula-btn:hover { background: var(--accent); color: white; border-color: var(--accent); transform: translateX(-50%) translateY(-5px); }
-
-        #modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(15px);
-            z-index: 200; display: none; flex-direction: column;
-            animation: modalUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes modalUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .modal-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .modal-body { flex: 1; overflow-y: auto; padding: 25px; }
-        
-        .formula-box {
-            background: rgba(255,255,255,0.05); border-radius: 18px;
-            padding: 20px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .formula-box h3 { color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 10px; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
-        .f-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-family: monospace; font-size: 1.1rem; color: #fff; }
-        .f-desc { color: #aaa; font-family: sans-serif; font-size: 0.85rem; }
-
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>UNIT 9: SEMICONDUCTORS</h1>
-        <div class="controls">
-            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
-            <button class="icon-btn" onclick="toggleFS()">⛶</button>
-        </div>
-    </header>
+    <canvas id="canvas-bg"></canvas>
 
-    <div class="controls-area">
-        <input type="text" id="search" placeholder="Search 25 Questions..." onkeyup="filterData()">
-        <div class="filters">
-            <button class="filter-btn active" onclick="setFilter('All')">All Questions</button>
-            <button class="filter-btn" onclick="setFilter('CONCEPT')">Conceptual</button>
-            <button class="filter-btn" onclick="setFilter('DERIVATION')">Working/Diag</button>
-            <button class="filter-btn" onclick="setFilter('NUMERICAL')">Numericals</button>
-        </div>
-    </div>
-
-    <div id="question-list">
-        </div>
-
-    <button id="formula-btn" onclick="openSheet()">
-        <span>📄</span> Formulas
-    </button>
-
-    <div id="modal">
-        <div class="modal-header">
-            <h2 style="color:white; margin:0">Unit 9 Formulas</h2>
-            <button class="icon-btn" onclick="closeSheet()">✕</button>
-        </div>
-        <div class="modal-body">
-            <div class="formula-box">
-                <h3>Intrinsic & Extrinsic</h3>
-                <div class="f-row"><span>n_e = n_h = n_i</span> <span class="f-desc">Intrinsic</span></div>
-                <div class="f-row"><span>n_e · n_h = n_i²</span> <span class="f-desc">Mass Action</span></div>
-                <div class="f-row"><span>N-Type: n_e >> n_h</span> <span class="f-desc">Donor</span></div>
-                <div class="f-row"><span>P-Type: n_h >> n_e</span> <span class="f-desc">Acceptor</span></div>
-            </div>
+    <div id="login-section">
+        <div class="glass login-card">
+            <h1 class="neon-text">PHYSICS HUB</h1>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Unlock the Universe</p>
             
-            <div class="formula-box">
-                <h3>Conductivity</h3>
-                <div class="f-row"><span>σ = e(n_e μ_e + n_h μ_h)</span> <span class="f-desc">Formula</span></div>
-                <div class="f-row"><span>ρ = 1/σ</span> <span class="f-desc">Resistivity</span></div>
-            </div>
-
-            <div class="formula-box">
-                <h3>Logic Gates (Basics)</h3>
-                <div class="f-row"><span>Y = A + B</span> <span class="f-desc">OR Gate</span></div>
-                <div class="f-row"><span>Y = A · B</span> <span class="f-desc">AND Gate</span></div>
-                <div class="f-row"><span>Y = A̅</span> <span class="f-desc">NOT Gate</span></div>
-                <div class="f-row"><span>Y = (A + B)̅</span> <span class="f-desc">NOR Gate</span></div>
-                <div class="f-row"><span>Y = (A · B)̅</span> <span class="f-desc">NAND Gate</span></div>
-            </div>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="ID" required autocomplete="off">
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit" class="btn">ENTER SYSTEM</button>
+            </form>
+            
+            <p id="error-msg" style="color: var(--danger); margin-top: 1rem; display: none;">Access Denied</p>
         </div>
     </div>
 
-<script>
-/* THE 25 QUESTIONS FOR UNIT 9 */
-const db = [
-    // 1. Definition
-    {c:"CONCEPT", q:"Distinguish between Conductors, Semiconductors, and Insulators based on Energy Bands.", a:"1. Conductors: VB and CB overlap. No Forbidden gap. (Eg ≈ 0).\n2. Semiconductors: Small Forbidden gap (Eg < 3 eV). \n3. Insulators: Large Forbidden gap (Eg > 3 eV)."},
-    
-    // 2. Definition
-    {c:"CONCEPT", q:"What are Intrinsic and Extrinsic Semiconductors?", a:"Intrinsic: Pure semiconductor (Si, Ge) where ne = nh.\nExtrinsic: Doped semiconductor (with impurity) to increase conductivity. (N-type, P-type)."},
-    
-    // 3. Comparison
-    {c:"CONCEPT", q:"Differentiate between N-type and P-type semiconductors.", a:"N-Type: Doped with Pentavalent impurity (As, P). Majority: Electrons. Minority: Holes.\nP-Type: Doped with Trivalent impurity (Al, B). Majority: Holes. Minority: Electrons."},
-    
-    // 4. Comparison
-    {c:"CONCEPT", q:"Comparison between Intrinsic and Extrinsic Semiconductors.", a:"Intrinsic: Pure, Low conductivity, ne=nh.\nExtrinsic: Doped, High conductivity, ne≠nh."},
-    
-    // 5. Concept
-    {c:"CONCEPT", q:"What is Doping? Why is it done?", a:"The process of adding a small amount of suitable impurity to a pure semiconductor to increase its electrical conductivity."},
-    
-    // 6. Concept
-    {c:"CONCEPT", q:"What is a PN Junction Diode? How is the depletion layer formed?", a:"When P-type and N-type are joined, electrons from N diffuse to P and holes from P to N. They neutralize near junction, leaving immobile ions. This region is the depletion layer."},
-    
-    // 7. Derivation (Working)
-    {c:"DERIVATION", q:"Explain Forward Bias and Reverse Bias of a PN Junction.", a:"Forward Bias: P connected to +ve, N to -ve. Depletion width decreases. Current flows.\nReverse Bias: P connected to -ve, N to +ve. Depletion width increases. No current (ideally)."},
-    
-    // 8. Concept
-    {c:"CONCEPT", q:"Why is the conductivity of a semiconductor increased with temperature?", a:"As temp increases, covalent bonds break, generating more electron-hole pairs. Hence conductivity increases (Negative temp coefficient of resistance)."},
-    
-    // 9. Derivation (Working)
-    {c:"DERIVATION", q:"Describe Half Wave Rectifier with circuit diagram.", a:"Uses 1 diode. Converts only positive half cycle of AC into DC. Output is discontinuous DC. 
+    <div id="dashboard" class="hide">
+        <div class="app-container">
+            
+            <aside class="sidebar glass">
+                <div style="text-align: center;">
+                    <div class="user-avatar" id="avatar-icon">⚛️</div>
+                    <h2 id="user-role-label" style="margin-bottom: 5px;">User</h2>
+                    <small style="color: var(--accent);">Online ●</small>
+                </div>
 
-[Image of Half Wave Rectifier]
-"},
-    
-    // 10. Derivation (Working)
-    {c:"DERIVATION", q:"Describe Full Wave Rectifier with circuit diagram.", a:"Uses 2 diodes (Center Tap). Converts both halves of AC into DC. D1 conducts in +ve half, D2 in -ve half. Output is continuous pulsating DC. 
+                <div id="student-sidebar-stats" class="hide" style="margin-top: 20px;">
+                    <div class="glass" style="padding: 15px; margin-bottom: 15px; background: rgba(255,255,255,0.03);">
+                        <small style="text-transform:uppercase; color:#888; font-size:0.7rem; letter-spacing:1px;">Target Date</small>
+                        <div style="font-size: 1.4rem; font-weight: bold; color: #fff;">FEB 10</div>
+                        <div style="font-size: 0.8rem; color: var(--accent);">2026</div>
+                    </div>
+                    
+                    <div class="glass" style="padding: 15px; background: rgba(255,255,255,0.03);">
+                        <small style="text-transform:uppercase; color:#888; font-size:0.7rem; letter-spacing:1px;">Completion</small>
+                        <div class="progress-bar-container">
+                            <div id="sidebar-progress" class="progress-bar-fill"></div>
+                        </div>
+                        <div style="text-align: right; font-size: 0.8rem; margin-top: 5px;" id="progress-text">0%</div>
+                    </div>
+                </div>
 
-[Image of Full Wave Rectifier]
-"},
-    
-    // 11. Concept
-    {c:"CONCEPT", q:"What is Rectification?", a:"The process of converting Alternating Current (AC) into Direct Current (DC)."},
-    
-    // 12. Concept
-    {c:"CONCEPT", q:"Why is Silicon preferred over Germanium in semiconductor devices?", a:"1. Higher temperature stability (Si: 175°C vs Ge: 75°C).\n2. Smaller leakage current.\n3. Higher Peak Inverse Voltage rating."},
-    
-    // 13. Concept
-    {c:"CONCEPT", q:"What is a Zener Diode? What is its main use?", a:"A heavily doped PN junction diode designed to operate in reverse breakdown region.\nUse: As a Voltage Regulator."},
-    
-    // 14. Concept
-    {c:"CONCEPT", q:"What are Logic Gates? Name the basic gates.", a:"Digital circuits that perform logical operations on input signals.\nBasic Gates: AND, OR, NOT."},
-    
-    // 15. Concept
-    {c:"CONCEPT", q:"Draw symbol and truth table of NAND Gate.", a:"Symbol: AND gate with bubble. 
+                <div id="admin-sidebar-menu" class="hide" style="margin-top: 20px;">
+                    <button class="btn" onclick="resetSystem()" style="background: linear-gradient(90deg, #ff4b4b, #ff9d00); font-size: 0.8rem;">⚠ RESET DATABASE</button>
+                </div>
 
-[Image of NAND Gate]
-\nTable:\nA B Y\n0 0 1\n0 1 1\n1 0 1\n1 1 0\n(Universal Gate)."},
-    
-    // 16. Concept
-    {c:"CONCEPT", q:"Draw symbol and truth table of NOR Gate.", a:"Symbol: OR gate with bubble. 
+                <button onclick="logout()" class="btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); margin-top: auto;">LOGOUT</button>
+            </aside>
 
-[Image of NOR Gate]
-\nTable:\nA B Y\n0 0 1\n0 1 0\n1 0 0\n1 1 0\n(Universal Gate)."},
-    
-    // 17. Concept
-    {c:"CONCEPT", q:"Draw symbol and truth table of AND Gate.", a:"Symbol: D shape.\nTable:\nA B Y\n0 0 0\n0 1 0\n1 0 0\n1 1 1."},
-    
-    // 18. Concept
-    {c:"CONCEPT", q:"Draw symbol and truth table of OR Gate.", a:"Symbol: Curved D shape.\nTable:\nA B Y\n0 0 0\n0 1 1\n1 0 1\n1 1 1."},
-    
-    // 19. Concept
-    {c:"CONCEPT", q:"Draw symbol and truth table of NOT Gate.", a:"Symbol: Triangle with bubble. (Inverter).\nTable:\nA Y\n0 1\n1 0."},
-    
-    // 20. Numerical
-    {c:"NUMERICAL", q:"Pure Si at 300K has n_i = 1.5×10¹⁶ /m³. Doped with Indium (nh = 4.5×10²² /m³). Find n_e.", a:"n_e · n_h = n_i²\nn_e = (1.5×10¹⁶)² / (4.5×10²²)\nn_e = 2.25×10³² / 4.5×10²²\nn_e = 0.5 × 10¹⁰ = 5 × 10⁹ /m³."},
-    
-    // 21. Concept
-    {c:"CONCEPT", q:"Why are NAND and NOR called Universal Gates?", a:"Because any boolean function or any other basic gate (AND, OR, NOT) can be constructed using only NAND or only NOR gates."},
-    
-    // 22. Concept
-    {c:"CONCEPT", q:"What is Light Emitting Diode (LED)? Biasing?", a:"A specially doped PN junction which emits light when forward biased. (Electrical energy → Light energy)."},
-    
-    // 23. Concept
-    {c:"CONCEPT", q:"What is a Photodiode? Biasing?", a:"A PN junction used to detect light signals. It is always operated in Reverse Bias."},
-    
-    // 24. Concept
-    {c:"CONCEPT", q:"What is a Solar Cell?", a:"A PN junction which generates EMF when solar radiation falls on it. No external biasing is used."},
-    
-    // 25. Concept
-    {c:"CONCEPT", q:"Effect of doping on depletion layer width.", a:"Heavy doping → Thin depletion layer.\nLight doping → Thick depletion layer."}
-];
+            <main class="main-content">
+                <div class="header">
+                    <div>
+                        <h1 id="welcome-type" class="typing-effect" style="font-weight: 300;">Loading...</h1>
+                        <p style="color: var(--text-muted);">MP Board Class 12 Syllabus</p>
+                    </div>
+                </div>
 
-const list = document.getElementById('question-list');
-const modal = document.getElementById('modal');
-let activeFilter = 'All';
+                <div id="student-view" class="hide">
+                    <div id="notices-area" class="glass hide" style="padding: 15px; border-left: 4px solid var(--accent); margin-bottom: 20px; animation: slideInLeft 0.5s ease;">
+                        <h4 style="color: var(--accent); margin-bottom: 5px;">📡 Live Notice</h4>
+                        <div id="notice-text"></div>
+                    </div>
 
-function init() {
-    render(db);
-    // Auto detect dark mode
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.setAttribute('data-theme', 'dark');
-    }
-}
+                    <div class="grid-container" id="units-grid"></div>
+                </div>
 
-function render(data) {
-    list.innerHTML = data.map((item, index) => `
-        <div class="glass-card" style="animation-delay: ${index * 0.05}s">
-            <div class="shimmer"></div>
-            <div class="q-header">
-                <span class="tag" style="color:${getColor(item.c)}">${item.c}</span>
-                <div class="q-text">${item.q}</div>
-            </div>
-            <div class="answer">
-                <div class="answer-inner">${item.a}</div>
-            </div>
-            <button class="reveal-btn" onclick="toggleAns(this)">Show Answer</button>
+                <div id="admin-view" class="hide">
+                    <div class="glass" style="padding: 2rem;">
+                        <h3 style="color: var(--admin-accent);">📢 Broadcast Notice</h3>
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <input type="text" id="notice-input" placeholder="Type message here..." style="margin:0; text-align: left;">
+                            <button class="btn" onclick="postNotice()" style="width: auto; padding: 0 30px;">SEND</button>
+                        </div>
+                        <div id="admin-notice-list" style="margin-top: 20px; color: #aaa;"></div>
+                    </div>
+                </div>
+
+            </main>
         </div>
-    `).join('');
-}
+    </div>
 
-function getColor(type) {
-    if(type === 'NUMERICAL') return '#f6e05e'; // Yellow
-    if(type === 'DERIVATION') return '#f472b6'; // Pink
-    return 'var(--accent)';
-}
+    <script>
+        // --- ANIMATED BACKGROUND (CANVAS) ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-function toggleAns(btn) {
-    const ans = btn.previousElementSibling;
-    
-    if (ans.classList.contains('open')) {
-        ans.classList.remove('open');
-        btn.innerText = "Show Answer";
-        btn.style.background = "";
-        btn.style.borderColor = "var(--card-border)";
-    } else {
-        ans.classList.add('open');
-        btn.innerText = "Hide Answer";
-        btn.style.background = "rgba(255,255,255,0.2)";
-        btn.style.borderColor = "var(--accent)";
-    }
-}
+        let particlesArray;
 
-function setFilter(type) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    const filtered = type === 'All' ? db : db.filter(i => i.c === type);
-    render(filtered);
-}
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() * 1) - 0.5;
+                this.speedY = (Math.random() * 1) - 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01; 
+                // wrap around screen
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 210, 255, 0.5)'; // Cyan particles
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
 
-function filterData() {
-    const term = document.getElementById('search').value.toLowerCase();
-    render(db.filter(i => i.q.toLowerCase().includes(term)));
-}
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 100; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
 
-function openSheet() { modal.style.display = 'flex'; }
-function closeSheet() { modal.style.display = 'none'; }
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                // Draw connections (Constellations)
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 210, 255, ${0.1 - distance/1000})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+                if (particlesArray[i].size <= 0.3) {
+                    particlesArray.splice(i, 1);
+                    i--;
+                    particlesArray.push(new Particle());
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles(); });
 
-function toggleTheme() {
-    document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
+        // --- BUTTON RIPPLE EFFECT ---
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn')) {
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+                let ripples = document.createElement('span');
+                ripples.classList.add('ripple');
+                ripples.style.left = x + 'px';
+                ripples.style.top = y + 'px';
+                e.target.appendChild(ripples);
+                setTimeout(() => { ripples.remove() }, 600);
+            }
+        });
 
-function toggleFS() {
-    if(!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else if(document.exitFullscreen) document.exitFullscreen();
-}
+        // --- APP LOGIC ---
+        const USERS = {
+            'dadmin': { pass: 'dheeraj123', role: 'admin', name: 'Professor' },
+            'dheeraj': { pass: 'study123', role: 'student', name: 'Dheeraj' }
+        };
 
-init();
-</script>
+        const UNITS = [
+            { id: 1, title: "Electrostatics", link: "Unit%201.html" },
+            { id: 2, title: "Current Electricity", link: "Unit%202.html" },
+            { id: 3, title: "Magnetic Effects", link: "Unit%203.html" },
+            { id: 4, title: "EMI & AC", link: "Unit%204.html" },
+            { id: 5, title: "EM Waves", link: "Unit%205.html" },
+            { id: 6, title: "Optics", link: "Unit%206.html" },
+            { id: 7, title: "Dual Nature", link: "Unit%207.html" },
+            { id: 8, title: "Atoms & Nuclei", link: "Unit%208.html" },
+            { id: 9, title: "Semiconductors", link: "Unit%209.html" },
+            { id: 10, title: "500 MCQs", link: "500.html", special: true }
+        ];
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const u = document.getElementById('username').value.toLowerCase().trim();
+            const p = document.getElementById('password').value.trim();
+            
+            if (USERS[u] && USERS[u].pass === p) {
+                localStorage.setItem('physics_user_v3', JSON.stringify(USERS[u]));
+                document.getElementById('login-section').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('login-section').classList.add('hide');
+                    initDashboard(USERS[u]);
+                }, 800);
+            } else {
+                const err = document.getElementById('error-msg');
+                err.style.display = 'block';
+                err.classList.remove('shake');
+                void err.offsetWidth;
+                err.classList.add('shake');
+            }
+        });
+
+        // 3D TILT FUNCTION
+        function addTiltEffect() {
+            const cards = document.querySelectorAll('.unit-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10; // Max 10deg
+                    const rotateY = ((x - centerX) / centerX) * 10;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
+                });
+            });
+        }
+
+        function initDashboard(user) {
+            const dash = document.getElementById('dashboard');
+            dash.classList.remove('hide');
+            
+            // Typewriter Effect
+            const text = `Welcome back, ${user.name}`;
+            const typeEl = document.getElementById('welcome-type');
+            typeEl.innerText = '';
+            let i = 0;
+            function typeWriter() {
+                if (i < text.length) {
+                    typeEl.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 50);
+                }
+            }
+            typeWriter();
+
+            document.getElementById('user-role-label').innerText = user.name;
+            
+            if (user.role === 'admin') {
+                document.getElementById('avatar-icon').innerText = '👨‍🏫';
+                document.getElementById('admin-sidebar-menu').classList.remove('hide');
+                document.getElementById('admin-view').classList.remove('hide');
+                renderAdminNotices();
+            } else {
+                document.getElementById('avatar-icon').innerText = '🎓';
+                document.getElementById('student-sidebar-stats').classList.remove('hide');
+                document.getElementById('student-view').classList.remove('hide');
+                renderStudentView();
+            }
+        }
+
+        function renderStudentView() {
+            const grid = document.getElementById('units-grid');
+            grid.innerHTML = '';
+            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+
+            UNITS.forEach((unit, index) => {
+                const isDone = progress[unit.id];
+                const delay = index * 0.1; // Stagger animation
+                const html = `
+                    <div class="glass unit-card" style="animation-delay: ${delay}s; border: ${unit.special ? '1px solid gold' : ''}">
+                        <div class="card-content">
+                            <div style="display:flex; justify-content:space-between;">
+                                <span style="color:${unit.special ? '#ffd700' : 'var(--accent)'}; font-weight:bold; font-size:0.8rem; letter-spacing:1px;">UNIT ${unit.id}</span>
+                                <span class="card-icon">${unit.special ? '🏆' : '⚡'}</span>
+                            </div>
+                            <h2 style="margin: 15px 0; font-size: 1.5rem; line-height: 1.2;">${unit.title}</h2>
+                            <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
+                                <div onclick="toggleProgress(${unit.id})" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+                                    <div style="width:20px; height:20px; border:2px solid #fff; border-radius:50%; background:${isDone ? 'var(--success)' : 'transparent'}"></div>
+                                    <span style="font-size:0.9rem;">Done</span>
+                                </div>
+                                <a href="${unit.link}" style="background:rgba(255,255,255,0.1); padding:8px 20px; border-radius:30px; text-decoration:none; color:white; font-size:0.9rem; transition:0.3s;">OPEN</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += html;
+            });
+            
+            setTimeout(addTiltEffect, 500); // Initialize tilt after cards render
+            updateProgressBar();
+            renderStudentNotice();
+        }
+
+        function toggleProgress(id) {
+            let progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            if (progress[id]) delete progress[id];
+            else progress[id] = true;
+            localStorage.setItem('study_progress', JSON.stringify(progress));
+            renderStudentView(); // Re-render to update
+        }
+
+        function updateProgressBar() {
+            const progress = JSON.parse(localStorage.getItem('study_progress')) || {};
+            const pct = Math.round((Object.keys(progress).length / UNITS.length) * 100);
+            document.getElementById('sidebar-progress').style.width = pct + '%';
+            document.getElementById('progress-text').innerText = pct + '% Completed';
+        }
+
+        function postNotice() {
+            const txt = document.getElementById('notice-input').value;
+            if(txt) {
+                localStorage.setItem('physics_notice', txt);
+                document.getElementById('notice-input').value = '';
+                renderAdminNotices();
+                alert('Notice Broadcasted!');
+            }
+        }
+
+        function renderAdminNotices() {
+            const n = localStorage.getItem('physics_notice');
+            document.getElementById('admin-notice-list').innerText = n ? `Active: "${n}"` : "No active notice.";
+        }
+
+        function renderStudentNotice() {
+            const n = localStorage.getItem('physics_notice');
+            if(n) {
+                document.getElementById('notices-area').classList.remove('hide');
+                document.getElementById('notice-text').innerText = n;
+            }
+        }
+
+        function resetSystem() {
+            if(confirm('RESET ALL DATA?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('physics_user_v3');
+            location.reload();
+        }
+
+        // Auto-login check
+        if(localStorage.getItem('physics_user_v3')) {
+            document.getElementById('login-section').classList.add('hide');
+            initDashboard(JSON.parse(localStorage.getItem('physics_user_v3')));
+        }
+    </script>
 </body>
 </html>
